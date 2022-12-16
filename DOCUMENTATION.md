@@ -20,15 +20,18 @@ The roadside unit (RSU) collects data from V2X systems, collects them, and perfo
 #### Parameters
 | name      |  type     | data type               | description |
 |-----------|-----------|-------------------------|-------------|
-| `parameter-name` |  required / optional | type  | description |
+| `rsuDeviceID` |  required  | string | unique ID of the RSU |
+| `messageTime` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
+| `statusMessage` |  required  | string | data of the status message |
 
 #### Responses
 
 | http code     | content-type                      | response      |
 |---------------|-----------------------------------|---------------|
-| `201`         | `text/plain;charset=UTF-8`        | `Configuration created successfully` |
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
 | `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `405`         | `text/html;charset=utf-8`         | None              |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
 
 #### Example cURL
 
@@ -52,15 +55,18 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 #### Parameters
 | name      |  type     | data type               | description |
 |-----------|-----------|-------------------------|-------------|
-| `parameter-name` |  required / optional | type  | description |
+| `rsuDeviceID` |  required  | string | unique ID of the RSU |
+| `messageTime` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
+| `securityStatus` |  required  | string | current security status |
 
 #### Responses
 
 | http code     | content-type                      | response      |
 |---------------|-----------------------------------|---------------|
-| `201`         | `text/plain;charset=UTF-8`        | `Configuration created successfully` |
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
 | `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `405`         | `text/html;charset=utf-8`         | None              |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
 
 #### Example cURL
 
@@ -84,15 +90,18 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 #### Parameters
 | name      |  type     | data type               | description |
 |-----------|-----------|-------------------------|-------------|
-| `parameter-name` |  required / optional | type  | description |
+| `rsuDeviceID` |  required  | string | unique ID of the RSU |
+| `messageTime` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
+| `healthCheck` |  required  | string | result of the health check |
 
 #### Responses
 
 | http code     | content-type                      | response      |
 |---------------|-----------------------------------|---------------|
-| `201`         | `text/plain;charset=UTF-8`        | `Configuration created successfully` |
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
 | `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `405`         | `text/html;charset=utf-8`         | None              |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
 
 #### Example cURL
 
@@ -118,15 +127,18 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 #### Parameters
 | name      |  type     | data type               | description |
 |-----------|-----------|-------------------------|-------------|
-| `parameter-name` |  required / optional | type  | description |
+| `rsuDeviceID` |  required  | string | unique ID of the RSU |
+| `messageTime` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
+| `lastSOM` |  required  | string | last used safe operational mode |
 
 #### Responses
 
 | http code     | content-type                      | response      |
 |---------------|-----------------------------------|---------------|
-| `201`         | `text/plain;charset=UTF-8`        | `Configuration created successfully` |
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
 | `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `405`         | `text/html;charset=utf-8`         | None              |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
 
 #### Example cURL
 
@@ -150,15 +162,18 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 #### Parameters
 | name      |  type     | data type               | description |
 |-----------|-----------|-------------------------|-------------|
-| `parameter-name` |  required / optional | type  | description |
+| `rsuDeviceID` |  required  | string | unique ID of the RSU |
+| `messageTime` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
+| `currentSOM` |  required  | string | current safe operational mode in place |
 
 #### Responses
 
 | http code     | content-type                      | response      |
 |---------------|-----------------------------------|---------------|
-| `201`         | `text/plain;charset=UTF-8`        | `Configuration created successfully` |
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
 | `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `405`         | `text/html;charset=utf-8`         | None              |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
 
 #### Example cURL
 
@@ -182,15 +197,18 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 #### Parameters
 | name      |  type     | data type               | description |
 |-----------|-----------|-------------------------|-------------|
-| `parameter-name` |  required / optional | type  | description |
+| `rsuDeviceID` |  required  | string | unique ID of the RSU |
+| `messageTime` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
+| `currentSOM` |  optional | string | current safe operational mode in place |
 
 #### Responses
 
 | http code     | content-type                      | response      |
 |---------------|-----------------------------------|---------------|
-| `201`         | `text/plain;charset=UTF-8`        | `Configuration created successfully` |
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
 | `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `405`         | `text/html;charset=utf-8`         | None              |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
 
 #### Example cURL
 
@@ -214,15 +232,18 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 #### Parameters
 | name      |  type     | data type               | description |
 |-----------|-----------|-------------------------|-------------|
-| `parameter-name` |  required / optional | type  | description |
+| `rsuDeviceID` |  required  | string | unique ID of the RSU |
+| `messageTime` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
+| `currentSOM` |  optional | string | current safe operational mode in place |
 
 #### Responses
 
 | http code     | content-type                      | response      |
 |---------------|-----------------------------------|---------------|
-| `201`         | `text/plain;charset=UTF-8`        | `Configuration created successfully` |
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
 | `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `405`         | `text/html;charset=utf-8`         | None              |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
 
 #### Example cURL
 
@@ -253,15 +274,18 @@ The control architecture from virtual vehicle (VIF) is able to simulate and coll
 #### Parameters
 | name      |  type     | data type               | description |
 |-----------|-----------|-------------------------|-------------|
-| `parameter-name` |  required / optional | type  | description |
+| `vehicleID` |  required  | string | unique ID of the vehicle |
+| `messageTime` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
+| `egoVehiclePosition` |  required | string | current position of the ego vehicle |
 
 #### Responses
 
 | http code     | content-type                      | response      |
 |---------------|-----------------------------------|---------------|
-| `201`         | `text/plain;charset=UTF-8`        | `Configuration created successfully` |
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
 | `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `405`         | `text/html;charset=utf-8`         | None              |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
 
 #### Example cURL
 
@@ -285,15 +309,18 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 #### Parameters
 | name      |  type     | data type               | description |
 |-----------|-----------|-------------------------|-------------|
-| `parameter-name` |  required / optional | type  | description |
+| `vehicleID` |  required  | string | unique ID of the vehicle |
+| `messageTime` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
+| `egoVehicleStatus` |  required | string | current status of the ego vehicle |
 
 #### Responses
 
 | http code     | content-type                      | response      |
 |---------------|-----------------------------------|---------------|
-| `201`         | `text/plain;charset=UTF-8`        | `Configuration created successfully` |
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
 | `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `405`         | `text/html;charset=utf-8`         | None              |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
 
 #### Example cURL
 
@@ -321,15 +348,18 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 #### Parameters
 | name      |  type     | data type               | description |
 |-----------|-----------|-------------------------|-------------|
-| `parameter-name` |  required / optional | type  | description |
+| `toolID` |  required  | string | unique ID of the tool |
+| `messageTime` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
+| `toolStatus` |  required | string | current status of the tool |
 
 #### Responses
 
 | http code     | content-type                      | response      |
 |---------------|-----------------------------------|---------------|
-| `201`         | `text/plain;charset=UTF-8`        | `Configuration created successfully` |
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
 | `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `405`         | `text/html;charset=utf-8`         | None              |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
 
 #### Example cURL
 
@@ -360,15 +390,18 @@ The TDMS is a set of tools holding all relevant assets for data management.
 #### Parameters
 | name      |  type     | data type               | description |
 |-----------|-----------|-------------------------|-------------|
-| `parameter-name` |  required / optional | type  | description |
+| `toolID` |  optional | string | unique ID of the tool |
+| `messageTime` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
+| `healingProcedures` |  required | string | current set of healing procedures |
 
 #### Responses
 
 | http code     | content-type                      | response      |
 |---------------|-----------------------------------|---------------|
-| `201`         | `text/plain;charset=UTF-8`        | `Configuration created successfully` |
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
 | `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `405`         | `text/html;charset=utf-8`         | None              |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
 
 #### Example cURL
 
@@ -392,15 +425,18 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 #### Parameters
 | name      |  type     | data type               | description |
 |-----------|-----------|-------------------------|-------------|
-| `parameter-name` |  required / optional | type  | description |
+| `toolID` |  optional | string | unique ID of the tool |
+| `messageTime` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
+| `healingProcedures` |  required | string | current set of healing procedures |
 
 #### Responses
 
 | http code     | content-type                      | response      |
 |---------------|-----------------------------------|---------------|
-| `201`         | `text/plain;charset=UTF-8`        | `Configuration created successfully` |
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
 | `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `405`         | `text/html;charset=utf-8`         | None              |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
 
 #### Example cURL
 
@@ -430,15 +466,18 @@ Different services one and subscribe to.
 #### Parameters
 | name      |  type     | data type               | description |
 |-----------|-----------|-------------------------|-------------|
-| `parameter-name` |  required / optional | type  | description |
+| `toolID` |  optional | string | unique ID of the tool |
+| `messageTime` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
+| `securityScenario` |  required | string | current set of security scenarios |
 
 #### Responses
 
 | http code     | content-type                      | response      |
 |---------------|-----------------------------------|---------------|
-| `201`         | `text/plain;charset=UTF-8`        | `Configuration created successfully` |
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
 | `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `405`         | `text/html;charset=utf-8`         | None              |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
 
 #### Example cURL
 
@@ -462,15 +501,18 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 #### Parameters
 | name      |  type     | data type               | description |
 |-----------|-----------|-------------------------|-------------|
-| `parameter-name` |  required / optional | type  | description |
+| `toolID` |  optional | string | unique ID of the tool |
+| `messageTime` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
+| `ontologyID` | required | string | ID of the requested ontology |
 
 #### Responses
 
 | http code     | content-type                      | response      |
 |---------------|-----------------------------------|---------------|
-| `201`         | `text/plain;charset=UTF-8`        | `Configuration created successfully` |
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
 | `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `405`         | `text/html;charset=utf-8`         | None              |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
 
 #### Example cURL
 
@@ -496,15 +538,18 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 #### Parameters
 | name      |  type     | data type               | description |
 |-----------|-----------|-------------------------|-------------|
-| `componentName` |  required | int | unique identifier of the the component |
+| `toolID` |  required | string | unique ID of the tool |
+| `messageTime` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
+| `currentPatchLevel` | optional | string | current version of the installed patch |
 
 #### Responses
 
 | http code     | content-type                      | response      |
 |---------------|-----------------------------------|---------------|
-| `201`         | `text/plain;charset=UTF-8`        | `Configuration created successfully` |
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
 | `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `405`         | `text/html;charset=utf-8`         | None              |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
 
 #### Example cURL
 
@@ -528,15 +573,18 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 #### Parameters
 | name      |  type     | data type               | description |
 |-----------|-----------|-------------------------|-------------|
-| `parameter-name` |  required / optional | type  | description |
+| `toolID` |  required | string | unique ID of the tool |
+| `messageTime` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
+| `lastAudit` | optional | string | timestamp of the last audit (ISO-8601 UTC) |
 
 #### Responses
 
 | http code     | content-type                      | response      |
 |---------------|-----------------------------------|---------------|
-| `201`         | `text/plain;charset=UTF-8`        | `Configuration created successfully` |
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
 | `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `405`         | `text/html;charset=utf-8`         | None              |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
 
 #### Example cURL
 
@@ -560,15 +608,18 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 #### Parameters
 | name      |  type     | data type               | description |
 |-----------|-----------|-------------------------|-------------|
-| `parameter-name` |  required / optional | type  | description |
+| `toolID` |  required | string | unique ID of the tool |
+| `messageTime` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
+| `lastPentest` | optional | string | timestamp of the last pentest (ISO-8601 UTC) |
 
 #### Responses
 
 | http code     | content-type                      | response      |
 |---------------|-----------------------------------|---------------|
-| `201`         | `text/plain;charset=UTF-8`        | `Configuration created successfully` |
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
 | `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `405`         | `text/html;charset=utf-8`         | None              |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
 
 #### Example cURL
 
@@ -592,15 +643,18 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 #### Parameters
 | name      |  type     | data type               | description |
 |-----------|-----------|-------------------------|-------------|
-| `parameter-name` |  required / optional | type  | description |
+| `toolID` |  required | string | unique ID of the tool |
+| `messageTime` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
+| `lastUpdate` | optional | string | timestamp of the last update (ISO-8601 UTC) |
 
 #### Responses
 
 | http code     | content-type                      | response      |
 |---------------|-----------------------------------|---------------|
-| `201`         | `text/plain;charset=UTF-8`        | `Configuration created successfully` |
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
 | `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `405`         | `text/html;charset=utf-8`         | None              |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
 
 #### Example cURL
 
@@ -627,15 +681,17 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 #### Parameters
 | name      |  type     | data type               | description |
 |-----------|-----------|-------------------------|-------------|
-| `parameter-name` |  required / optional | type  | description |
+| `vehicleID` |  required | string | unique ID of the tool |
+| `messageTime` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
 
 #### Responses
 
 | http code     | content-type                      | response      |
 |---------------|-----------------------------------|---------------|
-| `201`         | `text/plain;charset=UTF-8`        | `Configuration created successfully` |
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
 | `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `405`         | `text/html;charset=utf-8`         | None              |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
 
 #### Example cURL
 
@@ -659,15 +715,17 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 #### Parameters
 | name      |  type     | data type               | description |
 |-----------|-----------|-------------------------|-------------|
-| `parameter-name` |  required / optional | type  | description |
+| `vehicleGroupID` |  required | string | unique ID of the tool |
+| `messageTime` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
 
 #### Responses
 
 | http code     | content-type                      | response      |
 |---------------|-----------------------------------|---------------|
-| `201`         | `text/plain;charset=UTF-8`        | `Configuration created successfully` |
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
 | `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `405`         | `text/html;charset=utf-8`         | None              |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
 
 #### Example cURL
 
@@ -691,15 +749,17 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 #### Parameters
 | name      |  type     | data type               | description |
 |-----------|-----------|-------------------------|-------------|
-| `parameter-name` |  required / optional | type  | description |
+| `toolID` |  required | string | unique ID of the tool |
+| `messageTime` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
 
 #### Responses
 
 | http code     | content-type                      | response      |
 |---------------|-----------------------------------|---------------|
-| `201`         | `text/plain;charset=UTF-8`        | `Configuration created successfully` |
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
 | `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `405`         | `text/html;charset=utf-8`         | None              |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
 
 #### Example cURL
 
@@ -724,15 +784,17 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 #### Parameters
 | name      |  type     | data type               | description |
 |-----------|-----------|-------------------------|-------------|
-| `vehicleIdentifier` |  required | string  | unique vehicle identifier (VIN) |
+| `vehicleID` |  required | string | unique ID of the tool |
+| `messageTime` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
 
 #### Responses
 
 | http code     | content-type                      | response      |
 |---------------|-----------------------------------|---------------|
-| `201`         | `text/plain;charset=UTF-8`        | `Configuration created successfully` |
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
 | `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `405`         | `text/html;charset=utf-8`         | None              |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
 
 #### Example cURL
 
@@ -756,15 +818,17 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 #### Parameters
 | name      |  type     | data type               | description |
 |-----------|-----------|-------------------------|-------------|
-| `networkIdentifier` |  required | string  | unique network identifier |
+| `networkID` |  required | string | unique ID of the tool |
+| `messageTime` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
 
 #### Responses
 
 | http code     | content-type                      | response      |
 |---------------|-----------------------------------|---------------|
-| `201`         | `text/plain;charset=UTF-8`        | `Configuration created successfully` |
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
 | `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `405`         | `text/html;charset=utf-8`         | None              |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
 
 #### Example cURL
 
@@ -794,15 +858,18 @@ Different services that allow analysis of data.
 #### Parameters
 | name      |  type     | data type               | description |
 |-----------|-----------|-------------------------|-------------|
+| `toolID` |  optional | string | unique ID of the tool |
+| `messageTime` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
 | `binary` |  required | object | the file which need to be analysed |
 
 #### Responses
 
 | http code     | content-type                      | response      |
 |---------------|-----------------------------------|---------------|
-| `201`         | `text/plain;charset=UTF-8`        | `Configuration created successfully` |
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
 | `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `405`         | `text/html;charset=utf-8`         | None              |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
 
 #### Example cURL
 
