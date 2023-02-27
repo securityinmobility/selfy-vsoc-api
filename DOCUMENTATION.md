@@ -18,6 +18,7 @@ The roadside unit (RSU) collects data from V2X systems, collects them, and perfo
     </summary>
 
 #### Parameters
+
 | name      |  type     | data type               | description |
 |-----------|-----------|-------------------------|-------------|
 | `rsuDeviceID` |  required  | string | unique ID of the RSU |
