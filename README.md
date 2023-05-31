@@ -20,7 +20,7 @@ docker images
 # REPOSITORY          TAG           IMAGE ID       CREATED         SIZE
 # vsoc-api            latest        21bf57473b97   9 minutes ago   148MB
 
-# run the vsoc-api and expose (publish) port 8000 and 5000
+# run the vsoc-api and expose (publish) the host’s port 8000 to the container’s port 5000
 # both ports must be exposed to allow interaction with our local client
 docker run --publish 8000:5000 vsoc-api
 
