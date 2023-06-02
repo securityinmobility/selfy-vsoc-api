@@ -15,7 +15,6 @@ def index():
 # POST endpoint: RSU/statusMessage
 @app.route('/RSU/statusMessage', methods=['POST'])
 def set_status_message():
-    request
     message = request.get_json().get('message')
     data['statusMessage'] = message
     return jsonify({'message': 'Status message updated successfully', 'statusMessage': message})
