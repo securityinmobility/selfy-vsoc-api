@@ -17,9 +17,6 @@ The roadside unit (RSU) collects data from V2X systems, collects them, and perfo
         <code>statusMessage</code> <!-- Endpoint path -->
     </summary>
 
-Status: added to app.py
-
-
 #### Parameters
 
 | name      |  type     | data type               | description |
@@ -47,6 +44,11 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 ```python
 ...
 ```
+
+#### Status
+
+added to app.py
+
 </details>
 
 <details>
