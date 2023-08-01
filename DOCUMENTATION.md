@@ -10,14 +10,15 @@ The roadside unit (RSU) collects data from V2X systems, collects them, and perfo
 
 ### RSU status messages
 
-Status: added to app.py
-
 <details>
     <summary>
         <code>POST</code> <!-- for example GET or POST -->
         <code><b>/</b></code> 
         <code>statusMessage</code> <!-- Endpoint path -->
     </summary>
+
+Status: added to app.py
+
 
 #### Parameters
 
