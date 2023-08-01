@@ -46,8 +46,9 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 ```
 
 #### Status
-
-added to app.py
+| Status | Python | 
+| ------ | ------ |
+| Developed | in app.py|
 
 </details>
 
