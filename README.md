@@ -31,3 +31,7 @@ curl localhost:8000
 # you should get the following output (version might be changed)
 # {"SELFY VSOC":"by THI","version":"v0.1"}
 ```
+
+➜  src git:(main) docker run -d --name vsoc-api 27276da04e14 tail -F /dev/null 
+➜  src git:(main) docker exec -ti vsoc-api bash
+
