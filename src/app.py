@@ -1,6 +1,12 @@
 from flask import Flask, jsonify, request
+from opentelemetry.instrumentation.flask import FlaskInstrumentor
+
+instrumentor = FlaskInstrumentor()
 
 app = Flask(__name__) # Dictionary to store the data
+
+instrumentor.intrument_app(app)
+
 data = {
     "statusMessage": "",
     "securityStatus": ""
