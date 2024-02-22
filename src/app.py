@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request, Response
 import requests
 import time
+import uuid
 
 #from opentelemetry.instrumentation.flask import FlaskInstrumentor
 from opentelemetry import trace#, metrics
@@ -17,7 +18,10 @@ data = {
     "securityStatus": ""
 }
 
+# GLOBALS
 sota_endpoint = "http://uptane-bridge.sota.selfy.ota.ce/vsoctrigger"
+ras_endpoint = "http://127.0.0.1:4201"
+ais_endpoint = "http://127.0.0.1:4202"
 
 # Default
 @app.route('/')
@@ -68,6 +72,90 @@ def sota_receive_info():
 
         # TODO: error handling
         return jsonify({'data': 'Update information updated successfully.', 'receivedInformation': data})
+
+def ras_attestation_request(target):
+    """
+    Send a request to the RAS to perform an attestation.
+
+    :param target: ID of the target tool
+    """
+
+    nonce = uuid.uuid4().hex
+    req_obj = {"target_tool": target, "timeStamp": str(time.time()), "verifier": "ID18", "VSOC": "ID08", "nonce": nonce}
+    response = requests.get(ras_endpoint, json=req_obj)
+    return Response(
+            response.text,
+            status = response.status_code,
+            content_type = response.headers['content-type'],
+            )
+    
+@app.route('/ras/attestationResult', methods=['POST'])
+def ras_attestation_result():
+    """
+    Getting information from the RAS their attestation result.
+    """
+    data = request.get_json(force=True)
+
+    with tracer.start_as_current_span('ras.attestationResult') as ras_attestation_result_span:
+        verifier = data['verifier']
+        ras_attestation_result_span.set_attribute('ras.attestationResult.verifier', verifier)
+
+        vsoc = data['VSOC']
+        ras_attestation_result_span.set_attribute('ras.attestationResult.vsoc', vsoc)
+
+        target_tool = data['target_tool']
+        ras_attestation_result_span.set_attribute('ras.attestationResult.targetTool', target_tool)
+
+        state = data['state']
+        ras_attestation_result_span.set_attribute('ras.attestationResult.state', state)
+
+        nonce = data['nonce']
+        ras_attestation_result_span.set_attribute('ras.attestationResult.nonce', nonce)
+
+        cts = data['created']
+        ras_attestation_result_span.set_attribute('ras.attestationResult.createdTimeStamp', cts)
+
+        # TODO: error handling
+        return jsonify({'data': 'Attestation results updated successfully', 'receivedInformation': data})
+
+def ais_change_config(ais_id, config):
+    """
+    Change the configuration of an AIS tool.
+
+    :param ais_id: ID of the AIS to change.
+    :param config: Configuration parameters for the AIS.
+    """
+
+    if not config:
+        cfg_json = {}
+    else:
+        for i in range(config):
+            cfg_json = {"configuration_param"+str(i): x for x in config}
+
+    req_obj = { 
+               "version": "1.0", 
+               "action": "set", 
+               "target": { 
+                          "type": "ais", 
+                          "specifiers": { 
+                                         "ais_id": str(ais_id)
+                                         } 
+                          }, 
+               "actuator": { 
+                            "type": "vsoc", 
+                            "specifiers": { 
+                                           "vsoc_id": "VSOC" 
+                                           } 
+                            }, 
+               "args": cfg_json
+               }
+    response = requests.get(ais_endpoint, json=req_obj)
+    return Response(
+            response.text,
+            status = response.status_code,
+            content_type = response.headers['content-type'],
+            )
+
 
 
 #
