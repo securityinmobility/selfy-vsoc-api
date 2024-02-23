@@ -157,6 +157,81 @@ def ais_change_config(ais_id, config):
             )
 
 
+@app.route('/ais/deviationUnknown', methods=['POST'])
+def ais_deviation_unknown():
+    """
+    Getting information from the AIS for an unknown deviation.
+    """
+    data = request.get_json(force=True)
+    extensions = data[0]['extensions']['extension-definition--d83fce45-ef58-4c6c-a3f4-1fbc32e98c6e']
+
+    with tracer.start_as_current_span('ais.deviationUnknown') as ais_deviation_unknown_span:
+        extension_type = extensions['extension_type']
+        ais_deviation_unknown_span.set_attribute('ais.deviationUnknown.extensionType', extension_type)
+
+        source_vehicle = extensions['source_vehicle']
+        ais_deviation_unknown_span.set_attribute('ais.deviationUnknown.sourceVehicle', source_vehicle)
+
+        source_ais = extensions['source_ais']
+        ais_deviation_unknown_span.set_attribute('ais.deviationUnknown.sourceAis', source_ais)
+
+        source_rsu = extensions['source_rsu']
+        ais_deviation_unknown_span.set_attribute('ais.deviationUnknown.sourceRsu', source_rsu)
+
+        observable = extensions['observable']
+        ais_deviation_unknown_span.set_attribute('ais.deviationUnknown.observableObject', observable)
+
+        # TODO: error handling
+        return jsonify({'data': 'Unknown deviation updated successfully', 'receivedInformation': data})
+
+@app.route('/ais/deviationKnown', methods=['POST'])
+def ais_deviation_known():
+    """
+    Getting information from the AIS for a known devication.
+    """
+    data = request. get_json(force=True)
+    extensions = data[0]['extensions']['extension-definition--d83fce45-ef58-4c6c-a3f4-1fbc32e98c6e']
+
+    with tracer.start_as_current_span('ais.deviationUnknown') as ais_deviation_known_span:
+        extension_type = extensions['extension_type']
+        ais_deviation_known_span.set_attribute('ais.deviationKnown.extensionType', extension_type)
+
+        source_vehicle = extensions['source_vehicle']
+        ais_deviation_known_span.set_attribute('ais.deviationKnown.sourceVehicle', source_vehicle)
+
+        source_ais = extensions['source_ais']
+        ais_deviation_known_span.set_attribute('ais.deviationKnown.sourceAis', source_ais)
+
+        source_rsu = extensions['source_rsu']
+        ais_deviation_known_span.set_attribute('ais.deviationKnown.sourceRsu', source_rsu)
+
+        observable = extensions['observable']
+        ais_deviation_known_span.set_attribute('ais.deviationKnown.observableObject', observable)
+
+        relationship_id = extensions['id']
+        ais_deviation_known_span.set_attribute('ais.deviationKnown.relationshipId', relationship_id)
+
+        source_ref = extensions['source_ref']
+        ais_deviation_known_span.set_attribute('ais.deviationKnown.sourceRef', source_ref)
+
+        target_ref = extensions['target_ref']
+        ais_deviation_known_span.set_attribute('ais.deviationKnown.targetRef', target_ref)
+
+        description = extensions['description']
+        ais_deviation_known_span.set_attribute('ais.deviationKnown.description', description)
+
+        # TODO: error handling
+        return jsonify({'data': 'Unknown deviation updated successfully', 'receivedInformation': data})
+
+
+@app.route('/vsoc/getTrustScore', methods=['GET'])
+def vsoc_get_trustscore():
+    """
+    Getting the trust-score for a specific entity and distributing it.
+    """
+    # file ./trust-score.py
+
+    return ""
 
 #
 #
