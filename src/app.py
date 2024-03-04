@@ -27,7 +27,7 @@ ais_endpoint = "http://127.0.0.1:4202"
 @app.route('/')
 def index():
     return jsonify({'SELFY VSOC': 'by THI',
-                       'version': 'v0.1'})
+                       'version': 'v0.2'})
 
 def sota_request_update(vin, action):
     """
