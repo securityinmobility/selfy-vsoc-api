@@ -1,0 +1,1 @@
+curl -H "Content-type: application/json" -X POST -d '{"toolId": 8, "timeStamp": "2023-11-21T06:14:00Z", "vin": "2a910ebe-b39a-4813-9992-373738ab4599", "action": "1", "deviceID": 8, "status": 2, "deviceMetadata": "Such nice metadata"}' http://127.0.0.1:8080/sota/updateInfo

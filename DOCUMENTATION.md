@@ -1,14 +1,329 @@
-*VSOC API v0.1*
+*VSOC API v0.2*
 
 # VSOC API
 
 This is the documentation of the VSOC API.
 
-# RSU
+# SOTA (Software over the air)
+
+The endpoint `/sota` describes requests targeting the SOTA infrastructure that runs [Uptane](https://uptane.org/).
+
+## Requesting an update 
+
+In order to request an update the VSOC introduces the function `sota_request_update(vin, action)` that takes the Vehicle Identification Number (`VIN`) and the `action` as an input. The `action` parameter is currently implementing the following keys: 1 update, 0 nothing, 2 tbd.
+
+**Important**: The function is triggered automatically by the VSOC internals without using the HTTP REST interface. So no `POST` or `GET` method is used.
+
+### JSON schema
+
+An example of the request from the VSOC to the SOTA:
+```
+{  
+    "selfy_id": 08,  
+    "TimeStamp": "2023-11-21T06:14:00Z",  
+    "VIN": "WAUEA88DXTA287834",  
+    "DeviceID": "01",
+    "Action": 1  # 1 update, 0 nothing, 2 tbd 
+} 
+```
+
+## Update status information
+
+The function `sota_receive_info()`describes the HTTP REST `POST` method to send information from the SOTA to the VSOC. This information contains the current status of a requested update.
+
+The function takes no parameters and is constructed by the SOTA infrastructure as a `POST` request towards the VSOC endpoint.
+<details>
+    <summary>
+        <code>POST</code> <!-- for example GET or POST -->
+        <code><b>/</b></code> 
+        <code>sota/updateInfo</code> <!-- Endpoint path -->
+    </summary>
+
+#### Parameters
+
+| name      |  type     | data type               | description |
+|-----------|-----------|-------------------------|-------------|
+| `selfy_id` |  required  | integer | ID of the SOTA endpoint |
+| `TimeStamp` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
+| `message` | required | JSON object | containg message information |
+| `action` | required | integer | part of the `message` object that contains the action (e.g., 1 for update) | 
+| `VIN` | required | string | part of the `message` object that contains an unique VIN | 
+| `DeviceID` | required | string | part of the `message` object that device where the update is linked to | 
+| `status` | required | integer | part of the `message` object that status of the update |
+| `device_metadata` | optional | string | part of the `message` object that metadata about the update | 
+
+#### JSON schema 
+
+An example of the `POST` request from the SOTA to the VSOC:
+```
+{  
+    "selfy_id": 22,  
+        "TimeStamp": "2024-11-21T06:14:00Z",  
+        "message" : [ 
+            "action": 1, 
+            "VIN": "WAUEA88DXTA287834",  
+            "DeviceID": "01", 
+            "status": 2 # 0 updated, 1 pending, 2 no update available 
+            "device_metadata": "X"
+        ] 
+} 
+```
+
+#### Responses
+
+| http code     | content-type                      | response      |
+|---------------|-----------------------------------|---------------|
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
+| `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
+
+</details>
+
+
+# RAS (Remote Attestation Service)
+
+
+## Remote attestation request 
+
+In order to request an attestation, the VSOC introduces the function `ras_attestation_request(target)` that takes the `target` identified as an input. The `target` parameter is the SELFY tool ID. For example, `ID08` for the VSOC.
+
+**Important**: The function is triggered automatically by the VSOC internals without using the HTTP REST interface. So no `POST` or `GET` method is used.
+
+### JSON schema 
+
+An example request send from the VSOC to the RAS:
+```
+{  
+    "target_tool": "ID19",  
+    "verifier": "ID18",  
+    "VSOC": "ID08",  
+    "nonce": "f9bf78b9a18ce6d46a0cd2b0b86df9da"  
+} 
+```
+
+## Remote attestation result 
+
+The VSOC is introducing an HTTP REST endpoint where the RAS can send a `POST` request containing attestation results. This function is called `ras_attestation_result()` in the VSOC. 
+
+<details>
+    <summary>
+        <code>POST</code> <!-- for example GET or POST -->
+        <code><b>/</b></code> 
+        <code>ras/attestationResult</code> <!-- Endpoint path -->
+    </summary>
+
+#### Parameters
+
+| name      |  type     | data type               | description |
+|-----------|-----------|-------------------------|-------------|
+| `verifier` |  required  | string | ID of the verifier (usually ID18) |
+| `VSOC` | required | string | ID of the VSOC (usually ID08) |
+| `target_tool` | required | string | ID of the tool for the RAS result | 
+| `state` | required | integer | status of the attestation result | 
+| `nonce` | required | string | random nonce of the requst | 
+| `created` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
+
+#### JSON schema 
+
+Example request: 
+``` 
+{  
+    "verifier": "ID18",  
+    "VSOC": "ID08",  
+    "target_tool": "ID19",  
+    "state": 0,  
+    "nonce": "f9bf78b9a18ce6d46a0cd2b0b86df9da",  
+    "created": "2023-06-05 12:00:00 UTC"  
+} 
+```
+
+#### Responses
+
+| http code     | content-type                      | response      |
+|---------------|-----------------------------------|---------------|
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
+| `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
+
+</details>
+
+
+# AIS (Artificial Immune System) 
+
+## Changing the configuration 
+
+The VSOC can request to change the configuration of the AIS. For this, the function `ais_change_config(ais_id, config)` is used. The `ais_id` is the unique identified of the AIS and the `config` parameter contain the new configuration.
+
+**Important**: The function is triggered automatically by the VSOC internals without using the HTTP REST interface. So no `POST` or `GET` method is used.
+
+### JSON schema 
+```
+    "version": "1.0", 
+    "action": "set", 
+    "target": { 
+        "type": "ais", 
+        "specifiers": { 
+            "ais_id": "<ais-id>"
+        } 
+    }, 
+    "actuator": { 
+        "type": "vsoc", 
+        "specifiers": { 
+            "vsoc_id": "VSOC" 
+        } 
+    }, 
+    "args": "cfg"
+```
+
+## Deviation unknown 
+
+The VSOC also receives information from the AIS. For this, the function `ais_deviation_unknown()` to get information from the AIS for an unknown deviation. The request is a `POST` request from the AIS to the VSOC.
+
+<details>
+    <summary>
+        <code>POST</code> <!-- for example GET or POST -->
+        <code><b>/</b></code> 
+        <code>ais/deviationUnknown</code> <!-- Endpoint path -->
+    </summary>
+
+#### Parameters
+
+| name      |  type     | data type               | description |
+|-----------|-----------|-------------------------|-------------|
+| `extension_type` |  required  | string | property extension from the request (comming from the STIX format) |
+| `source_vehicle` | required | string | VIN of the source vehicle |
+| `source_ais` | required | string | ID of the source AIS | 
+| `source_rsu` | required | integer | ID of the source RSU | 
+| `observable` | required | JSON object | observed data | 
+
+#### JSON schema 
+
+Example request: 
+``` 
+{
+    "extension_type": "property-extension", 
+    "source_vehicle": "<vehicle-id>", 
+    "source_ais": "<ais-id>", 
+    "source_rsu": "<rsu-id>", 
+    "observable": {
+        "type": "<data-type>", 
+        "value": "<the-specific-deviation-value>" 
+    }
+} 
+```
+
+#### Responses
+
+| http code     | content-type                      | response      |
+|---------------|-----------------------------------|---------------|
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
+| `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
+
+</details>
+
+## Deviation known 
+
+The VSOC also receives information from the AIS. For this, the function `ais_deviation_known()` to get information from the AIS for an known deviation. The request is a `POST` request from the AIS to the VSOC.
+
+<details>
+    <summary>
+        <code>POST</code> <!-- for example GET or POST -->
+        <code><b>/</b></code> 
+        <code>ais/deviationKnown</code> <!-- Endpoint path -->
+    </summary>
+
+#### Parameters
+
+| name      |  type     | data type               | description |
+|-----------|-----------|-------------------------|-------------|
+| `extension_type` |  required  | string | property extension from the request (comming from the STIX format) |
+| `source_vehicle` | required | string | VIN of the source vehicle |
+| `source_ais` | required | string | ID of the source AIS | 
+| `source_rsu` | required | integer | ID of the source RSU | 
+| `observable` | required | JSON object | observed data | 
+| `id` | required | string | ID of the relationship request | 
+| `source_ref` | required | string | reference to the known source |
+| `target_ref` | required | string | reference to the known target | 
+| `description` | required | string | description of the known deviation |
+
+#### JSON schema 
+
+Example request: 
+``` 
+{
+    "extension_type": "property-extension", 
+    "source_vehicle": "<vehicle-id>", 
+    "source_ais": "<ais-id>", 
+    "source_rsu": "<rsu-id>", 
+    "observable": {
+        "type": "<data-type>", 
+        "value": "<the-specific-deviation-value>" 
+    },
+    "id": "relationship--57b56a43-b8b0-4cba-9deb-34e3e1faed9e", 
+    "source_ref": "indicator--8e2e2d2b-17d4-4cbf-938f-98ee46b3cd3f", 
+    "target_ref": "indicator--8e2e2d2b-17d4-4cbf-938f-98ee46b3cd3e", 
+    "description": " An immunological algorithm detected a deviation in a real-time data set that is apparently similar to a previously reported deviation." 
+} 
+```
+
+#### Responses
+
+| http code     | content-type                      | response      |
+|---------------|-----------------------------------|---------------|
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
+| `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
+
+</details>
+
+
+# VSOC receiving endpoint
+
+The endpoint `/vsoc` implements different endpoints to receive data.
+
+## Trust score 
+
+The path `/vsoc/getTrustScore` implements the endpoint to receive the trust score. It can be requested through a HTTP REST `GET` request and is implemented in the VSOC by the `vsoc_get_trustscore()` function.
+
+<details>
+    <summary>
+        <code>GET</code> <!-- for example GET or POST -->
+        <code><b>/</b></code> 
+        <code>vsoc/getTrustScore</code> <!-- Endpoint path -->
+    </summary>
+
+#### Parameters
+| name      |  type     | data type               | description |
+|-----------|-----------|-------------------------|-------------|
+| `tbd` | tbd | tbd | tbd |
+
+#### Responses
+
+| http code     | content-type                      | response      |
+|---------------|-----------------------------------|---------------|
+| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
+| `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
+| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
+| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
+
+</details>
+
+
+
+
+
+
+# RSU (deprecated)
 
 The roadside unit (RSU) collects data from V2X systems, collects them, and performs analysis. The component sends and receives data.
 
-### RSU status messages
+
+### RSU status messages (deprecated)
 
 <details>
     <summary>
@@ -122,7 +437,7 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 ```
 </details>
 
-### Safe operational modes (SOM)
+### Safe operational modes (SOM) (deprecated)
 
 <details>
     <summary>
@@ -265,7 +580,7 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 </details>
 
 
-## Virtual vehicle
+## Virtual vehicle (deprecated)
 
 The control architecture from virtual vehicle (VIF) is able to simulate and collect data from vehicle sources such as in-vehicle data and V2X.
 
@@ -343,7 +658,7 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 
 
 
-### Tool information
+### Tool information (deprecated)
 
 <details>
     <summary>
@@ -381,11 +696,11 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 </details>
 
 
-## Trust data management system (TDMS)
+## Trust data management system (TDMS) (deprecated)
 
 The TDMS is a set of tools holding all relevant assets for data management.
 
-### Healing procedures 
+### Healing procedures (deprecated)
 
 <details>
     <summary>
@@ -457,11 +772,13 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 ```
 </details>
 
-## VSOC data subscription
+## VSOC data subscription (deprecated)
+
 
 Different services one and subscribe to.
 
-### Knowledge 
+### Knowledge  (deprecated)
+
 
 <details>
     <summary>
@@ -533,7 +850,8 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 ```
 </details>
 
-### Security controls 
+### Security controls  (deprecated)
+
 
 <details>
     <summary>
@@ -675,7 +993,8 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 ```
 </details>
 
-### Security information
+### Security information (deprecated)
+
 
 
 <details>
@@ -849,11 +1168,13 @@ curl -X POST -H "Content-Type: application/json" --data @post.json http://localh
 ```
 </details>
 
-## VSOC analysis capabilities
+## VSOC analysis capabilities (deprecated)
+
 
 Different services that allow analysis of data.
 
-### Binary analysis
+### Binary analysis (deprecated)
+
 
 <details>
     <summary>
