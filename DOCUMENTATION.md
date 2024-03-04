@@ -6,7 +6,7 @@ This is the documentation of the VSOC API.
 
 # SOTA (Software over the air)
 
-The endpoint `/sota` describes requests targeting the SOTA infrastructure that runs (Uptane)[https://uptane.org/]
+The endpoint `/sota` describes requests targeting the SOTA infrastructure that runs [Uptane](https://uptane.org/).
 
 ## Requesting an update 
 
@@ -22,7 +22,7 @@ An example of the request from the VSOC to the SOTA:
     "selfy_id": 08,  
     "TimeStamp": "2023-11-21T06:14:00Z",  
     "VIN": "WAUEA88DXTA287834",  
-    "DeviceID": "01", #deprecated?  
+    "DeviceID": "01",
     "Action": 1  # 1 update, 0 nothing, 2 tbd 
 } 
 ```
@@ -36,7 +36,7 @@ The function takes no parameters and is constructed by the SOTA infrastructure a
     <summary>
         <code>POST</code> <!-- for example GET or POST -->
         <code><b>/</b></code> 
-        <code>/sota/updateInfo</code> <!-- Endpoint path -->
+        <code>sota/updateInfo</code> <!-- Endpoint path -->
     </summary>
 
 #### Parameters
@@ -48,9 +48,9 @@ The function takes no parameters and is constructed by the SOTA infrastructure a
 | `message` | required | JSON object | containg message information |
 | `action` | required | integer | part of the `message` object that contains the action (e.g., 1 for update) | 
 | `VIN` | required | string | part of the `message` object that contains an unique VIN | 
-| `DeviceID` | required | string | device where the update is linked to | 
-| `status` | required | integer | status of the update |
-| `device_metadata` | optional | string | metadata about the update | 
+| `DeviceID` | required | string | part of the `message` object that device where the update is linked to | 
+| `status` | required | integer | part of the `message` object that status of the update |
+| `device_metadata` | optional | string | part of the `message` object that metadata about the update | 
 
 #### JSON schema 
 
@@ -110,7 +110,7 @@ The VSOC is introducing an HTTP REST endpoint where the RAS can send a `POST` re
     <summary>
         <code>POST</code> <!-- for example GET or POST -->
         <code><b>/</b></code> 
-        <code>/ras/attestationResult</code> <!-- Endpoint path -->
+        <code>ras/attestationResult</code> <!-- Endpoint path -->
     </summary>
 
 #### Parameters
@@ -165,7 +165,7 @@ The VSOC can request to change the configuration of the AIS. For this, the funct
     "target": { 
         "type": "ais", 
         "specifiers": { 
-            "ais_id": str(ais_id)
+            "ais_id": "<ais-id>"
         } 
     }, 
     "actuator": { 
@@ -185,7 +185,7 @@ The VSOC also receives information from the AIS. For this, the function `ais_dev
     <summary>
         <code>POST</code> <!-- for example GET or POST -->
         <code><b>/</b></code> 
-        <code>/ais/deviationUnknown</code> <!-- Endpoint path -->
+        <code>ais/deviationUnknown</code> <!-- Endpoint path -->
     </summary>
 
 #### Parameters
@@ -233,7 +233,7 @@ The VSOC also receives information from the AIS. For this, the function `ais_dev
     <summary>
         <code>POST</code> <!-- for example GET or POST -->
         <code><b>/</b></code> 
-        <code>/ais/deviationKnown</code> <!-- Endpoint path -->
+        <code>ais/deviationKnown</code> <!-- Endpoint path -->
     </summary>
 
 #### Parameters
@@ -294,7 +294,7 @@ The path `/vsoc/getTrustScore` implements the endpoint to receive the trust scor
     <summary>
         <code>GET</code> <!-- for example GET or POST -->
         <code><b>/</b></code> 
-        <code>/vsoc/getTrustScore</code> <!-- Endpoint path -->
+        <code>vsoc/getTrustScore</code> <!-- Endpoint path -->
     </summary>
 
 #### Parameters
@@ -312,6 +312,8 @@ The path `/vsoc/getTrustScore` implements the endpoint to receive the trust scor
 | `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
 
 </details>
+
+
 
 
 
