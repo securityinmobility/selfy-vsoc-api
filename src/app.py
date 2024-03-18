@@ -22,6 +22,7 @@ data = {
 sota_endpoint = "http://uptane-bridge.sota.selfy.ota.ce/vsoctrigger"
 ras_endpoint = "http://127.0.0.1:4201"
 ais_endpoint = "http://127.0.0.1:4202"
+ab_endpoint = "http://127.0.0.1:4203"
 
 # Default
 @app.route('/')
@@ -223,8 +224,48 @@ def ais_deviation_known():
         # TODO: error handling
         return jsonify({'data': 'Unknown deviation updated successfully', 'receivedInformation': data})
 
+def ab_trigger_audit(vin, scan_type):
+    """
+    Trigger an audit to audit a vehicle with a specific VIN.
 
-@app.route('/vsoc/getTrustScore', methods=['GET'])
+    :param vin: vehicle identification number
+    :param scan_type: type of scan; 1 is fast scan, 2 is deep scan
+    """
+    req_obj = {"AB_id": 28, "timeStamp": str(time.time()), "VIN": str(vin), "scanType": scan_type, "priority": 1}
+
+    response = requests.get(sota_endpoint, json=req_obj)
+    return Response(
+            response.text,
+            status = response.status_code,
+            content_type = response.headers['content-type'],
+            )
+
+@app.route('/ab/vulnReport', methods=['POST'])
+def ab_vuln_report():
+
+    data = request.get_json(force=True)
+
+    with tracer.start_as_current_span('ab.vulnReport') as ab_vuln_report_span:
+        ab_ID = data['AB_id']
+        ab_vuln_report_span.set_attribute('ab.vulnReport.abID', ab_ID)
+
+        timeStamp = data['timeStamp']
+        ab_vuln_report_span.set_attribute('ab.vulnReport.timeStamp', timeStamp)
+
+        vin = data['VIN']
+        ab_vuln_report_span.set_attribute('ab.vulnReport.vin', vin)
+
+        scanType = data['scanType']
+        ab_vuln_report_span.set_attribute('ab.vulnReport.scanType', scanType)
+
+        result = data['result']
+        ab_vuln_report_span.set_attribute('ab.vulnReport.result', result)
+
+        # TODO: error handling
+        return jsonify({'data': 'Vulnerability report received successfully', 'receivedInformation': data})
+
+
+app.route('/vsoc/getTrustScore', methods=['GET'])
 def vsoc_get_trustscore():
     """
     Getting the trust-score for a specific entity and distributing it.
