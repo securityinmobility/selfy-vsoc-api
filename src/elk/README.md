@@ -1,8 +1,8 @@
 ## Requirements
-| Package     | Version
-| ---           | ---
-| docker-compose| 3.8+
-| docker-engine | 19.03.0+
+| Package        | Version
+| ---            | ---
+| docker-compose | 3.8+
+| docker-engine  | 19.03.0+
 ## Configuration
 ```sh
 $ cd src/elk/
@@ -49,13 +49,15 @@ $ docker-compose up -d
 This will pull all the required images and start the containers.\
 \
 It will also create three volumes
-| Volume    | Purpose
-| --- | ---
-| elk_certs | Certificates for HTTPS communication with the Elasticsearch instance
-| elk_esdata | Elasticsearch data
+| Volume         | Purpose
+| ---            | ---
+| elk_certs      | Certificates for HTTPS communication with the Elasticsearch instance
+| elk_esdata     | Elasticsearch data
 | elk_kibanadata | Kibana data
 
-Once the command has finished running, you can open [Kibana](http://127.0.0.1:5601) inside a browser.
+Once the command has finished running, you can open [Kibana](http://127.0.0.1:5601) inside a browser.\
+\
+The username is 'elastic' and the password is the one you chose for *ELASTIC_PASSWORD*.
 ## How to shut it down
 ```sh
 $ cd src/elk/
