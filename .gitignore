@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# PyCharm environment directory
+.idea/
+
+# ELK stack
+es.crt

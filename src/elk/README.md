@@ -1,3 +1,4 @@
+# Set-up of Elasticsearch and Kibana
 ## Requirements
 | Package        | Version
 | ---            | ---
@@ -43,7 +44,8 @@ MEM_LIMIT=1073741824
 After configuration you should be able to run *docker-compose*:
 ```sh
 $ cd src/elk/
-
+```
+```sh
 $ docker-compose up -d
 ```
 This will pull all the required images and start the containers.\
@@ -57,11 +59,25 @@ It will also create three volumes
 
 Once the command has finished running, you can open [Kibana](http://127.0.0.1:5601) inside a browser.\
 \
-The username is 'elastic' and the password is the one you chose for *ELASTIC_PASSWORD*.
+The username is 'elastic' and the password is the one you chose for *ELASTIC_PASSWORD*.\
+\
+The only remaining thing to do is to copy the Elasticsearch TLS certificate from one of the containers.
+```sh
+$ cd src/elk/
+```
+Create a directory where the certificate will be stored.
+```sh
+$ mkdir certs
+```
+Run this command to pull the *es.crt* file from a container.
+```sh
+$ docker cp elk-es-1:/usr/share/elasticsearch/config/certs/es/es.crt certs/
+```
 ## How to shut it down
 ```sh
 $ cd src/elk/
-
+```
+```sh
 $ docker-compose down
 ```
 This will stop and delete the containers. The volumes are persistent.
