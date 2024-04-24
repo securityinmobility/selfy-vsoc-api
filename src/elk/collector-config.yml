@@ -16,13 +16,13 @@ exporters:
   debug:
     verbosity: detailed 
   otlp/elastic: 
-    endpoint: 192.168.2.124:8200
+    endpoint: ${env:APM_IP_ADDRESS}:8200
     tls:
       insecure: false
       insecure_skip_verify: true
       ca_file: /ca.crt
     headers:
-      Authorization: "Bearer secret"
+      Authorization: "Bearer ${env:APM_SECRET_TOKEN}"
 
 service:
   pipelines:

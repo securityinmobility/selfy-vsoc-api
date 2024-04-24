@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.0'
 services:
   setup:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
@@ -60,6 +60,7 @@ services:
         condition: service_healthy
     volumes:
       - certs:/usr/share/elasticsearch/config/certs
+      - esdata:/usr/share/elasticsearch/data
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     container_name: elasticsearch
     environment:
@@ -67,7 +68,6 @@ services:
       - path.logs=/var/log/
       - cluster.name=elasticsearch
       - discovery.type=single-node
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
       - bootstrap.memory_lock=true
       - xpack.security.enabled=true
@@ -102,9 +102,6 @@ services:
     container_name: kibana
     environment:
       - ELASTICSEARCH_HOSTS=https://elasticsearch:9200
-      - ELASTIC_APM_ACTIVE=true
-      - ELASTIC_APM_SERVER_URL=https://apm-server:8200
-      - ELASTIC_APM_VERIFY_SERVER_CERT=false
       - ELASTICSEARCH_USERNAME=kibana_system
       - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
       - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
@@ -115,6 +112,7 @@ services:
       - 5601:5601
     volumes:
       - certs:/usr/share/kibana/config/certs
+      - kibanadata:/usr/share/kibana/data
       - ./kibana.yml:/usr/share/kibana/config/kibana.yml
     healthcheck:
       test:
@@ -133,7 +131,6 @@ services:
       - 8200:8200
     command: >
        apm-server -e
-         -E apm-server.rum.enabled=true
          -E apm-server.auth.secret_token=${APM_SECRET_TOKEN}
          -E apm-server.host="apm-server:8200"
          -E setup.kibana.host=kibana:5601
@@ -163,6 +160,26 @@ services:
     depends_on:
       elasticsearch:
         condition: service_healthy
+
+  opentelemetry-collector:
+    depends_on:
+      - apm-server
+    image: otel/opentelemetry-collector-contrib:0.98.0
+    ports:
+      - 4317:4317
+      - 4318:4318
+    volumes:
+      - ./ca.crt:/ca.crt
+      - ./collector-config.yml:/etc/otel-collector-config.yaml
+    environment:
+      - APM_SECRET_TOKEN=${APM_SECRET_TOKEN}
+      - APM_IP_ADDRESS=${APM_IP_ADDRESS}
+    command: --config=/etc/otel-collector-config.yaml
+
 volumes:
   certs:
+    driver: local
+  esdata:
+    driver: local
+  kibanadata:
     driver: local
