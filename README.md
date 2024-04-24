@@ -33,7 +33,7 @@ pip install -r requirements.txt
 
 Start the VSOC using while using OpenTelemetry.
 ```
-opentelemetry-instrument --traces_exporter console --metrics_exporter console --logs_exporter console --service_name vsoc-api flask run -p 8080
+opentelemetry-instrument --traces_exporter otlp,console --metrics_exporter otlp,console --logs_exporter console --exporter_otlp_protocol grpc --service_name vsoc-api flask run -p 8080
 ```
 
 The following console output should be shown:
