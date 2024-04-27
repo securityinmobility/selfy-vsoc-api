@@ -16,11 +16,11 @@ exporters:
   debug:
     verbosity: detailed 
   otlp/elastic: 
-    endpoint: ${env:APM_IP_ADDRESS}:8200
+    endpoint: apm-server:8200
     tls:
       insecure: false
       insecure_skip_verify: true
-      ca_file: /ca.crt
+      ca_file: /certs/ca/ca.crt
     headers:
       Authorization: "Bearer ${env:APM_SECRET_TOKEN}"
 

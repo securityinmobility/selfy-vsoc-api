@@ -1,7 +1,33 @@
 version: '3.0'
 services:
+  
+  # VSOC-API incl. OpenTelemetry instrumentation
+  vsoc-api:
+    image: vsoc-api
+    container_name: vsoc-api
+    ports: 
+      - 8000:5002
+
+  opentelemetry-collector:
+    depends_on:
+      - apm-server
+    image: otel/opentelemetry-collector:latest
+    container_name: opentelemetry-collector
+    volumes:
+      - certs:/certs
+      - ./elk/collector-config.yml:/etc/otel-collector-config.yaml
+    ports:
+      - 4317:4317
+      - 4318:4318
+    user: "1000:1000"
+    environment:
+      - APM_SECRET_TOKEN=${APM_SECRET_TOKEN}
+    command: --config=/etc/otel-collector-config.yaml
+
+  # ELK Stack
   setup:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    container_name: elk-setup
     volumes:
       - certs:/usr/share/elasticsearch/config/certs
     user: "0"
@@ -58,11 +84,13 @@ services:
     depends_on:
       setup:
         condition: service_healthy
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    container_name: elasticsearch
     volumes:
       - certs:/usr/share/elasticsearch/config/certs
       - esdata:/usr/share/elasticsearch/data
-    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
-    container_name: elasticsearch
+    ports:
+      - 9200:9200
     environment:
       - node.name=elasticsearch
       - path.logs=/var/log/
@@ -82,8 +110,6 @@ services:
       - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
       - xpack.security.transport.ssl.verification_mode=certificate
       - xpack.license.self_generated.type=basic
-    ports:
-      - 9200:9200
     healthcheck:
         test: 
           [
@@ -100,6 +126,12 @@ services:
         condition: service_healthy
     image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
     container_name: kibana
+    volumes:
+      - certs:/usr/share/kibana/config/certs
+      - kibanadata:/usr/share/kibana/data
+      - ./elk/kibana.yml:/usr/share/kibana/config/kibana.yml
+    ports:
+      - 5601:5601
     environment:
       - ELASTICSEARCH_HOSTS=https://elasticsearch:9200
       - ELASTICSEARCH_USERNAME=kibana_system
@@ -108,12 +140,6 @@ services:
       - SERVER_SSL_CERTIFICATE=config/certs/kibana/kibana.crt
       - SERVER_SSL_KEY=config/certs/kibana/kibana.key
       - SERVER_SSL_ENABLED=true
-    ports:
-      - 5601:5601
-    volumes:
-      - certs:/usr/share/kibana/config/certs
-      - kibanadata:/usr/share/kibana/data
-      - ./kibana.yml:/usr/share/kibana/config/kibana.yml
     healthcheck:
       test:
         [
@@ -125,8 +151,13 @@ services:
       retries: 120
 
   apm-server:
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
     image: docker.elastic.co/apm/apm-server:${STACK_VERSION}
     container_name: apm-server
+    volumes:
+      - certs:/usr/share/apm-server/config/certs
     ports:
       - 8200:8200
     command: >
@@ -151,30 +182,10 @@ services:
          -E apm-server.ssl.certificate=config/certs/apm-server/apm-server.crt
          -E apm-server.ssl.key=config/certs/apm-server/apm-server.key
          -E apm-server.ssl.verification_mode=none
-    volumes:
-      - certs:/usr/share/apm-server/config/certs
     healthcheck:
       interval: 10s
       retries: 120
       test: curl -I --cacert config/certs/ca/ca.crt --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null https://localhost:8200/
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
-
-  opentelemetry-collector:
-    depends_on:
-      - apm-server
-    image: otel/opentelemetry-collector-contrib:0.98.0
-    ports:
-      - 4317:4317
-      - 4318:4318
-    volumes:
-      - ./ca.crt:/ca.crt
-      - ./collector-config.yml:/etc/otel-collector-config.yaml
-    environment:
-      - APM_SECRET_TOKEN=${APM_SECRET_TOKEN}
-      - APM_IP_ADDRESS=${APM_IP_ADDRESS}
-    command: --config=/etc/otel-collector-config.yaml
 
 volumes:
   certs:
