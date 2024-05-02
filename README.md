@@ -20,9 +20,6 @@ This repository holds all source-code and documentation from the SELFY VSOC.
 
 ## Docker
 
-| :exclamation: The Docker Image does currently not contain all features of the VSOC |
-| ---------------------------------------------------------------------------------- |
-
 | Requirements   | Version |
 | -------------- | ------- |
 | docker         | 24.0.2+ |
