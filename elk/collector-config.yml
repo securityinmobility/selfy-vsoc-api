@@ -1,0 +1,37 @@
+receivers: 
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors: 
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 2000
+  batch:
+
+exporters:
+  debug:
+    verbosity: detailed 
+  otlp/elastic: 
+    endpoint: apm-server:8200
+    tls:
+      insecure: false
+      insecure_skip_verify: true
+      ca_file: /certs/ca/ca.crt
+    headers:
+      Authorization: "Bearer ${env:APM_SECRET_TOKEN}"
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [debug, otlp/elastic]
+    metrics:
+      receivers: [otlp]
+      exporters: [debug, otlp/elastic]
+    logs: 
+      receivers: [otlp]
+      exporters: [debug, otlp/elastic]

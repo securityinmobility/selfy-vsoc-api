@@ -1,0 +1,196 @@
+version: '3.0'
+services:
+  
+  # VSOC-API incl. OpenTelemetry instrumentation
+  vsoc-api:
+    image: vsoc-api
+    container_name: vsoc-api
+    ports: 
+      - 8000:5002
+
+  opentelemetry-collector:
+    depends_on:
+      - apm-server
+    image: otel/opentelemetry-collector:latest
+    container_name: opentelemetry-collector
+    volumes:
+      - certs:/certs
+      - ./elk/collector-config.yml:/etc/otel-collector-config.yaml
+    ports:
+      - 4317:4317
+      - 4318:4318
+    user: "1000:1000"
+    environment:
+      - APM_SECRET_TOKEN=${APM_SECRET_TOKEN}
+    command: --config=/etc/otel-collector-config.yaml
+
+  # ELK Stack
+  setup:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    container_name: elk-setup
+    volumes:
+      - certs:/usr/share/elasticsearch/config/certs
+    user: "0"
+    command: >
+      bash -c '
+        if [ ! -f config/certs/ca.zip ]; then
+          echo "Creating CA";
+          bin/elasticsearch-certutil ca --silent --pem -out config/certs/ca.zip;
+          unzip config/certs/ca.zip -d config/certs;
+        fi;
+        if [ ! -f config/certs/certs.zip ]; then
+          echo "Creating certs";
+          echo -ne \
+          "instances:\n"\
+          "  - name: elasticsearch\n"\
+          "    dns:\n"\
+          "      - elasticsearch\n"\
+          "      - localhost\n"\
+          "    ip:\n"\
+          "      - 127.0.0.1\n"\
+          "  - name: kibana\n"\
+          "    dns:\n"\
+          "      - kibana\n"\
+          "      - localhost\n"\
+          "    ip:\n"\
+          "      - 127.0.0.1\n"\
+          "  - name: apm-server\n"\
+          "    dns:\n"\
+          "      - apm-server\n"\
+          "      - localhost\n"\
+          "    ip:\n"\
+          "      - 127.0.0.1\n"\
+          > config/certs/instances.yml;
+          bin/elasticsearch-certutil cert --silent --pem -out config/certs/certs.zip --in config/certs/instances.yml --ca-cert config/certs/ca/ca.crt --ca-key config/certs/ca/ca.key;
+          unzip config/certs/certs.zip -d config/certs;
+        fi;
+        echo "Setting file permissions"
+        chown -R 1000:1000 config/certs;
+        find . -type d -exec chmod 750 \{\} \;;
+        find . -type f -exec chmod 640 \{\} \;;
+        echo "Waiting for Elasticsearch availability";
+        until curl -s --cacert config/certs/ca/ca.crt https://elasticsearch:9200 | grep -q "missing authentication credentials"; do sleep 30; done;
+        echo "Setting kibana_system password";
+        until curl -s -X POST --cacert config/certs/ca/ca.crt -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" https://elasticsearch:9200/_security/user/kibana_system/_password -d "{\"password\":\"${KIBANA_PASSWORD}\"}" | grep -q "^{}"; do sleep 10; done;
+        echo "All done!";
+      '
+    healthcheck:
+      test: ["CMD-SHELL", "[ -f config/certs/elasticsearch/elasticsearch.crt ]"]
+      interval: 1s
+      timeout: 5s
+      retries: 120
+
+  elasticsearch:
+    depends_on:
+      setup:
+        condition: service_healthy
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    container_name: elasticsearch
+    volumes:
+      - certs:/usr/share/elasticsearch/config/certs
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    environment:
+      - node.name=elasticsearch
+      - path.logs=/var/log/
+      - cluster.name=elasticsearch
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=certs/elasticsearch/elasticsearch.key
+      - xpack.security.http.ssl.certificate=certs/elasticsearch/elasticsearch.crt
+      - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.http.ssl.verification_mode=certificate
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.key=certs/elasticsearch/elasticsearch.key
+      - xpack.security.transport.ssl.certificate=certs/elasticsearch/elasticsearch.crt
+      - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.transport.ssl.verification_mode=certificate
+      - xpack.license.self_generated.type=basic
+    healthcheck:
+        test: 
+          [
+            "CMD-SHELL", 
+            "curl -s -I --cacert config/certs/ca/ca.crt https://localhost:9200/_cluster/health || exit 1"
+          ]
+        interval: 10s
+        timeout: 10s
+        retries: 120
+
+  kibana:
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
+    container_name: kibana
+    volumes:
+      - certs:/usr/share/kibana/config/certs
+      - kibanadata:/usr/share/kibana/data
+      - ./elk/kibana.yml:/usr/share/kibana/config/kibana.yml
+    ports:
+      - 5601:5601
+    environment:
+      - ELASTICSEARCH_HOSTS=https://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=kibana_system
+      - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
+      - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
+      - SERVER_SSL_CERTIFICATE=config/certs/kibana/kibana.crt
+      - SERVER_SSL_KEY=config/certs/kibana/kibana.key
+      - SERVER_SSL_ENABLED=true
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s -I --cacert config/certs/ca/ca.crt https://localhost:5601 | grep -q 'HTTP/1.1 302 Found'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+
+  apm-server:
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    image: docker.elastic.co/apm/apm-server:${STACK_VERSION}
+    container_name: apm-server
+    volumes:
+      - certs:/usr/share/apm-server/config/certs
+    ports:
+      - 8200:8200
+    command: >
+       apm-server -e
+         -E apm-server.auth.secret_token=${APM_SECRET_TOKEN}
+         -E apm-server.host="apm-server:8200"
+         -E setup.kibana.host=kibana:5601
+         -E setup.template.settings.index.number_of_replicas=0
+         -E apm-server.kibana.enabled=true
+         -E apm-server.kibana.host=kibana:5601
+         -E apm-server.kibana.protocol=https
+         -E apm-server.kibana.username=elastic
+         -E apm-server.kibana.password=${KIBANA_PASSWORD}
+         -E apm-server.kibana.ssl.certificate_authorities=config/certs/ca/ca.crt
+         -E apm-server.kibana.ssl.verification_mode=none
+         -E output.elasticsearch.hosts=["https://elasticsearch:9200"]
+         -E output.elasticsearch.ssl.certificate_authorities=config/certs/ca/ca.crt
+         -E output.elasticsearch.ssl.verification_mode=none
+         -E output.elasticsearch.username=elastic
+         -E output.elasticsearch.password=${ELASTIC_PASSWORD}
+         -E apm-server.ssl.enabled=true
+         -E apm-server.ssl.certificate=config/certs/apm-server/apm-server.crt
+         -E apm-server.ssl.key=config/certs/apm-server/apm-server.key
+         -E apm-server.ssl.verification_mode=none
+    healthcheck:
+      interval: 10s
+      retries: 120
+      test: curl -I --cacert config/certs/ca/ca.crt --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null https://localhost:8200/
+
+volumes:
+  certs:
+    driver: local
+  esdata:
+    driver: local
+  kibanadata:
+    driver: local
