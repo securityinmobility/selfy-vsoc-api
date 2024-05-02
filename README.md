@@ -106,7 +106,7 @@ This will stop and delete the containers. The volumes are persistent.
 ➜  src git:(main) docker exec -ti vsoc-api bash
 
 
-## Starting the VSOC manually
+## Starting the VSOC manually (not suggested)
 
 You should have installed `python3` and `pip` installed.
 
