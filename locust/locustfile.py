@@ -42,7 +42,7 @@ class ABUser(HttpUser):
             "timeStamp": "2023-11-21T06:14:00Z",
             "VIN": "WAUEA88DXTA287834",
             "scanType": 0,
-            "result": True
+            "result": True,
         }
         self.client.post("/ab/vulnReport", json=request)
 
@@ -52,10 +52,10 @@ class AISUser(HttpUser):
 
     @task
     def deviation_unknown(self):
-        request = \
-            [{"extensions":
-                {"extension-definition--d83fce45-ef58-4c6c-a3f4-1fbc32e98c6e":
-                    {
+        request = [
+            {
+                "extensions": {
+                    "extension-definition--d83fce45-ef58-4c6c-a3f4-1fbc32e98c6e": {
                         "extension_type": "property-extension",
                         "source_vehicle": "12",
                         "source_ais": "24",
@@ -63,15 +63,17 @@ class AISUser(HttpUser):
                         "observable": "observable",
                     },
                 },
-            }]
+            }
+        ]
         self.client.post("/ais/deviationUnknown", json=request)
 
     @task
-    def deviation_known(self):
-        request = \
-            [{"extensions":
-                  {"extension-definition--d83fce45-ef58-4c6c-a3f4-1fbc32e98c6e":
-                       {"extension_type": "property-extension",
+    def deviation_known(self) -> None:
+        request = [
+            {
+                "extensions": {
+                    "extension-definition--d83fce45-ef58-4c6c-a3f4-1fbc32e98c6e": {
+                        "extension_type": "property-extension",
                         "source_vehicle": "12",
                         "source_ais": "24",
                         "source_rsu": "55",
@@ -80,8 +82,9 @@ class AISUser(HttpUser):
                         "source_ref": "indicator--e5c3e257-031f-4df1-88a3-19bbd25acacc",
                         "target_ref": "indicator--11b76a96-5d2b-45e0-8a5a-f6994f370731",
                         "description": "An immunological algorithm detected a deviation in a real-time data set "
-                                       "that is apparently similar to a previously reported deviation.",
-                        },
-                   },
-              }]
+                        "that is apparently similar to a previously reported deviation.",
+                    },
+                },
+            }
+        ]
         self.client.post("/ais/deviationKnown", json=request)
