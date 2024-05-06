@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "http://127.0.0.1:8000/sota/updateInfo",
+  "title": "updateInfo",
+  "description": "updateInfo endpoint for the SOTA infrastructure",
+  "type": "object",
+  "properties": {
+    "vin": {
+      "description": "Vehicle Identification Number",
+      "type": "string",
+      "uniqueItems": true
+    },
+    "action": {
+      "description": "action flag; e.g. 1 fro update",
+      "type": "integer"
+    },
+    "timeStamp": {
+      "description": "timestamp of the message in ISO-8601 (UTC)",
+      "type": "string"
+    },
+    "toolId": {
+      "description": "ID of the tool",
+      "type": "string",
+      "uniqueItems": true
+    },
+    "status": {
+      "description": "status of the update",
+      "type": "integer"
+    },
+    "deviceMetadata": {
+      "description": "Metadata about the update",
+      "type": "string"
+    }
+  },
+  "required": [ "vin", "action", "timeStamp", "toolId", "status" ],
+  "additionalProperties": true
+}
