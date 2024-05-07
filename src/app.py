@@ -1,4 +1,8 @@
-from flask import Flask, jsonify, request, Response
+from typing import Any
+
+from flask import Flask, jsonify, request, Response, abort, make_response
+from http import HTTPStatus
+from werkzeug.exceptions import BadRequest, UnsupportedMediaType
 import requests
 import time
 import uuid
@@ -53,7 +57,8 @@ def sota_receive_info():
     """
     Getting information from the SOTA infrastructure regarding the status of an update.
     """
-    data = request.get_json(force=True)
+    required_fields = ['action', 'vin', 'deviceID', 'status', 'deviceMetadata']
+    data = parse_and_validate_data(required_fields)
 
     with tracer.start_as_current_span('sota.updateInfo') as sota_updateInfo_span:
         action = data['action']
@@ -163,7 +168,7 @@ def ais_deviation_unknown():
     """
     Getting information from the AIS for an unknown deviation.
     """
-    data = request.get_json(force=True)
+    data = request.get_json()
     extensions = data[0]['extensions']['extension-definition--d83fce45-ef58-4c6c-a3f4-1fbc32e98c6e']
 
     with tracer.start_as_current_span('ais.deviationUnknown') as ais_deviation_unknown_span:
@@ -193,7 +198,7 @@ def ais_deviation_known():
     data = request. get_json(force=True)
     extensions = data[0]['extensions']['extension-definition--d83fce45-ef58-4c6c-a3f4-1fbc32e98c6e']
 
-    with tracer.start_as_current_span('ais.deviationUnknown') as ais_deviation_known_span:
+    with tracer.start_as_current_span('ais.deviationKnown') as ais_deviation_known_span:
         extension_type = extensions['extension_type']
         ais_deviation_known_span.set_attribute('ais.deviationKnown.extensionType', extension_type)
 
@@ -351,6 +356,29 @@ def get_patch_for_component():
     return jsonify({'patchForComponent': patch})
 
 # Add more endpoints and methods here as needed
+
+@app.errorhandler(HTTPStatus.NOT_FOUND.value)
+def not_found(error):
+    return jsonify({"error":"The requested URL does not exist"}), HTTPStatus.NOT_FOUND.value
+
+@app.errorhandler(HTTPStatus.UNSUPPORTED_MEDIA_TYPE.value)
+def unsupported_mimetype(error):
+    return jsonify({"error":"Only application/json is currently supported"}), HTTPStatus.UNSUPPORTED_MEDIA_TYPE.value
+
+def parse_and_validate_data(required_fields: list[str]) -> Any:
+    json_data: Any
+    try:
+        json_data = request.get_json()
+    except BadRequest:
+        abort_with_message("The data could not be parsed as valid JSON", HTTPStatus.BAD_REQUEST.value)
+        return
+    if not all(field in json_data for field in required_fields):
+        abort_with_message("The JSON is valid but it doesn't have all the required fields", HTTPStatus.BAD_REQUEST.value)
+        return
+    return json_data
+
+def abort_with_message(message: str, code: int) -> None:
+    abort(make_response(jsonify(error=message), code))
 
 if __name__ == '__main__':
     app.run()
