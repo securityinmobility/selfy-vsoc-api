@@ -2,20 +2,20 @@ from typing import Any
 
 from flask import Flask, jsonify, request, Response, abort, make_response
 from http import HTTPStatus
-from werkzeug.exceptions import BadRequest, UnsupportedMediaType
+from werkzeug.exceptions import BadRequest
 import requests
 import time
 import uuid
 
-#from opentelemetry.instrumentation.flask import FlaskInstrumentor
-from opentelemetry import trace#, metrics
+# from opentelemetry.instrumentation.flask import FlaskInstrumentor
+from opentelemetry import trace  # , metrics
 
-#instrumentor = FlaskInstrumentor()
+# instrumentor = FlaskInstrumentor()
 tracer = trace.get_tracer("vsoc-api.tracer")
 
-app = Flask(__name__) # Dictionary to store the data
+app = Flask(__name__)  # Dictionary to store the data
 
-#instrumentor.intrument_app(app)
+# instrumentor.intrument_app(app)
 
 data = {
     "statusMessage": "",
@@ -28,11 +28,13 @@ ras_endpoint = "http://127.0.0.1:4201"
 ais_endpoint = "http://127.0.0.1:4202"
 ab_endpoint = "http://127.0.0.1:4203"
 
+
 # Default
 @app.route('/')
 def index():
     return jsonify({'SELFY VSOC': 'by THI',
-                       'version': 'v0.2'})
+                    'version': 'v0.2'})
+
 
 def sota_request_update(vin, action):
     """
@@ -47,10 +49,11 @@ def sota_request_update(vin, action):
 
     response = requests.get(sota_endpoint, json=req_obj)
     return Response(
-            response.text,
-            status = response.status_code,
-            content_type = response.headers['content-type'],
-            )
+        response.text,
+        status=response.status_code,
+        content_type=response.headers['content-type'],
+    )
+
 
 @app.route('/sota/updateInfo', methods=['POST'])
 def sota_receive_info():
@@ -79,6 +82,7 @@ def sota_receive_info():
         # TODO: error handling
         return jsonify({'data': 'Update information updated successfully.', 'receivedInformation': data})
 
+
 def ras_attestation_request(target):
     """
     Send a request to the RAS to perform an attestation.
@@ -90,11 +94,12 @@ def ras_attestation_request(target):
     req_obj = {"target_tool": target, "timeStamp": str(time.time()), "verifier": "ID18", "VSOC": "ID08", "nonce": nonce}
     response = requests.get(ras_endpoint, json=req_obj)
     return Response(
-            response.text,
-            status = response.status_code,
-            content_type = response.headers['content-type'],
-            )
-    
+        response.text,
+        status=response.status_code,
+        content_type=response.headers['content-type'],
+    )
+
+
 @app.route('/ras/attestationResult', methods=['POST'])
 def ras_attestation_result():
     """
@@ -124,6 +129,7 @@ def ras_attestation_result():
         # TODO: error handling
         return jsonify({'data': 'Attestation results updated successfully', 'receivedInformation': data})
 
+
 def ais_change_config(ais_id, config):
     """
     Change the configuration of an AIS tool.
@@ -136,31 +142,31 @@ def ais_change_config(ais_id, config):
         cfg_json = {}
     else:
         for i in range(config):
-            cfg_json = {"configuration_param"+str(i): x for x in config}
+            cfg_json = {"configuration_param" + str(i): x for x in config}
 
-    req_obj = { 
-               "version": "1.0", 
-               "action": "set", 
-               "target": { 
-                          "type": "ais", 
-                          "specifiers": { 
-                                         "ais_id": str(ais_id)
-                                         } 
-                          }, 
-               "actuator": { 
-                            "type": "vsoc", 
-                            "specifiers": { 
-                                           "vsoc_id": "VSOC" 
-                                           } 
-                            }, 
-               "args": cfg_json
-               }
+    req_obj = {
+        "version": "1.0",
+        "action": "set",
+        "target": {
+            "type": "ais",
+            "specifiers": {
+                "ais_id": str(ais_id)
+            }
+        },
+        "actuator": {
+            "type": "vsoc",
+            "specifiers": {
+                "vsoc_id": "VSOC"
+            }
+        },
+        "args": cfg_json
+    }
     response = requests.get(ais_endpoint, json=req_obj)
     return Response(
-            response.text,
-            status = response.status_code,
-            content_type = response.headers['content-type'],
-            )
+        response.text,
+        status=response.status_code,
+        content_type=response.headers['content-type'],
+    )
 
 
 @app.route('/ais/deviationUnknown', methods=['POST'])
@@ -190,12 +196,13 @@ def ais_deviation_unknown():
         # TODO: error handling
         return jsonify({'data': 'Unknown deviation updated successfully', 'receivedInformation': data})
 
+
 @app.route('/ais/deviationKnown', methods=['POST'])
 def ais_deviation_known():
     """
     Getting information from the AIS for a known devication.
     """
-    data = request. get_json(force=True)
+    data = request.get_json(force=True)
     extensions = data[0]['extensions']['extension-definition--d83fce45-ef58-4c6c-a3f4-1fbc32e98c6e']
 
     with tracer.start_as_current_span('ais.deviationKnown') as ais_deviation_known_span:
@@ -229,6 +236,7 @@ def ais_deviation_known():
         # TODO: error handling
         return jsonify({'data': 'Unknown deviation updated successfully', 'receivedInformation': data})
 
+
 def ab_trigger_audit(vin, scan_type):
     """
     Trigger an audit to audit a vehicle with a specific VIN.
@@ -240,14 +248,14 @@ def ab_trigger_audit(vin, scan_type):
 
     response = requests.get(sota_endpoint, json=req_obj)
     return Response(
-            response.text,
-            status = response.status_code,
-            content_type = response.headers['content-type'],
-            )
+        response.text,
+        status=response.status_code,
+        content_type=response.headers['content-type'],
+    )
+
 
 @app.route('/ab/vulnReport', methods=['POST'])
 def ab_vuln_report():
-
     data = request.get_json(force=True)
 
     with tracer.start_as_current_span('ab.vulnReport') as ab_vuln_report_span:
@@ -271,6 +279,8 @@ def ab_vuln_report():
 
 
 app.route('/vsoc/getTrustScore', methods=['GET'])
+
+
 def vsoc_get_trustscore():
     """
     Getting the trust-score for a specific entity and distributing it.
@@ -278,6 +288,7 @@ def vsoc_get_trustscore():
     # file ./trust-score.py
 
     return ""
+
 
 #
 #
@@ -304,21 +315,24 @@ def set_security_status():
     data['securityStatus'] = status
     return jsonify({'message': 'Security status updated successfully', 'securityStatus': status})
 
+
 # GET endpoint: RSU/triggerSafeOperationalMode
 @app.route('/RSU/triggerSafeOperationalMode', methods=['GET'])
 def trigger_safe_operational_mode():
     with tracer.start_as_current_span("rsu.triggerSafeOperationalMode") as rsuTrigSaOpModeSpan:
-        #message = request.get_json().get('message')
+        # message = request.get_json().get('message')
         data['triggerSafeOperationalMode'] = "1"
         rsuTrigSaOpModeSpan.set_attribute("rsu.triggerSafeOperationalMode", data['triggerSafeOperationalMode'])
         return jsonify({'message': 'Safe operational mode triggered'})
     # Add your logic here to trigger safe operational mode
+
 
 # GET endpoint: RSU/triggerMinimumRiskManeuver
 @app.route('/RSU/triggerMinimumRiskManeuver', methods=['GET'])
 def trigger_minimum_risk_maneuver():
     # Add your logic here to trigger minimum risk maneuver
     return jsonify({'message': 'Minimum risk maneuver triggered'})
+
 
 # GET endpoint: TDMS/healingProcedures
 @app.route('/TDMS/healingProcedures', methods=['GET'])
@@ -327,12 +341,14 @@ def get_healing_procedures():
     healing_procedures = ['Procedure 1', 'Procedure 2', 'Procedure 3']
     return jsonify({'healingProcedures': healing_procedures})
 
+
 # GET endpoint: VSOC/securityScenario
 @app.route('/VSOC/securityScenario', methods=['GET'])
 def get_security_scenario():
     # Add your logic here to retrieve security scenario from VSOC
     security_scenario = 'Scenario 1'
     return jsonify({'securityScenario': security_scenario})
+
 
 # GET endpoint: VSOC/healingProcedures
 @app.route('/VSOC/healingProcedures', methods=['GET'])
@@ -341,12 +357,14 @@ def get_vsoc_healing_procedures():
     vsoc_healing_procedures = ['Procedure 1', 'Procedure 2']
     return jsonify({'healingProcedures': vsoc_healing_procedures})
 
+
 # GET endpoint: VSOC/ontology
 @app.route('/VSOC/ontology', methods=['GET'])
 def get_ontology():
     # Add your logic here to retrieve ontology from VSOC
     ontology = ['Term 1', 'Term 2', 'Term 3']
     return jsonify({'ontology': ontology})
+
 
 # GET endpoint: VSOC/patchForComponent
 @app.route('/VSOC/patchForComponent', methods=['GET'])
@@ -355,30 +373,66 @@ def get_patch_for_component():
     patch = 'Component patch'
     return jsonify({'patchForComponent': patch})
 
+
 # Add more endpoints and methods here as needed
 
 @app.errorhandler(HTTPStatus.NOT_FOUND.value)
-def not_found(error):
-    return jsonify({"error":"The requested URL does not exist"}), HTTPStatus.NOT_FOUND.value
+def not_found(_):
+    message: str = "The requested URL does not exist"
+    status_code: int = HTTPStatus.NOT_FOUND.value
+    create_error_trace(message, status_code, "http.notFound")
+    return jsonify(error=message), status_code
+
 
 @app.errorhandler(HTTPStatus.UNSUPPORTED_MEDIA_TYPE.value)
-def unsupported_mimetype(error):
-    return jsonify({"error":"Only application/json is currently supported"}), HTTPStatus.UNSUPPORTED_MEDIA_TYPE.value
+def unsupported_mimetype(_):
+    message: str = "Only application/json is currently supported"
+    status_code: int = HTTPStatus.UNSUPPORTED_MEDIA_TYPE.value
+    create_error_trace(message, status_code, "http.unsupportedMediaType")
+    return jsonify(error=message), status_code
+
 
 def parse_and_validate_data(required_fields: list[str]) -> Any:
     json_data: Any
     try:
         json_data = request.get_json()
     except BadRequest:
-        abort_with_message("The data could not be parsed as valid JSON", HTTPStatus.BAD_REQUEST.value)
+        abort_with_message(message="The data could not be parsed as valid JSON",
+                           status_code=HTTPStatus.BAD_REQUEST.value,
+                           span="http.badRequest")
         return
-    if not all(field in json_data for field in required_fields):
-        abort_with_message("The JSON is valid but it doesn't have all the required fields", HTTPStatus.BAD_REQUEST.value)
+    if required_fields is not None and not has_required_fields(json_data, required_fields):
+        abort_with_message(message="The JSON is valid but it doesn't have all the required fields",
+                           status_code=HTTPStatus.BAD_REQUEST.value,
+                           span="http.badRequest")
         return
     return json_data
 
-def abort_with_message(message: str, code: int) -> None:
-    abort(make_response(jsonify(error=message), code))
+
+def abort_with_message(message: str, status_code: int, span: str = None) -> None:
+    if span is not None:
+        create_error_trace(message, status_code, span)
+
+    abort(make_response(jsonify(error=message), status_code))
+
+
+def has_required_fields(json_data: Any, required_fields: list[str]) -> bool:
+    """
+    Returns true if the provided JSON data has all the required fields
+
+    :param json_data: any JSON data
+    :param required_fields: a list of fields to check against
+    """
+    return all(field in json_data for field in required_fields)
+
+
+def create_error_trace(message: str, status_code: int, span: str) -> None:
+    with tracer.start_as_current_span(span) as current_span:
+        current_span.set_attribute(f"{span}.errorMessage", message)
+        current_span.set_attribute(f"{span}.statusCode", status_code)
+        current_span.set_attribute(f"{span}.headers", str(request.headers))
+        current_span.set_attribute(f"{span}.body", request.data)
+
 
 if __name__ == '__main__':
     app.run()
