@@ -1,8 +1,11 @@
 from typing import Any
 
 from flask import Flask, jsonify, request, Response, abort, make_response
-from http import HTTPStatus
 from werkzeug.exceptions import BadRequest
+from http import HTTPStatus
+import http.client
+import json
+from jsonschema import validate, ValidationError
 import requests
 import time
 import uuid
@@ -17,7 +20,12 @@ app = Flask(__name__)  # Dictionary to store the data
 
 # instrumentor.intrument_app(app)
 
+response = {
+    "statusCode": 501,  # Not Implemented
+    "statusMessage": http.client.responses[501]
+}
 data = {
+    "statusCode": "",
     "statusMessage": "",
     "securityStatus": ""
 }
@@ -41,7 +49,6 @@ def sota_request_update(vin, action):
     Requests and update to the SOTA infrastructure.
 
     :param vin: vehicle identification number
-    :param device_id: ID of the device to send the request to
     :param action: 1 update, 0 nothing, 2 tbd
     """
     # {"toolId": 8, "timeStamp": "2023-11-21T06:14:00Z", "VIN": "2a910ebe-b39a-4813-9992-373738ab4599", "action": 1}
@@ -60,27 +67,16 @@ def sota_receive_info():
     """
     Getting information from the SOTA infrastructure regarding the status of an update.
     """
-    required_fields = ['action', 'vin', 'deviceID', 'status', 'deviceMetadata']
-    data = parse_and_validate_data(required_fields)
 
-    with tracer.start_as_current_span('sota.updateInfo') as sota_updateInfo_span:
-        action = data['action']
-        sota_updateInfo_span.set_attribute('sota.updateInfo.action', action)
+    schema_path = './jsonschema/sota/updateInfo.json'
+    opentelemetrie_prefix = 'sota.updateInfo'
 
-        vin = data['vin']
-        sota_updateInfo_span.set_attribute('sota.updateInfo.vin', vin)
+    if check_for_json(request):
+        return check_for_json(request)
 
-        device_id = data['deviceID']
-        sota_updateInfo_span.set_attribute('sota.updateInfo.device_id', device_id)
+    request_json = request.get_json()
 
-        status = data['status']
-        sota_updateInfo_span.set_attribute('sota.updateInfo.status', status)
-
-        device_metadata = data['deviceMetadata']
-        sota_updateInfo_span.set_attribute('sota.updateInfo.deviceMetadata', device_metadata)
-
-        # TODO: error handling
-        return jsonify({'data': 'Update information updated successfully.', 'receivedInformation': data})
+    return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
 
 def ras_attestation_request(target):
@@ -102,32 +98,15 @@ def ras_attestation_request(target):
 
 @app.route('/ras/attestationResult', methods=['POST'])
 def ras_attestation_result():
-    """
-    Getting information from the RAS their attestation result.
-    """
-    data = request.get_json(force=True)
+    schema_path = './jsonschema/ras/attestationResult.json'
+    opentelemetrie_prefix = 'ras.attestationResult'
 
-    with tracer.start_as_current_span('ras.attestationResult') as ras_attestation_result_span:
-        verifier = data['verifier']
-        ras_attestation_result_span.set_attribute('ras.attestationResult.verifier', verifier)
+    if check_for_json(request):
+        return check_for_json(request)
 
-        vsoc = data['VSOC']
-        ras_attestation_result_span.set_attribute('ras.attestationResult.vsoc', vsoc)
+    request_json = request.get_json()
 
-        target_tool = data['target_tool']
-        ras_attestation_result_span.set_attribute('ras.attestationResult.targetTool', target_tool)
-
-        state = data['state']
-        ras_attestation_result_span.set_attribute('ras.attestationResult.state', state)
-
-        nonce = data['nonce']
-        ras_attestation_result_span.set_attribute('ras.attestationResult.nonce', nonce)
-
-        cts = data['created']
-        ras_attestation_result_span.set_attribute('ras.attestationResult.createdTimeStamp', cts)
-
-        # TODO: error handling
-        return jsonify({'data': 'Attestation results updated successfully', 'receivedInformation': data})
+    return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
 
 def ais_change_config(ais_id, config):
@@ -174,67 +153,32 @@ def ais_deviation_unknown():
     """
     Getting information from the AIS for an unknown deviation.
     """
-    data = request.get_json()
-    extensions = data[0]['extensions']['extension-definition--d83fce45-ef58-4c6c-a3f4-1fbc32e98c6e']
+    schema_path: str = './jsonschema/ais/deviationUnknown.json'
+    opentelemetrie_prefix = 'ais.deviationUnknown'
 
-    with tracer.start_as_current_span('ais.deviationUnknown') as ais_deviation_unknown_span:
-        extension_type = extensions['extension_type']
-        ais_deviation_unknown_span.set_attribute('ais.deviationUnknown.extensionType', extension_type)
+    if check_for_json(request):
+        return check_for_json(request)
 
-        source_vehicle = extensions['source_vehicle']
-        ais_deviation_unknown_span.set_attribute('ais.deviationUnknown.sourceVehicle', source_vehicle)
+    request_json = request.get_json()
 
-        source_ais = extensions['source_ais']
-        ais_deviation_unknown_span.set_attribute('ais.deviationUnknown.sourceAis', source_ais)
-
-        source_rsu = extensions['source_rsu']
-        ais_deviation_unknown_span.set_attribute('ais.deviationUnknown.sourceRsu', source_rsu)
-
-        observable = extensions['observable']
-        ais_deviation_unknown_span.set_attribute('ais.deviationUnknown.observableObject', observable)
-
-        # TODO: error handling
-        return jsonify({'data': 'Unknown deviation updated successfully', 'receivedInformation': data})
+    return response_to_json(request_json['extensions']['extension-definition--d83fce45-ef58-4c6c-a3f4-1fbc32e98c6e'], schema_path, opentelemetrie_prefix)
 
 
 @app.route('/ais/deviationKnown', methods=['POST'])
 def ais_deviation_known():
     """
-    Getting information from the AIS for a known devication.
-    """
-    data = request.get_json(force=True)
-    extensions = data[0]['extensions']['extension-definition--d83fce45-ef58-4c6c-a3f4-1fbc32e98c6e']
+        Getting information from the AIS for an unknown deviation.
+        """
+    schema_path: str = './jsonschema/ais/deviationUnknown.json'
+    opentelemetrie_prefix = 'ais.deviationUnknown'
 
-    with tracer.start_as_current_span('ais.deviationKnown') as ais_deviation_known_span:
-        extension_type = extensions['extension_type']
-        ais_deviation_known_span.set_attribute('ais.deviationKnown.extensionType', extension_type)
+    if check_for_json(request):
+        return check_for_json(request)
 
-        source_vehicle = extensions['source_vehicle']
-        ais_deviation_known_span.set_attribute('ais.deviationKnown.sourceVehicle', source_vehicle)
+    request_json = request.get_json()
 
-        source_ais = extensions['source_ais']
-        ais_deviation_known_span.set_attribute('ais.deviationKnown.sourceAis', source_ais)
-
-        source_rsu = extensions['source_rsu']
-        ais_deviation_known_span.set_attribute('ais.deviationKnown.sourceRsu', source_rsu)
-
-        observable = extensions['observable']
-        ais_deviation_known_span.set_attribute('ais.deviationKnown.observableObject', observable)
-
-        relationship_id = extensions['id']
-        ais_deviation_known_span.set_attribute('ais.deviationKnown.relationshipId', relationship_id)
-
-        source_ref = extensions['source_ref']
-        ais_deviation_known_span.set_attribute('ais.deviationKnown.sourceRef', source_ref)
-
-        target_ref = extensions['target_ref']
-        ais_deviation_known_span.set_attribute('ais.deviationKnown.targetRef', target_ref)
-
-        description = extensions['description']
-        ais_deviation_known_span.set_attribute('ais.deviationKnown.description', description)
-
-        # TODO: error handling
-        return jsonify({'data': 'Unknown deviation updated successfully', 'receivedInformation': data})
+    return response_to_json(request_json['extensions']['extension-definition--d83fce45-ef58-4c6c-a3f4-1fbc32e98c6e'],
+                            schema_path, opentelemetrie_prefix) # request_json[0] had to be removed (can't access a dictionary that way)
 
 
 def ab_trigger_audit(vin, scan_type):
@@ -256,26 +200,15 @@ def ab_trigger_audit(vin, scan_type):
 
 @app.route('/ab/vulnReport', methods=['POST'])
 def ab_vuln_report():
-    data = request.get_json(force=True)
+    schema_path = './jsonschema/ab/vulnReport.json'
+    opentelemetrie_prefix = 'ab.vulnReport'
 
-    with tracer.start_as_current_span('ab.vulnReport') as ab_vuln_report_span:
-        ab_ID = data['AB_id']
-        ab_vuln_report_span.set_attribute('ab.vulnReport.abID', ab_ID)
+    if check_for_json(request):
+        return check_for_json(request)
 
-        timeStamp = data['timeStamp']
-        ab_vuln_report_span.set_attribute('ab.vulnReport.timeStamp', timeStamp)
+    request_json = request.get_json()
 
-        vin = data['VIN']
-        ab_vuln_report_span.set_attribute('ab.vulnReport.vin', vin)
-
-        scanType = data['scanType']
-        ab_vuln_report_span.set_attribute('ab.vulnReport.scanType', scanType)
-
-        result = data['result']
-        ab_vuln_report_span.set_attribute('ab.vulnReport.result', result)
-
-        # TODO: error handling
-        return jsonify({'data': 'Vulnerability report received successfully', 'receivedInformation': data})
+    return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
 
 app.route('/vsoc/getTrustScore', methods=['GET'])
@@ -373,8 +306,65 @@ def get_patch_for_component():
     patch = 'Component patch'
     return jsonify({'patchForComponent': patch})
 
+# Add more endpoints as needed
 
-# Add more endpoints and methods here as needed
+# Utilities
+
+def response_to_json(request_json, schema_path, opentelemetrie_prefix):
+    is_valid, error_message = validate_json_with_schema(schema_path, request_json)
+
+    if is_valid:
+        with tracer.start_as_current_span(opentelemetrie_prefix) as sota_updateInfo_span:
+            for required_item, value in iterate_required_items(schema_path, request_json):
+                sota_updateInfo_span.set_attribute(opentelemetrie_prefix + '.' + required_item.lower(), value)
+
+        response['statusCode'] = 200
+        response['statusMessage'] = http.client.responses[response['statusCode']]
+        response['data'] = request_json
+        return jsonify(response), response['statusCode']
+    else:
+        response['statusCode'] = 400
+        response['statusMessage'] = http.client.responses[response['statusCode']]
+        response['data'] = error_message
+        return jsonify(response), response['statusCode']
+
+
+def check_for_json(request):
+    if request.content_type != 'application/json':
+        response['statusCode'] = 415
+        response['statusMessage'] = http.client.responses[response['statusCode']]
+        return jsonify(response), response['statusCode']
+
+    if not request.data:
+        response['statusCode'] = 400
+        response['statusMessage'] = http.client.responses[response['statusCode']]
+        response['data'] = 'no data sent in the POST request'
+        return jsonify(response), response['statusCode']
+
+    return None
+
+
+# Function to validate the request with the json schema
+def validate_json_with_schema(schema_path, json_dict):
+    with open(schema_path, 'r') as f:
+        schema = json.load(f)
+        try:
+            validate(instance=json_dict, schema=schema)
+            return True, None
+        except ValidationError as e:
+            return False, e.message
+
+
+# Function to iterate through required items
+def iterate_required_items(schema_path, validated_json):
+    with open(schema_path, 'r') as f:
+        schema = json.load(f)
+        required_items = schema.get("required", [])
+        for required_item in required_items:
+            yield required_item, validated_json.get(required_item)
+
+
+# Add more methods here as needed
 
 @app.errorhandler(HTTPStatus.NOT_FOUND.value)
 def not_found(_):

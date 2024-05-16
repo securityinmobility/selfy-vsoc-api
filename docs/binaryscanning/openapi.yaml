@@ -1,0 +1,201 @@
+openapi: '3.1.0'
+info:
+  title: AutoBERT Binary Function Search API
+  version: 'v1'
+  description: |
+    This API provides a neural network-based solution for computing vector embeddings of binary functions. 
+    The computed embeddings can be used in various applications, such as vulnerability scanning and other security-related tasks. 
+
+    The API is inspired by and in fact a subset of the ChromaDB project - [https://github.com/chroma-core/chroma](https://github.com/chroma-core/chroma).
+
+    Check out its awesome features:
+    - Infer the embedding vector of a binary function (as assembly code)
+    - Query a database for the N most similar vectors, with associated metadata
+  license:
+    name: Creative Commons Zero v1.0 Universal
+    url: https://creativecommons.org/publicdomain/zero/1.0/
+paths:
+  /api/v1/collections:
+    get:
+      summary: List Collections
+      operationId: list_collections
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: integer
+              - type: 'null'
+            title: Limit
+        - name: offset
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: integer
+              - type: 'null'
+            title: Offset
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Collection'
+    post:
+      summary: Create Collection
+      operationId: create_collection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collection'
+  /api/v1/collections/{collection_id}/get:
+    post:
+      summary: Retrieve document in a collection
+      operationId: get
+      parameters:
+        - name: collection_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Collection Id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+                where:
+                  type: object
+                sort: 
+                  type: string
+                  enum: [asc, desc]
+                limit:
+                  type: number
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Documents'
+  /api/v1/collections/{collection_id}/add:
+    post:
+      summary: Add documents to database
+      operationId: add
+      parameters:
+        - name: collection_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Collection Id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Documents'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/v1/collections/{collection_id}/query:
+    post:
+      summary: Get Nearest Neighbors
+      operationId: get_nearest_neighbors
+      parameters:
+        - name: collection_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Collection Id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query_embeddings:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Vector'
+                n_results:
+                  type: integer
+                  default: 10
+                  minimum: 1
+                where:
+                  type: object
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+components:
+  schemas:
+    Collection:
+        type: object
+        description: |
+          Represents a collection of embedding vectors with associated metadata.
+          The vectors should reside within the same embedding space (i.e. they need to be created using the same model)
+        properties:
+          id:
+            type: string
+            format: uuid
+          name:
+            type: string
+    Documents:
+      type: object
+      description: |
+        Represents a collection of documents.
+      properties:
+        ids:
+          type: array
+          items:
+            type: string
+        embeddings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Vector'
+        metadatas:
+          type: array
+          items:
+            type: object
+        documents:
+          type: array
+          items: 
+            type: string
+            examples: ["mov eax, edx \n jmp .L2"]
+    Vector:
+      type: array
+      description: |
+        Embedding vector for a function. The dimension (e.g. number of elements)
+        depends on the used model.
+      examples: [[-0.3, 0.1, 0.7, -0.2, …]]
+      items:
+        type: number
