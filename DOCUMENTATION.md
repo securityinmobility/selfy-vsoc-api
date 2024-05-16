@@ -18,13 +18,15 @@ In order to request an update the VSOC introduces the function `sota_request_upd
 
 An example of the request from the VSOC to the SOTA:
 ```
-{  
-    "selfy_id": 08,  
-    "TimeStamp": "2023-11-21T06:14:00Z",  
-    "VIN": "WAUEA88DXTA287834",  
-    "DeviceID": "01",
-    "Action": 1  # 1 update, 0 nothing, 2 tbd 
-} 
+{
+  "toolId": 8,
+  "timeStamp": "2023-11-21T06:14:00Z",
+  "vin": "2a910ebe-b39a-4813-9992-373738ab4599",
+  "action": "1",
+  "deviceID": 8,
+  "status": 2,
+  "deviceMetadata": "Such nice metadata"
+}
 ```
 
 ## Update status information
