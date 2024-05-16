@@ -1,14 +1,15 @@
 from typing import Any
 
-from flask import Flask, jsonify, request, Response, abort, make_response
-from werkzeug.exceptions import BadRequest
-from http import HTTPStatus
-import http.client
-import json
-from jsonschema import validate, ValidationError
 import requests
 import time
 import uuid
+import json
+import http.client
+
+from flask import Flask, jsonify, request, Response, abort, make_response
+from werkzeug.exceptions import BadRequest
+from http import HTTPStatus
+from jsonschema import validate, ValidationError
 
 # from opentelemetry.instrumentation.flask import FlaskInstrumentor
 from opentelemetry import trace  # , metrics
@@ -68,15 +69,12 @@ def sota_receive_info():
     Getting information from the SOTA infrastructure regarding the status of an update.
     """
 
-    schema_path = './jsonschema/sota/updateInfo.json'
-    opentelemetrie_prefix = 'sota.updateInfo'
+    schema_path = 'jsonschemas/sota/updateInfo.json'
+    opentelemetry_prefix = 'sota.updateInfo'
 
-    if check_for_json(request):
-        return check_for_json(request)
+    request_json = parse_and_validate_data(schema_path)
 
-    request_json = request.get_json()
-
-    return response_to_json(request_json, schema_path, opentelemetrie_prefix)
+    return response_to_json(request_json, schema_path, opentelemetry_prefix)
 
 
 def ras_attestation_request(target):
@@ -98,15 +96,12 @@ def ras_attestation_request(target):
 
 @app.route('/ras/attestationResult', methods=['POST'])
 def ras_attestation_result():
-    schema_path = './jsonschema/ras/attestationResult.json'
-    opentelemetrie_prefix = 'ras.attestationResult'
+    schema_path = 'jsonschemas/ras/attestationResult.json'
+    opentelemetry_prefix = 'ras.attestationResult'
 
-    if check_for_json(request):
-        return check_for_json(request)
+    request_json = parse_and_validate_data(schema_path)
 
-    request_json = request.get_json()
-
-    return response_to_json(request_json, schema_path, opentelemetrie_prefix)
+    return response_to_json(request_json, schema_path, opentelemetry_prefix)
 
 
 def ais_change_config(ais_id, config):
@@ -153,32 +148,28 @@ def ais_deviation_unknown():
     """
     Getting information from the AIS for an unknown deviation.
     """
-    schema_path: str = './jsonschema/ais/deviationUnknown.json'
-    opentelemetrie_prefix = 'ais.deviationUnknown'
+    schema_path: str = 'jsonschemas/ais/deviationUnknown.json'
+    opentelemetry_prefix = 'ais.deviationUnknown'
 
-    if check_for_json(request):
-        return check_for_json(request)
+    request_json = parse_and_validate_data(schema_path)
 
-    request_json = request.get_json()
-
-    return response_to_json(request_json['extensions']['extension-definition--d83fce45-ef58-4c6c-a3f4-1fbc32e98c6e'], schema_path, opentelemetrie_prefix)
+    return response_to_json(request_json['extensions']['extension-definition--d83fce45-ef58-4c6c-a3f4-1fbc32e98c6e'],
+                            schema_path, opentelemetry_prefix)
 
 
 @app.route('/ais/deviationKnown', methods=['POST'])
 def ais_deviation_known():
     """
-        Getting information from the AIS for an unknown deviation.
-        """
-    schema_path: str = './jsonschema/ais/deviationUnknown.json'
-    opentelemetrie_prefix = 'ais.deviationUnknown'
+    Getting information from the AIS for an unknown deviation.
+    """
+    schema_path: str = 'jsonschemas/ais/deviationUnknown.json'
+    opentelemetry_prefix = 'ais.deviationUnknown'
 
-    if check_for_json(request):
-        return check_for_json(request)
-
-    request_json = request.get_json()
+    request_json = parse_and_validate_data(schema_path)
 
     return response_to_json(request_json['extensions']['extension-definition--d83fce45-ef58-4c6c-a3f4-1fbc32e98c6e'],
-                            schema_path, opentelemetrie_prefix) # request_json[0] had to be removed (can't access a dictionary that way)
+                            schema_path,
+                            opentelemetry_prefix)  # request_json[0] had to be removed (can't access a dictionary that way)
 
 
 def ab_trigger_audit(vin, scan_type):
@@ -200,15 +191,12 @@ def ab_trigger_audit(vin, scan_type):
 
 @app.route('/ab/vulnReport', methods=['POST'])
 def ab_vuln_report():
-    schema_path = './jsonschema/ab/vulnReport.json'
-    opentelemetrie_prefix = 'ab.vulnReport'
+    schema_path = 'jsonschemas/ab/vulnReport.json'
+    opentelemetry_prefix = 'ab.vulnReport'
 
-    if check_for_json(request):
-        return check_for_json(request)
+    request_json = parse_and_validate_data(schema_path)
 
-    request_json = request.get_json()
-
-    return response_to_json(request_json, schema_path, opentelemetrie_prefix)
+    return response_to_json(request_json, schema_path, opentelemetry_prefix)
 
 
 app.route('/vsoc/getTrustScore', methods=['GET'])
@@ -306,53 +294,33 @@ def get_patch_for_component():
     patch = 'Component patch'
     return jsonify({'patchForComponent': patch})
 
+
 # Add more endpoints as needed
 
 # Utilities
 
-def response_to_json(request_json, schema_path, opentelemetrie_prefix):
-    is_valid, error_message = validate_json_with_schema(schema_path, request_json)
+def response_to_json(request_json, schema_path, opentelemetry_prefix):
+    with tracer.start_as_current_span(opentelemetry_prefix) as sota_updateInfo_span:
+        for required_item, value in iterate_required_items(schema_path, request_json):
+            sota_updateInfo_span.set_attribute(opentelemetry_prefix + '.' + required_item.lower(), value)
 
-    if is_valid:
-        with tracer.start_as_current_span(opentelemetrie_prefix) as sota_updateInfo_span:
-            for required_item, value in iterate_required_items(schema_path, request_json):
-                sota_updateInfo_span.set_attribute(opentelemetrie_prefix + '.' + required_item.lower(), value)
-
-        response['statusCode'] = 200
-        response['statusMessage'] = http.client.responses[response['statusCode']]
-        response['data'] = request_json
-        return jsonify(response), response['statusCode']
-    else:
-        response['statusCode'] = 400
-        response['statusMessage'] = http.client.responses[response['statusCode']]
-        response['data'] = error_message
-        return jsonify(response), response['statusCode']
-
-
-def check_for_json(request):
-    if request.content_type != 'application/json':
-        response['statusCode'] = 415
-        response['statusMessage'] = http.client.responses[response['statusCode']]
-        return jsonify(response), response['statusCode']
-
-    if not request.data:
-        response['statusCode'] = 400
-        response['statusMessage'] = http.client.responses[response['statusCode']]
-        response['data'] = 'no data sent in the POST request'
-        return jsonify(response), response['statusCode']
-
-    return None
+    response['statusCode'] = 200
+    response['statusMessage'] = http.client.responses[response['statusCode']]
+    response['data'] = request_json
+    return jsonify(response), response['statusCode']
 
 
 # Function to validate the request with the json schema
-def validate_json_with_schema(schema_path, json_dict):
+def validate_json_with_schema(schema_path, json_dict) -> bool:
     with open(schema_path, 'r') as f:
         schema = json.load(f)
         try:
             validate(instance=json_dict, schema=schema)
-            return True, None
-        except ValidationError as e:
-            return False, e.message
+            return True
+        except ValidationError:
+            abort_with_message(message="The JSON is valid but it doesn't have all the required fields",
+                               status_code=HTTPStatus.BAD_REQUEST,
+                               span="http.badRequest")
 
 
 # Function to iterate through required items
@@ -364,39 +332,31 @@ def iterate_required_items(schema_path, validated_json):
             yield required_item, validated_json.get(required_item)
 
 
-# Add more methods here as needed
+def parse_and_validate_data(schema_path: str) -> Any:
+    """
+    Parses the ingoing request and aborts if
+    the mime-type is not `application/json`,
+    the data can not be parsed as JSON,
+    or the JSON schema is not satisfied
 
-@app.errorhandler(HTTPStatus.NOT_FOUND.value)
-def not_found(_):
-    message: str = "The requested URL does not exist"
-    status_code: int = HTTPStatus.NOT_FOUND.value
-    create_error_trace(message, status_code, "http.notFound")
-    return jsonify(error=message), status_code
+    :param schema_path: file path of the JSON schema
+    """
+    json_data: Any = None
 
+    if not request.data and request.is_json:
+        abort_with_message(message="There was no data in the request",
+                           status_code=HTTPStatus.BAD_REQUEST,
+                           span="http.badRequest")
 
-@app.errorhandler(HTTPStatus.UNSUPPORTED_MEDIA_TYPE.value)
-def unsupported_mimetype(_):
-    message: str = "Only application/json is currently supported"
-    status_code: int = HTTPStatus.UNSUPPORTED_MEDIA_TYPE.value
-    create_error_trace(message, status_code, "http.unsupportedMediaType")
-    return jsonify(error=message), status_code
-
-
-def parse_and_validate_data(required_fields: list[str]) -> Any:
-    json_data: Any
     try:
-        json_data = request.get_json()
+        json_data = request.get_json()  # will abort with code 415 if mime-type is not application/json
     except BadRequest:
         abort_with_message(message="The data could not be parsed as valid JSON",
-                           status_code=HTTPStatus.BAD_REQUEST.value,
+                           status_code=HTTPStatus.BAD_REQUEST,
                            span="http.badRequest")
-        return
-    if required_fields is not None and not has_required_fields(json_data, required_fields):
-        abort_with_message(message="The JSON is valid but it doesn't have all the required fields",
-                           status_code=HTTPStatus.BAD_REQUEST.value,
-                           span="http.badRequest")
-        return
-    return json_data
+
+    if validate_json_with_schema(schema_path, json_data):
+        return json_data
 
 
 def abort_with_message(message: str, status_code: int, span: str = None) -> None:
@@ -406,22 +366,36 @@ def abort_with_message(message: str, status_code: int, span: str = None) -> None
     abort(make_response(jsonify(error=message), status_code))
 
 
-def has_required_fields(json_data: Any, required_fields: list[str]) -> bool:
-    """
-    Returns true if the provided JSON data has all the required fields
-
-    :param json_data: any JSON data
-    :param required_fields: a list of fields to check against
-    """
-    return all(field in json_data for field in required_fields)
-
-
 def create_error_trace(message: str, status_code: int, span: str) -> None:
     with tracer.start_as_current_span(span) as current_span:
         current_span.set_attribute(f"{span}.errorMessage", message)
         current_span.set_attribute(f"{span}.statusCode", status_code)
         current_span.set_attribute(f"{span}.headers", str(request.headers))
         current_span.set_attribute(f"{span}.body", request.data)
+
+
+@app.errorhandler(HTTPStatus.NOT_FOUND)  # 404
+def not_found(_):
+    message: str = "The requested URL does not exist"
+    status_code: int = HTTPStatus.NOT_FOUND
+    create_error_trace(message, status_code, "http.notFound")
+    return jsonify(error=message), status_code
+
+
+@app.errorhandler(HTTPStatus.METHOD_NOT_ALLOWED)  # 405
+def method_not_allowed(_):
+    message: str = "The requested method is not allowed"
+    status_code: int = HTTPStatus.METHOD_NOT_ALLOWED
+    create_error_trace(message, status_code, "http.methodNotAllowed")
+    return jsonify(error=message), status_code
+
+
+@app.errorhandler(HTTPStatus.UNSUPPORTED_MEDIA_TYPE)  # 415
+def unsupported_mimetype(_):
+    message: str = "Only application/json is currently supported"
+    status_code: int = HTTPStatus.UNSUPPORTED_MEDIA_TYPE
+    create_error_trace(message, status_code, "http.unsupportedMediaType")
+    return jsonify(error=message), status_code
 
 
 if __name__ == '__main__':
