@@ -4,6 +4,17 @@
 
 This is the documentation of the VSOC API.
 
+# Error handling
+
+| Error code | Response                                                  | Cause                         |
+| ---------- | --------------------------------------------------------- | ----------------------------- |
+| 400        | {"error":"There was no data in the request"}              | The request body is empty     |
+| 400        | {"error":"The data could not be parsed as valid JSON"}    | The JSON is malformed         |
+| 400        | {"error":"The data doesn't have all the required fields"} | The JSON doesn't fill all the required fields of the jsonschema |
+| 404        | {"error":"The requested URL does not exist"}              | The requested endpoint doesn't exist |
+| 405        | {"error":"The requested method is not allowed"}           | The requested method is not applicable to the specified endpoint |
+| 415        | {"error":"Only application/json is currently supported"}  | The Content-Type is incorrect/missing |
+
 # SOTA (Software over the air)
 
 The endpoint `/sota` describes requests targeting the SOTA infrastructure that runs [Uptane](https://uptane.org/).
