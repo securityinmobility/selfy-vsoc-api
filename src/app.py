@@ -318,7 +318,7 @@ def validate_json_with_schema(schema_path, json_dict) -> bool:
             validate(instance=json_dict, schema=schema)
             return True
         except ValidationError:
-            abort_with_message(message="The JSON is valid but it doesn't have all the required fields",
+            abort_with_message(message="The data doesn't have all the required fields",
                                status_code=HTTPStatus.BAD_REQUEST,
                                span="http.badRequest")
 
