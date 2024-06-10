@@ -11,18 +11,15 @@
     },
     "source_vehicle": {
       "description": "VIN of the source vehicle",
-      "type": "integer",
-      "uniqueItems": true
+      "type": "integer"
     },
     "source_ais": {
       "description": "ID of the source AIS",
-      "type": "integer",
-      "uniqueItems": true
+      "type": "integer"
     },
     "source_rsu": {
       "description": "ID of the source RSU",
-      "type": "integer",
-      "uniqueItems": true
+      "type": "integer"
     },
     "observable": {
       "description": "observed data",

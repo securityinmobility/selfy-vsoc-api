@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "http://127.0.0.1:8000/ab/heartbeat",
+  "title": "heartbeat",
+  "description": "A heartbeat signal",
+  "type": "object",
+  "properties": {
+    "AB_id": {
+      "description": "ID of the AB",
+      "type": "integer",
+      "minimum": 0
+    },
+    "timeStamp": {
+      "description": "timestamp of the heartbeat in ISO-8601 (UTC)",
+      "type": "string",
+      "format": "date-time"
+    },
+    "DTCs": {
+      "description": "List of DTCs",
+      "type": "integer",
+      "minimal": 0,
+      "maximal": 255
+    },
+    "lastResetTimeStamp": {
+      "description": "in ISO-8601 (UTC)",
+      "type": "string",
+      "format": "date-time"
+    },
+    "lastResetCause": {
+      "description": "",
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "required": [ "AB_id", "timeStamp", "DTCs", "lastResetTimeStamp", "lastResetCause" ],
+  "additionalProperties": false
+}

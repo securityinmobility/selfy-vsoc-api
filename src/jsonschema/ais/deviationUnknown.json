@@ -1,34 +1,136 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "http://127.0.0.1:8000/ais/deviationUnknown",
-  "title": "deviationUnkown",
+  "title": "deviationUnknown",
   "description": "The VSOC also receives information from the AIS. For this, the function ais_deviation_unknown() to get information from the AIS for an unknown deviation. The request is a POST request from the AIS to the VSOC.",
   "type": "object",
   "properties": {
-    "extension_type": {
-      "description": "property extension from the request (comming from the STIX format)",
+    "type": {
+      "description": "property extension from the request (coming from the STIX format)",
       "type": "string"
+    },
+    "spec_version": {
+      "description": "version of the stix format",
+      "type": "string"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^indicator--.*$"
+    },
+    "created": {
+      "description": "timestamp of the creation in ISO-8601 (UTC)",
+      "type": "string",
+      "format": "date-time"
+    },
+    "modified": {
+      "description": "timestamp of the modification in ISO-8601 (UTC)",
+      "type": "string",
+      "format": "date-time"
+    },
+    "name": {
+      "const": "Anomaly detection"
+    },
+    "description": {
+      "const": "An immunological algorithm detected a deviation in real-time dataset."
+    },
+    "indicator_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "pattern": {
+      "description": "A specific pattern relevant to the reported case",
+      "type": "string"
+    },
+    "pattern_type": {
+      "const": "stix"
+    },
+    "pattern_version": {
+      "const": "2.1"
+    },
+    "valid_from": {
+      "description": "timestamp of the start of the validity period in ISO-8601 (UTC)",
+      "type": "string",
+      "format": "date-time"
+    },
+    "valid_until": {
+      "description": "timestamp of the end of the validity period in ISO-8601 (UTC)",
+      "type": "string",
+      "format": "date-time"
+    },
+    "labels": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "extensions": {
+      "type": "object",
+      "patternProperties": {
+        "^extension-definition--.*$": {
+          "type": "object",
+          "properties": {
+            "extension_type": {
+              "type": "string"
+            }
+          },
+          "required": [ "extension_type" ],
+          "additionalProperties": false
+        }
+      }
     },
     "source_vehicle": {
       "description": "VIN of the source vehicle",
-      "type": "integer",
-      "uniqueItems": true
+      "type": "string"
     },
     "source_ais": {
       "description": "ID of the source AIS",
-      "type": "integer",
-      "uniqueItems": true
+      "type": "string"
     },
     "source_rsu": {
       "description": "ID of the source RSU",
-      "type": "integer",
-      "uniqueItems": true
+      "type": "string"
     },
-    "observable": {
-      "description": "observed data",
-      "type": "object"
+    "src_ip": {
+      "description": "IP address of the source",
+      "type": "string"
+    },
+    "dst_ip": {
+      "description": "IP address of the destination",
+      "type": "string"
+    },
+    "src_port": {
+      "description": "Port of the source",
+      "type": "string"
+    },
+    "dst_port": {
+      "description": "Port of the destination",
+      "type": "string"
+    },
+    "protocol_type": {
+      "type": "string"
+    },
+    "service": {
+      "type": "string"
+    },
+    "flag": {
+      "type": "string"
+    },
+    "connection_duration": {
+      "type": "string"
+    },
+    "bytes_sent": {
+      "type": "string"
+    },
+    "bytes_received": {
+      "type": "string"
     }
-  },
-  "required": [ "extension_type", "source_vehicle", "source_ais", "source_rsu", "observable" ],
+},
+  "required": [ "type", "spec_version", "id", "created", "modified", "name", "description", "indicator_types", "pattern", "pattern_type", "pattern_version", "valid_from", "valid_until", "labels", "extensions", "source_vehicle", "source_ais", "source_rsu", "src_ip", "dst_ip", "src_port", "dst_port", "protocol_type", "service", "flag", "connection_duration", "bytes_sent", "bytes_received" ],
   "additionalProperties": true
 }

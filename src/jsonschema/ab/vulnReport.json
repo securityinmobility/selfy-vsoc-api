@@ -7,22 +7,22 @@
   "properties": {
     "AB_id": {
       "description": "ID of the AB",
-      "type": "string",
-      "uniqueItems": true
+      "type": "integer",
+      "minimum": 0
     },
     "timeStamp": {
       "description": "timestamp of the message in ISO-8601 (UTC)",
-      "type": "string"
+      "type": "string",
+      "format": "date-time"
     },
     "VIN": {
       "description": "Vehicle Identification Number",
-      "type": "string",
-      "uniqueItems": true
+      "type": "string"
     },
     "scanType": {
       "description": "The type of the requested scan",
       "type": "integer",
-      "uniqueItems": true
+      "minimum": 0
     },
     "result": {
       "description": "result data",
@@ -30,5 +30,5 @@
     }
   },
   "required": [ "AB_id", "timeStamp", "VIN", "scanType", "result" ],
-  "additionalProperties": true
+  "additionalProperties": false
 }

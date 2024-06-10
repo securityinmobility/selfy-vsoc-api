@@ -157,7 +157,7 @@ def ais_deviation_unknown():
 
     request_json = request.get_json()
 
-    return response_to_json(request_json['extensions']['extension-definition--d83fce45-ef58-4c6c-a3f4-1fbc32e98c6e'], schema_path, opentelemetrie_prefix)
+    return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
 
 @app.route('/ais/deviationKnown', methods=['POST'])
@@ -173,8 +173,7 @@ def ais_deviation_known():
 
     request_json = request.get_json()
 
-    return response_to_json(request_json['extensions']['extension-definition--d83fce45-ef58-4c6c-a3f4-1fbc32e98c6e'],
-                            schema_path, opentelemetrie_prefix) # request_json[0] had to be removed (can't access a dictionary that way)
+    return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
 def ab_trigger_audit(vin, scan_type):
     """
@@ -206,9 +205,19 @@ def ab_vuln_report():
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
 
+@app.route('/ab/heartbeat', methods=['POST'])
+def ab_heartbeat():
+    schema_path = './jsonschema/ab/heartbeat.json'
+    opentelemetrie_prefix = 'ab.heartbeat'
+
+    if check_for_json(request):
+        return check_for_json(request)
+
+    request_json = request.get_json()
+
+    return response_to_json(request_json, schema_path, opentelemetrie_prefix)
+
 app.route('/vsoc/getTrustScore', methods=['GET'])
-
-
 def vsoc_get_trustscore():
     """
     Getting the trust-score for a specific entity and distributing it.
@@ -309,9 +318,9 @@ def response_to_json(request_json, schema_path, opentelemetrie_prefix):
     is_valid, error_message = validate_json_with_schema(schema_path, request_json)
 
     if is_valid:
-        with tracer.start_as_current_span(opentelemetrie_prefix) as sota_updateInfo_span:
+        with tracer.start_as_current_span(opentelemetrie_prefix) as current_span:
             for required_item, value in iterate_required_items(schema_path, request_json):
-                sota_updateInfo_span.set_attribute(opentelemetrie_prefix + '.' + required_item.lower(), value)
+                current_span.set_attribute(opentelemetrie_prefix + '.' + required_item.lower(), value)
 
         response['statusCode'] = 200
         response['statusMessage'] = http.client.responses[response['statusCode']]

@@ -5,33 +5,48 @@
   "description": "updateInfo endpoint for the SOTA infrastructure",
   "type": "object",
   "properties": {
-    "vin": {
-      "description": "Vehicle Identification Number",
-      "type": "string",
-      "uniqueItems": true
-    },
-    "action": {
-      "description": "action flag; e.g. 1 fro update",
-      "type": "integer"
+    "selfy_id": {
+      "description": "ID of the SOTA endpoint",
+      "type": "integer",
+      "minimum": 0
     },
     "timeStamp": {
       "description": "timestamp of the message in ISO-8601 (UTC)",
-      "type": "string"
-    },
-    "toolId": {
-      "description": "ID of the tool",
       "type": "string",
-      "uniqueItems": true
+      "format": "date-time"
     },
-    "status": {
-      "description": "status of the update",
-      "type": "integer"
-    },
-    "deviceMetadata": {
-      "description": "Metadata about the update",
-      "type": "string"
+    "message": {
+      "description": "containg message information",
+      "type": "object",
+      "properties": {
+        "action": {
+          "description": "action flag; e.g. 1 for update",
+          "type": "integer",
+          "minimum": 0
+        },
+        "vin": {
+          "description": "Vehicle Identification Number",
+          "type": "string"
+        },
+        "deviceID": {
+          "description": "ID of the device",
+          "type": "string"
+        },
+        "status": {
+          "description": "status of the update",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2
+        },
+        "deviceMetadata": {
+          "description": "Metadata about the update",
+          "type": "string"
+        }
+      },
+      "required": [ "action", "vin", "deviceID", "status" ],
+      "additionalProperties": false
     }
   },
-  "required": [ "vin", "action", "timeStamp", "toolId", "status" ],
-  "additionalProperties": true
+  "required": [ "selfy_id", "timeStamp", "message" ],
+  "additionalProperties": false
 }

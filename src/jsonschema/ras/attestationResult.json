@@ -3,37 +3,59 @@
   "$id": "http://127.0.0.1:8000/ras/attestationResult",
   "title": "attestationResult",
   "description": "attestationResult endpoint for the RAS infrastructure",
-  "type": "object",
-  "properties": {
-    "verifier": {
-      "description": "ID of the verifier (usually ID18)",
-      "type": "string",
-      "uniqueItems": true
+  "anyOf": [
+    {
+      "title": "Vehicle is OK",
+      "type": "object",
+      "properties": {
+        "verifier": {
+          "description": "ID of the verifier (usually ID18)",
+          "type": "string"
+        },
+        "VSOC": {
+          "description": "ID of the VSOC (usually ID08)",
+          "type": "string"
+        },
+        "target_tool": {
+          "description": "ID of the tool for the RAS result",
+          "type": "string"
+        },
+        "state": {
+          "description": "status of the attestation result",
+          "type": "integer",
+          "minimum": 0
+        },
+        "nonce": {
+          "description": "random nonce of the requst",
+          "type": "string"
+        },
+        "created": {
+          "description": "timestamp of the message in ISO-8601 (UTC)",
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [ "verifier", "VSOC", "target_tool", "state", "nonce", "created" ],
+      "additionalProperties": false
     },
-    "VSOC": {
-      "description": "ID of the VSOC (usually ID08)",
-      "type": "string",
-      "uniqueItems": true
-    },
-    "target_tool": {
-      "description": "ID of the tool for the RAS result",
-      "type": "string",
-      "uniqueItems": true
-    },
-    "state": {
-      "description": "status of the attestation result",
-      "type": "integer"
-    },
-    "nonce": {
-      "description": "random nonce of the requst",
-      "type": "string",
-      "uniqueItems": true
-    },
-    "created": {
-      "description": "timestamp of the message in ISO-8601 (UTC)",
-      "type": "string"
+    {
+      "title": "Vehicle KO",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "id": {
+          "description": "Audit Box ID",
+          "type": "string"
+        },
+        "objects": {
+          "type": "array",
+          "items": {
+
+          }
+        }
+      }
     }
-  },
-  "required": [ "verifier", "VSOC", "target_tool", "state", "nonce", "created" ],
-  "additionalProperties": true
+  ]
 }
