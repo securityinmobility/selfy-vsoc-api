@@ -26,7 +26,7 @@
           "minimum": 0
         },
         "nonce": {
-          "description": "random nonce of the requst",
+          "description": "random nonce of the request",
           "type": "string"
         },
         "created": {
@@ -37,25 +37,6 @@
       },
       "required": [ "verifier", "VSOC", "target_tool", "state", "nonce", "created" ],
       "additionalProperties": false
-    },
-    {
-      "title": "Vehicle KO",
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string"
-        },
-        "id": {
-          "description": "Audit Box ID",
-          "type": "string"
-        },
-        "objects": {
-          "type": "array",
-          "items": {
-
-          }
-        }
-      }
     }
   ]
 }

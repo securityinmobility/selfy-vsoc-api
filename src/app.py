@@ -1,7 +1,8 @@
 from flask import Flask, jsonify, request, Response
 import http.client
 import json
-from jsonschema import validate, ValidationError
+from jsonschema import validate, ValidationError, RefResolver, Draft7Validator
+import os
 import requests
 import time
 import uuid
@@ -149,7 +150,7 @@ def ais_deviation_unknown():
     """
     Getting information from the AIS for an unknown deviation.
     """
-    schema_path: str = './jsonschema/ais/deviationUnknown.json'
+    schema_path: str = 'jsonschema/ais/deviationUnknown.json'
     opentelemetrie_prefix = 'ais.deviationUnknown'
 
     if check_for_json(request):
@@ -165,7 +166,7 @@ def ais_deviation_known():
     """
         Getting information from the AIS for an unknown deviation.
         """
-    schema_path: str = './jsonschema/ais/deviationUnknown.json'
+    schema_path: str = 'jsonschema/ais/deviationUnknown.json'
     opentelemetrie_prefix = 'ais.deviationUnknown'
 
     if check_for_json(request):
@@ -312,7 +313,13 @@ def get_patch_for_component():
 
 # Add more endpoints as needed
 
-# Utilities
+#
+#
+#
+# Utilities below
+#
+#
+#
 
 def response_to_json(request_json, schema_path, opentelemetrie_prefix):
     is_valid, error_message = validate_json_with_schema(schema_path, request_json)
@@ -352,8 +359,12 @@ def check_for_json(request):
 def validate_json_with_schema(schema_path, json_dict):
     with open(schema_path, 'r') as f:
         schema = json.load(f)
+        # from jsonschema to handle ref resolution in jsonschema files
+        resolver = RefResolver(base_uri='file://' + os.path.dirname(os.path.realpath(__file__)) + '/jsonschema', referrer=schema)
         try:
-            validate(instance=json_dict, schema=schema)
+#            validator = Draft7Validator(schema, resolver=resolver) # use with jsonschema refs
+#            validator.validate(json_dict)                          #
+            validate_json_with_schema(schema_path, json_dict)   # use without jsonschema refs
             return True, None
         except ValidationError as e:
             return False, e.message
