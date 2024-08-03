@@ -1,4 +1,4 @@
-*VSOC API v0.2*
+*VSOC API v0.0.3*
 
 # VSOC API
 
