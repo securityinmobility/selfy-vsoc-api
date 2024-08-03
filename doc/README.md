@@ -67,16 +67,7 @@ The function takes no parameters and is constructed by the SOTA infrastructure a
     <summary>
         <span style="font-size: large; ">Examples</span>
     </summary>
-
-<b>OK:</b>
-```json
-
-```
-Response
-```json
-
-```
-<b>Bad Request:</b>
+Request
 ```json
 
 ```
@@ -172,16 +163,7 @@ The VSOC also receives information from the AIS. For this, the function `ais_dev
     <summary>
         <span style="font-size: large; ">Examples</span>
     </summary>
-
-<b>OK:</b>
-```json
-
-```
-Response
-```json
-
-```
-<b>Bad Request:</b>
+Request:
 ```json
 
 ```
@@ -195,6 +177,20 @@ Response
 `POST / ais/deviationKnown`
 
 The VSOC also receives information from the AIS. For this, the function `ais_deviation_known()` to get information from the AIS for an known deviation. The request is a `POST` request from the AIS to the VSOC.
+
+<details>
+    <summary>
+        <span style="font-size: large; ">Examples</span>
+    </summary>
+Request:
+```json
+
+```
+Response
+```json
+
+```
+</details>
 
 # VSOC receiving endpoint
 
