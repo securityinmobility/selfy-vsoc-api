@@ -12,8 +12,9 @@ This document contains general informations about api endpoints. Precise endpoin
 Run the following commands to generate the endoint documentation.
 ```shell
 deactivate
+python3 -m venv jsonschema
 source jsonschema/bin/activate
-# pip3 install json-schema-for-humans
+pip3 install json-schema-for-humans
 ./gen-doc-endpoints.sh
 ```
 *Note:* Remember to reaktivate the correct venv afterwards
