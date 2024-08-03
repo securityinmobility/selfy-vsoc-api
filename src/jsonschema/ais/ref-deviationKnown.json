@@ -8,11 +8,13 @@
     "relationships": {
       "type": "array",
       "items": {
-        "ref": "./relationship_dictionary.json"
+        "ref": "./relationship_dictionary.json",
+        "additionalProperties": false
       }
     },
     "indicator": {
-      "ref": "./indicator_dictionary.json"
+      "ref": "./indicator_dictionary.json",
+      "additionalProperties": false
     }
   },
   "required": [ "relationships", "indicator" ],

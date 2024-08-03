@@ -4,6 +4,32 @@
 
 This is the documentation of the VSOC API.
 
+# Structure
+
+This document contains general informations about api endpoints. Precise endpoint definitions can be found in the `./endpoint/` directory.
+
+# Gen Docs
+Run the following commands to generate the endoint documentation.
+```shell
+deactivate
+source jsonschema/bin/activate
+# pip3 install json-schema-for-humans
+./gen-doc-endpoints.sh
+```
+*Note:* Remember to reaktivate the correct venv afterwards
+
+# Responses
+Each response contains three properties:
+```
+{
+  "data": "***",
+  "statusCode": ***,
+  "statusMessage": "***"
+}
+```
+In case everything goes as expected a copy of the received data is sent back in the data block with status code 200. If no JSON was received status code 415 will appear and if the JSON is formatted incorrectly, an error message is transmitted in the data-property with status code 400.
+
+
 # SOTA (Software over the air)
 
 The endpoint `/sota` describes requests targeting the SOTA infrastructure that runs [Uptane](https://uptane.org/).
@@ -30,58 +56,34 @@ An example of the request from the VSOC to the SOTA:
 ```
 
 ## Update status information
+`POST / sota/updateInfo`
 
 The function `sota_receive_info()`describes the HTTP REST `POST` method to send information from the SOTA to the VSOC. This information contains the current status of a requested update.
 
 The function takes no parameters and is constructed by the SOTA infrastructure as a `POST` request towards the VSOC endpoint.
+
 <details>
     <summary>
-        <code>POST</code> <!-- for example GET or POST -->
-        <code><b>/</b></code> 
-        <code>sota/updateInfo</code> <!-- Endpoint path -->
+        <span style="font-size: large; ">Examples</span>
     </summary>
 
-#### Parameters
+<b>OK:</b>
+```json
 
-| name      |  type     | data type               | description |
-|-----------|-----------|-------------------------|-------------|
-| `selfy_id` |  required  | integer | ID of the SOTA endpoint |
-| `TimeStamp` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
-| `message` | required | JSON object | containg message information |
-| `action` | required | integer | part of the `message` object that contains the action (e.g., 1 for update) | 
-| `VIN` | required | string | part of the `message` object that contains an unique VIN | 
-| `DeviceID` | required | string | part of the `message` object that device where the update is linked to | 
-| `status` | required | integer | part of the `message` object that status of the update |
-| `device_metadata` | optional | string | part of the `message` object that metadata about the update | 
-
-#### JSON schema 
-
-An example of the `POST` request from the SOTA to the VSOC:
 ```
-{  
-    "selfy_id": 22,  
-        "TimeStamp": "2024-11-21T06:14:00Z",  
-        "message" : [ 
-            "action": 1, 
-            "VIN": "WAUEA88DXTA287834",  
-            "DeviceID": "01", 
-            "status": 2 # 0 updated, 1 pending, 2 no update available 
-            "device_metadata": "X"
-        ] 
-} 
+Response
+```json
+
 ```
+<b>Bad Request:</b>
+```json
 
-#### Responses
+```
+Response
+```json
 
-| http code     | content-type                      | response      |
-|---------------|-----------------------------------|---------------|
-| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
-| `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
-| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
-
+```
 </details>
-
 
 # RAS (Remote Attestation Service)
 
@@ -105,50 +107,31 @@ An example request send from the VSOC to the RAS:
 ```
 
 ## Remote attestation result 
+`POST / ras/attestationResult`
 
 The VSOC is introducing an HTTP REST endpoint where the RAS can send a `POST` request containing attestation results. This function is called `ras_attestation_result()` in the VSOC. 
 
 <details>
     <summary>
-        <code>POST</code> <!-- for example GET or POST -->
-        <code><b>/</b></code> 
-        <code>ras/attestationResult</code> <!-- Endpoint path -->
+        <span style="font-size: large; ">Examples</span>
     </summary>
 
-#### Parameters
+<b>OK:</b>
+```json
 
-| name      |  type     | data type               | description |
-|-----------|-----------|-------------------------|-------------|
-| `verifier` |  required  | string | ID of the verifier (usually ID18) |
-| `VSOC` | required | string | ID of the VSOC (usually ID08) |
-| `target_tool` | required | string | ID of the tool for the RAS result | 
-| `state` | required | integer | status of the attestation result | 
-| `nonce` | required | string | random nonce of the requst | 
-| `created` |  required  | string | timestamp of the message in ISO-8601 (UTC) |
-
-#### JSON schema 
-
-Example request: 
-``` 
-{  
-    "verifier": "ID18",  
-    "VSOC": "ID08",  
-    "target_tool": "ID19",  
-    "state": 0,  
-    "nonce": "f9bf78b9a18ce6d46a0cd2b0b86df9da",  
-    "created": "2023-06-05 12:00:00 UTC"  
-} 
 ```
+Response
+```json
 
-#### Responses
+```
+<b>Bad Request:</b>
+```json
 
-| http code     | content-type                      | response      |
-|---------------|-----------------------------------|---------------|
-| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
-| `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
-| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
+```
+Response
+```json
 
+```
 </details>
 
 
@@ -180,109 +163,37 @@ The VSOC can request to change the configuration of the AIS. For this, the funct
 ```
 
 ## Deviation unknown 
+`POST / ais/deviationUnknown`
 
 The VSOC also receives information from the AIS. For this, the function `ais_deviation_unknown()` to get information from the AIS for an unknown deviation. The request is a `POST` request from the AIS to the VSOC.
 
 <details>
     <summary>
-        <code>POST</code> <!-- for example GET or POST -->
-        <code><b>/</b></code> 
-        <code>ais/deviationUnknown</code> <!-- Endpoint path -->
+        <span style="font-size: large; ">Examples</span>
     </summary>
 
-#### Parameters
+<b>OK:</b>
+```json
 
-| name      |  type     | data type               | description |
-|-----------|-----------|-------------------------|-------------|
-| `extension_type` |  required  | string | property extension from the request (comming from the STIX format) |
-| `source_vehicle` | required | string | VIN of the source vehicle |
-| `source_ais` | required | string | ID of the source AIS | 
-| `source_rsu` | required | integer | ID of the source RSU | 
-| `observable` | required | JSON object | observed data | 
-
-#### JSON schema 
-
-Example request: 
-``` 
-{
-    "extension_type": "property-extension", 
-    "source_vehicle": "<vehicle-id>", 
-    "source_ais": "<ais-id>", 
-    "source_rsu": "<rsu-id>", 
-    "observable": {
-        "type": "<data-type>", 
-        "value": "<the-specific-deviation-value>" 
-    }
-} 
 ```
+Response
+```json
 
-#### Responses
+```
+<b>Bad Request:</b>
+```json
 
-| http code     | content-type                      | response      |
-|---------------|-----------------------------------|---------------|
-| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
-| `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
-| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
+```
+Response
+```json
 
+```
 </details>
 
 ## Deviation known 
+`POST / ais/deviationKnown`
 
 The VSOC also receives information from the AIS. For this, the function `ais_deviation_known()` to get information from the AIS for an known deviation. The request is a `POST` request from the AIS to the VSOC.
-
-<details>
-    <summary>
-        <code>POST</code> <!-- for example GET or POST -->
-        <code><b>/</b></code> 
-        <code>ais/deviationKnown</code> <!-- Endpoint path -->
-    </summary>
-
-#### Parameters
-
-| name      |  type     | data type               | description |
-|-----------|-----------|-------------------------|-------------|
-| `extension_type` |  required  | string | property extension from the request (comming from the STIX format) |
-| `source_vehicle` | required | string | VIN of the source vehicle |
-| `source_ais` | required | string | ID of the source AIS | 
-| `source_rsu` | required | integer | ID of the source RSU | 
-| `observable` | required | JSON object | observed data | 
-| `id` | required | string | ID of the relationship request | 
-| `source_ref` | required | string | reference to the known source |
-| `target_ref` | required | string | reference to the known target | 
-| `description` | required | string | description of the known deviation |
-
-#### JSON schema 
-
-Example request: 
-``` 
-{
-    "extension_type": "property-extension", 
-    "source_vehicle": "<vehicle-id>", 
-    "source_ais": "<ais-id>", 
-    "source_rsu": "<rsu-id>", 
-    "observable": {
-        "type": "<data-type>", 
-        "value": "<the-specific-deviation-value>" 
-    },
-    "id": "relationship--57b56a43-b8b0-4cba-9deb-34e3e1faed9e", 
-    "source_ref": "indicator--8e2e2d2b-17d4-4cbf-938f-98ee46b3cd3f", 
-    "target_ref": "indicator--8e2e2d2b-17d4-4cbf-938f-98ee46b3cd3e", 
-    "description": " An immunological algorithm detected a deviation in a real-time data set that is apparently similar to a previously reported deviation." 
-} 
-```
-
-#### Responses
-
-| http code     | content-type                      | response      |
-|---------------|-----------------------------------|---------------|
-| `200`         | `application/json`                | `{"code":"200","message":"transmitted successfully"}` |
-| `400`         | `application/json`                | `{"code":"400","message":"Bad Request"}` |
-| `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}` |
-| `404`         | `application/json`                | `{"code":"404","message":"Not Found"}` |
-
-</details>
-
 
 # VSOC receiving endpoint
 
