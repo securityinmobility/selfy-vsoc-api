@@ -107,16 +107,7 @@ The VSOC is introducing an HTTP REST endpoint where the RAS can send a `POST` re
     <summary>
         <span style="font-size: large; ">Examples</span>
     </summary>
-
-<b>OK:</b>
-```json
-
-```
-Response
-```json
-
-```
-<b>Bad Request:</b>
+Request
 ```json
 
 ```
