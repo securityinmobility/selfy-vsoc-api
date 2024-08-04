@@ -50,12 +50,14 @@
 </summary>
 <blockquote>
 
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | Yes      |
+|              |         |
+| ------------ | ------- |
+| **Type**     | `const` |
+| **Required** | Yes     |
 
 **Description:** property extension from the request (coming from the STIX format)
+
+Specific value: `"indicator"`
 
 </blockquote>
 </details>
@@ -581,4 +583,4 @@ must respect the following conditions
 </details>
 
 ----------------------------------------------------------------------------------------------------------------------------
-Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2024-08-03 at 16:07:26 +0200
+Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2024-08-04 at 21:50:13 +0200

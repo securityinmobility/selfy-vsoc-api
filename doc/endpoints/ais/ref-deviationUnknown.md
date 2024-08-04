@@ -11,4 +11,4 @@
 **Description:** The VSOC also receives information from the AIS. For this, the function ais_deviation_unknown() to get information from the AIS for an unknown deviation. The request is a POST request from the AIS to the VSOC.
 
 ----------------------------------------------------------------------------------------------------------------------------
-Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2024-08-03 at 16:07:26 +0200
+Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2024-08-04 at 21:50:13 +0200
