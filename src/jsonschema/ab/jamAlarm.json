@@ -1,0 +1,235 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "http://127.0.0.1:8000/ab/heartbeat",
+  "title": "heartbeat",
+  "description": "A heartbeat signal",
+  "type": "object",
+  "properties": {
+    "type": {
+      "description": "property extension from the request (coming from the STIX format)",
+      "type": "string"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^bundle--.*$"
+    },
+    "objects": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "description": "property extension from the request (coming from the STIX format)",
+                "const": "identity"
+              },
+              "spec_version": {
+                "description": "version of the stix format",
+                "type": "string"
+              },
+              "id": {
+                "type": "string",
+                "pattern": "^identity--.*$"
+              },
+              "created": {
+                "description": "timestamp of the creation in ISO-8601 (UTC)",
+                "type": "string",
+                "format": "date-time"
+              },
+              "modified": {
+                "description": "timestamp of the modification in ISO-8601 (UTC)",
+                "type": "string",
+                "format": "date-time"
+              },
+              "name": {
+                "const": "Audit Box SELFY Solution"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "spec_version",
+              "id",
+              "created",
+              "modified",
+              "name",
+              "description"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "description": "property extension from the request (coming from the STIX format)",
+                "const": "attack-pattern"
+              },
+              "spec_version": {
+                "description": "version of the stix format",
+                "type": "string"
+              },
+              "id": {
+                "type": "string",
+                "pattern": "^attack-pattern--.*$"
+              },
+              "created": {
+                "description": "timestamp of the creation in ISO-8601 (UTC)",
+                "type": "string",
+                "format": "date-time"
+              },
+              "modified": {
+                "description": "timestamp of the modification in ISO-8601 (UTC)",
+                "type": "string",
+                "format": "date-time"
+              },
+              "name": {
+                "const": "Jamming"
+              },
+              "external_references": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "source_name": {
+                      "description": "Name of the source",
+                      "type": "string"
+                    },
+                    "external_id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "required": [
+              "type",
+              "spec_version",
+              "id",
+              "created",
+              "modified",
+              "name",
+              "external_references"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "description": "property extension from the request (coming from the STIX format)",
+                "const": "intrusion-set"
+              },
+              "spec_version": {
+                "description": "version of the stix format",
+                "type": "string"
+              },
+              "id": {
+                "type": "string",
+                "pattern": "^intrusion-set--.*$"
+              },
+              "created": {
+                "description": "timestamp of the creation in ISO-8601 (UTC)",
+                "type": "string",
+                "format": "date-time"
+              },
+              "modified": {
+                "description": "timestamp of the modification in ISO-8601 (UTC)",
+                "type": "string",
+                "format": "date-time"
+              },
+              "name": {
+                "const": "Jamming"
+              },
+              "description": {
+                "const": "Jamming situation detected near the Audit Box"
+              },
+              "first_seen": {
+                "description": "timestamp in ISO-8601 (UTC)",
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "required": [
+              "type",
+              "spec_version",
+              "id",
+              "created",
+              "modified",
+              "name",
+              "description",
+              "first_seen"
+            ],
+            "additionalProperties": {
+              "last_seen": {
+                "description": "timestamp in ISO-8601 (UTC)",
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "description": "property extension from the request (coming from the STIX format)",
+                "type": "string"
+              },
+              "spec_version": {
+                "description": "version of the stix format",
+                "const": "relationship"
+              },
+              "id": {
+                "type": "string",
+                "pattern": "^relationship--.*$"
+              },
+              "created": {
+                "description": "timestamp of the creation in ISO-8601 (UTC)",
+                "type": "string",
+                "format": "date-time"
+              },
+              "modified": {
+                "description": "timestamp of the modification in ISO-8601 (UTC)",
+                "type": "string",
+                "format": "date-time"
+              },
+              "relationship_type": {
+                "description": "relationship type of the deviation",
+                "type": "string"
+              },
+              "source_ref": {
+                "description": "reference to the source indicator",
+                "type": "string",
+                "pattern": "^indicator--.*$"
+              },
+              "target_ref": {
+                "description": "reference to the target indicator",
+                "type": "string",
+                "pattern": "^indicator--.*$"
+              }
+            },
+            "required": [
+              "type",
+              "spec_version",
+              "id",
+              "created",
+              "modified",
+              "relationship_type",
+              "source_ref",
+              "target_ref"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    }
+  },
+  "required": [
+    "type",
+    "id",
+    "objects"
+  ],
+  "additionalProperties": false
+}

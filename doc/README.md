@@ -67,14 +67,22 @@ The function takes no parameters and is constructed by the SOTA infrastructure a
     <summary>
         <span style="font-size: large; ">Examples</span>
     </summary>
-Request
-```json
-
-```
-Response
-```json
-
-```
+Request with expected Response: OK - 200
+<pre>
+    <code>
+{
+  "selfy_id": 8, 
+  "timeStamp": "2023-11-21T06:14:00Z", 
+  "message": {
+    "vin": "2a910ebe-b39a-4813-9992-373738ab4599", 
+    "action": 1, 
+    "deviceID": "8", 
+    "status": 2, 
+    "deviceMetadata": "Such nice metadata"
+  }
+}
+</code>
+</pre>
 </details>
 
 # RAS (Remote Attestation Service)
@@ -107,14 +115,19 @@ The VSOC is introducing an HTTP REST endpoint where the RAS can send a `POST` re
     <summary>
         <span style="font-size: large; ">Examples</span>
     </summary>
-Request
-```json
-
-```
-Response
-```json
-
-```
+Request with expected Response: OK - 200
+<pre>
+    <code>
+{  
+    "verifier": "ID18",  
+    "VSOC": "ID08",  
+    "target_tool": "ID19",  
+    "state": 0,  
+    "nonce": "f9bf78b9a18ce6d46a0cd2b0b86df9da",  
+    "created": "2023-06-05 12:00:00 UTC"
+}
+</code>
+</pre>
 </details>
 
 
@@ -154,14 +167,45 @@ The VSOC also receives information from the AIS. For this, the function `ais_dev
     <summary>
         <span style="font-size: large; ">Examples</span>
     </summary>
-Request:
-```json
-
-```
-Response
-```json
-
-```
+Request with expected Response: OK - 200
+<pre>
+    <code>
+{ 
+  "type": "indicator", 
+  "spec_version": "2.1", 
+  "id": "indicator--e5c3e257-031f-4df1-88a3-19bbd25acacc", 
+  "created": "2024-03-12T12:39:25.652229Z", 
+  "modified": "2024-03-12T12:39:25.652229Z", 
+  "name": "Anomaly detection", 
+  "description": "An immunological algorithm detected a deviation in real-time dataset.", 
+  "indicator_types": [ "anomalous-activity" ], 
+  "pattern": "[network-traffic:src_ref.value = '172.20.48.79' AND network-traffic:dst_ref.value = '192.168.1.100' AND network-traffic:src_port = '12345' AND network-traffic:dst_port = '80' AND network-traffic:protocol_type = 'TCP' AND network-traffic:service = 'HTTP' AND network-traffic:flag = 'SYN']", 
+  "pattern_type": "stix", 
+  "pattern_version": "2.1", 
+  "valid_from": "2024-03-12T12:39:25.652229Z", 
+  "valid_until": "2024-03-19T12:39:25Z", 
+  "labels": [ "deviation" ], 
+  "extensions": { 
+    "extension-definition--a3854a11-7367-49cb-ad3f-1a3f05bfd58a": { 
+      "extension_type": "toplevel-property-extension"
+    }
+  }, 
+  "source_vehicle": "12", 
+  "source_ais": "24", 
+  "source_rsu": "55", 
+  "src_ip": "172.20.48.79", 
+  "dst_ip": "192.168.1.100", 
+  "src_port": "12345", 
+  "dst_port": "80", 
+  "protocol_type": "TCP", 
+  "service": "HTTP", 
+  "flag": "SYN", 
+  "connection_duration": "120", 
+  "bytes_sent": "1000", 
+  "bytes_received": "500"
+}
+</code>
+</pre>
 </details>
 
 ## Deviation known 
@@ -173,14 +217,80 @@ The VSOC also receives information from the AIS. For this, the function `ais_dev
     <summary>
         <span style="font-size: large; ">Examples</span>
     </summary>
-Request:
-```json
+Request with expected Response: OK - 200
+<pre>
+    <code>
+TBD
+</code>
+</pre>
+</details>
 
-```
-Response
-```json
+# AB (Audit Box)
 
-```
+## Heartbeat
+`POST / ab/heartbeat`
+
+The AB will send a periodic heartbeat to the VSOC.
+
+<details>
+    <summary>
+        <span style="font-size: large; ">Examples</span>
+    </summary>
+Request with expected Response: OK - 200
+<pre>
+    <code>
+{
+  "AB_id": 1,
+  "timeStamp": "2023-11-21T06:14:00Z",
+  "DTCs": "1234",
+  "lastResetTimeStamp": "2023-11-21T06:14:00Z",
+  "lastResetCause": 1
+}  
+</code>
+</pre>
+</details>
+
+## Vulnerability Report
+`POST / ab/vulnReport`
+
+The AB sends a Vulnerability Report about a requested or KO vehicle.
+
+<details>
+    <summary>
+        <span style="font-size: large; ">Examples</span>
+    </summary>
+Request with expected Response: OK - 200
+<pre>
+    <code>
+{
+  "AB_id": 1,
+  "timeStamp": "2023-11-21T06:14:00Z",
+  "VIN": "1234",
+  "scanType": 2,
+  "result": {
+    "hello": "there",
+    "2l": "33"
+  } 
+} 
+</code>
+</pre>
+</details>
+
+## Jamming Alarm
+`POST / ab/jamAlarm`
+
+The AB sends a Jammang Alarm to the VSOC when it detects a Jamming situation.
+
+<details>
+    <summary>
+        <span style="font-size: large; ">Examples</span>
+    </summary>
+Request with expected Response: OK - 200
+<pre>
+    <code>
+TBD
+</code>
+</pre>
 </details>
 
 # VSOC receiving endpoint

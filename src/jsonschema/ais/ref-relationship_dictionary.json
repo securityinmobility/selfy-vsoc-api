@@ -10,7 +10,7 @@
     },
     "spec_version": {
       "description": "version of the stix format",
-      "type": "string"
+      "const": "relationship"
     },
     "id": {
       "type": "string",

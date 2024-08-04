@@ -206,6 +206,19 @@ def ab_vuln_report():
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
 
+@app.route('/ab/jamAlarm', methods=['POST'])
+def ab_heartbeat():
+    schema_path = './jsonschema/ab/jamAlarm.json'
+    opentelemetrie_prefix = 'ab.jamAlarm'
+
+    if check_for_json(request):
+        return check_for_json(request)
+
+    request_json = request.get_json()
+
+    return response_to_json(request_json, schema_path, opentelemetrie_prefix)
+
+
 @app.route('/ab/heartbeat', methods=['POST'])
 def ab_heartbeat():
     schema_path = './jsonschema/ab/heartbeat.json'
