@@ -32,6 +32,7 @@ sota_endpoint = "http://uptane-bridge.sota.selfy.ota.ce/vsoctrigger"
 ras_endpoint = "http://127.0.0.1:4201"
 ais_endpoint = "http://127.0.0.1:4202"
 ab_endpoint = "http://127.0.0.1:4203"
+rsu_endpoint = "http://127.0.0.1:4204"
 
 
 # Default
@@ -240,6 +241,18 @@ def vsoc_get_trustscore():
 
     return ""
 
+
+@app.route('/rsu/misbehaviour', methods=['POST'])
+def rsu_misbehaviour():
+    schema_path = './jsonschema/rsu/misbehaviour.json'
+    opentelemetrie_prefix = 'ab.heartbeat'
+
+    if check_for_json(request):
+        return check_for_json(request)
+
+    request_json = request.get_json()
+
+    return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
 #
 #

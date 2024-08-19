@@ -17,7 +17,7 @@ else
     echo "Invalid input. Please enter 'y' or 'n'."
 fi
 
-generate-schema-doc --config-file .jsonschema-doc-conf.json ../src/jsonschema endpoints
+generate-schema-doc --config-file .jsonschema-md-conf.json ../src/jsonschema endpoints
 
 DOC_PATHS=$(find "$OUTPUT_DIR" -type f -name "*.md")
 echo "$DOC_PATH"
@@ -31,4 +31,20 @@ for DOC_PATH in $DOC_PATHS; do
   mv "endpoints/$DOC" "endpoints/$DIR_NAME/"
 done
 
-echo "Endpoint Documentation created."
+echo -e "Endpoint md Documentation created.\n"
+
+generate-schema-doc --config-file .jsonschema-html-conf.json ../src/jsonschema endpoints
+
+DOC_PATHS=$(find "$OUTPUT_DIR" -type f -name "*.html")
+echo "$DOC_PATH"
+
+for DOC_PATH in $DOC_PATHS; do
+  DOC=$(basename "$DOC_PATH")
+  SCHEMA=$(echo "$DOC" | sed 's/\.html$/.json/')
+  SCHEMA_PATH=$(find "$INPUT_DIR" -type f -name "$SCHEMA")
+  DIR_NAME=$(basename "$(dirname "$SCHEMA_PATH")")
+  mkdir -p "endpoints/$DIR_NAME"
+  mv "endpoints/$DOC" "endpoints/$DIR_NAME/"
+done
+
+echo "Endpoint html Documentation created."
