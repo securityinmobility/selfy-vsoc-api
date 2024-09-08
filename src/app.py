@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, Response
+from flask import Flask, jsonify, request, Response, abort, make_response
 import http.client
 import json
 from jsonschema import validate, ValidationError, RefResolver, Draft7Validator
@@ -195,7 +195,7 @@ def ab_trigger_audit(vin, scan_type):
 
 
 @app.route('/ab/vulnReport', methods=['POST'])
-def ab_vuln_report():
+def ab_vulnReport():
     schema_path = './jsonschema/ab/vulnReport.json'
     opentelemetrie_prefix = 'ab.vulnReport'
 
@@ -208,7 +208,7 @@ def ab_vuln_report():
 
 
 @app.route('/ab/jamAlarm', methods=['POST'])
-def ab_heartbeat():
+def ab_jamAlarm():
     schema_path = './jsonschema/ab/jamAlarm.json'
     opentelemetrie_prefix = 'ab.jamAlarm'
 
@@ -219,12 +219,10 @@ def ab_heartbeat():
 
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
-
 @app.route('/ab/heartbeat', methods=['POST'])
 def ab_heartbeat():
     schema_path = './jsonschema/ab/heartbeat.json'
     opentelemetrie_prefix = 'ab.heartbeat'
-
     if check_for_json(request):
         return check_for_json(request)
 
@@ -245,7 +243,7 @@ def vsoc_get_trustscore():
 @app.route('/rsu/misbehaviour', methods=['POST'])
 def rsu_misbehaviour():
     schema_path = './jsonschema/rsu/misbehaviour.json'
-    opentelemetrie_prefix = 'ab.heartbeat'
+    opentelemetrie_prefix = 'rsu.misbehaviour'
 
     if check_for_json(request):
         return check_for_json(request)
@@ -385,12 +383,11 @@ def check_for_json(request):
 def validate_json_with_schema(schema_path, json_dict):
     with open(schema_path, 'r') as f:
         schema = json.load(f)
-        # from jsonschema to handle ref resolution in jsonschema files
-        resolver = RefResolver(base_uri='file://' + os.path.dirname(os.path.realpath(__file__)) + '/jsonschema', referrer=schema)
+#        resolver = RefResolver(base_uri='file://' + os.path.dirname(os.path.realpath(__file__)) + '/jsonschema', referrer=schema)  # use with jsonschema refs
         try:
 #            validator = Draft7Validator(schema, resolver=resolver) # use with jsonschema refs
 #            validator.validate(json_dict)                          #
-            validate_json_with_schema(schema_path, json_dict)   # use without jsonschema refs
+            validate(instance=json_dict, schema=schema)   # use without jsonschema refs
             return True, None
         except ValidationError as e:
             return False, e.message
