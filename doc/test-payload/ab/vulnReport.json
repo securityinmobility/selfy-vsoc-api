@@ -1,0 +1,10 @@
+{
+  "AB_id": 1,
+  "timeStamp": "2023-11-21T06:14:00Z",
+  "VIN": "1234",
+  "scanType": 2,
+  "result": {
+    "hello": "there",
+    "2l": "33"
+  } 
+} 

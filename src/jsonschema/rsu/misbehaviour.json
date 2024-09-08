@@ -26,17 +26,25 @@
                 "description": "UNIX timestamp at which a message was obtained for said ID",
                 "type": "number",
                 "multipleOf": 0.001
-              },
-              "required": [ "id", "obtained_timestamp" ],
-              "additionalProperties": false
-            }
+              }
+            },
+            "required": [
+              "id",
+              "obtained_timestamp"
+            ],
+            "additionalProperties": false
           }
-        },
-        "required": [ "v2x_agent_ids" ],
-        "additionalProperties": false
-      }
+        }
+      },
+      "required": [
+        "v2x_agent_ids"
+      ],
+      "additionalProperties": false
     }
   },
-  "required": [ "type", "data" ],
+  "required": [
+    "type",
+    "data"
+  ],
   "additionalProperties": false
 }

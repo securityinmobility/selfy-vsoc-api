@@ -46,19 +46,19 @@
             "type": "string",
             "pattern": "^indicator--.*$"
           }
-        }
-      },
-      "required": [
-        "type",
-        "spec_version",
-        "id",
-        "created",
-        "modified",
-        "relationship_type",
-        "source_ref",
-        "target_ref"
-      ],
-      "additionalProperties": false
+        },
+        "required": [
+          "type",
+          "spec_version",
+          "id",
+          "created",
+          "modified",
+          "relationship_type",
+          "source_ref",
+          "target_ref"
+        ],
+        "additionalProperties": false
+      }
     },
     "indicator": {
       "type": "object",
@@ -222,11 +222,11 @@
         "bytes_received"
       ],
       "additionalProperties": false
-    },
-    "required": [
-      "relationships",
-      "indicator"
-    ],
-    "additionalProperties": false
-  }
+    }
+  },
+  "required": [
+    "relationships",
+    "indicator"
+  ],
+  "additionalProperties": false
 }

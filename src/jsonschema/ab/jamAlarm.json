@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "http://127.0.0.1:8000/ab/heartbeat",
-  "title": "heartbeat",
-  "description": "A heartbeat signal",
+  "title": "jamAlarm",
+  "description": "A jamming alarm",
   "type": "object",
   "properties": {
     "type": {
@@ -175,11 +175,11 @@
             "properties": {
               "type": {
                 "description": "property extension from the request (coming from the STIX format)",
-                "type": "string"
+                "const": "relationship"
               },
               "spec_version": {
                 "description": "version of the stix format",
-                "const": "relationship"
+                "type": "string"
               },
               "id": {
                 "type": "string",
