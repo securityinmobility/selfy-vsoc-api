@@ -142,7 +142,9 @@
               ],
               "additionalProperties": false
             }
-          }
+          },
+          "additionalProperties": false,
+          "minProperties": 1
         },
         "source_vehicle": {
           "description": "VIN of the source vehicle",
