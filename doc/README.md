@@ -6,12 +6,19 @@ This is the documentation of the VSOC API.
 
 # Structure
 
-This document contains general informations about api endpoints. Precise endpoint definitions can be found in
-the `./endpoint/` directory.
+This document contains general informations about api endpoints and precise information about `GET` requests towards the VSOC
+as well as the documentation of methods, which are automatically triggered by the VSOC internals. Precise endpoint definitions
+for `POST` requests towards the VSOC can be found in the `selfy-vsoc-api/doc/endpoint/` directory. I recommend the `html` version over the `md` version
+for readablity, but it cant be displayed within github.
 
-# Gen Docs
+*Note:* Methods handling `POST` requests differ only in the jsonscheme against which they are tested. The documentation is also
+generated from these schemes (find: `selfy-vsoc-api/src/jsonschema`)
 
-Run the following commands to generate the endoint documentation.
+*Limitation:* Currently jsonschema refs break the `validate_json_with_schema` method.
+
+# Generate Endpoint-Docs
+
+Move to `selfy-vsoc-api/doc`, then run the following commands to generate the endoint documentation for `POST` requests twards the VSOC.
 
 ```shell
 deactivate
@@ -23,7 +30,7 @@ pip3 install json-schema-for-humans
 
 *Note:* Remember to reaktivate the correct venv afterwards
 
-# Responses
+# `POST` Responses
 
 Each response contains three properties:
 
@@ -39,20 +46,24 @@ In case everything goes as expected a copy of the received data is sent back in 
 no JSON was received status code 415 will appear and if the JSON is formatted incorrectly, an error message is
 transmitted in the data-property with status code 400.
 
-# SOTA (Software over the air)
+# Internally triggered Methods
+
+These methods are triggered by the VSOC-internals without using the HTTP REST interface, therefor no `POST` or `GET` method is involved.
+
+## SOTA (Software over the air)
 
 The endpoint `/sota` describes requests targeting the SOTA infrastructure that runs [Uptane](https://uptane.org/).
 
-## Requesting an update
+### Requesting an update
 
 In order to request an update the VSOC introduces the function `sota_request_update(vin, action)` that takes the Vehicle
 Identification Number (`VIN`) and the `action` as an input. The `action` parameter is currently implementing the
 following keys: 1 update, 0 nothing, 2 tbd.
 
-**Important**: The function is triggered automatically by the VSOC internals without using the HTTP REST interface. So
-no `POST` or `GET` method is used.
-
-### JSON schema
+<details>
+  <summary>
+    <b>JSON Example</b>
+  </summary>
 
 An example of the request from the VSOC to the SOTA:
 
@@ -67,51 +78,20 @@ An example of the request from the VSOC to the SOTA:
   "deviceMetadata": "Such nice metadata"
 }
 ```
-
-## Update status information
-
-`POST / sota/updateInfo`
-
-The function `sota_receive_info()`describes the HTTP REST `POST` method to send information from the SOTA to the VSOC.
-This information contains the current status of a requested update.
-
-The function takes no parameters and is constructed by the SOTA infrastructure as a `POST` request towards the VSOC
-endpoint.
-
-<details>
-    <summary>
-        <span style="font-size: large; ">Examples</span>
-    </summary>
-Request with expected Response: OK - 200
-<pre>
-    <code>
-{
-  "selfy_id": 8, 
-  "timeStamp": "2023-11-21T06:14:00Z", 
-  "message": {
-    "vin": "2a910ebe-b39a-4813-9992-373738ab4599", 
-    "action": 1, 
-    "deviceID": "8", 
-    "status": 2, 
-    "deviceMetadata": "Such nice metadata"
-  }
-}
-</code>
-</pre>
 </details>
 
-# RAS (Remote Attestation Service)
+## RAS (Remote Attestation Service)
 
-## Remote attestation request
+### Remote attestation request
 
 In order to request an attestation, the VSOC introduces the function `ras_attestation_request(target)` that takes
 the `target` identified as an input. The `target` parameter is the SELFY tool ID. For example, `ID08` for the VSOC.
 
-**Important**: The function is triggered automatically by the VSOC internals without using the HTTP REST interface. So
-no `POST` or `GET` method is used.
-
-### JSON schema
-
+<details>
+  <summary>
+    <b>JSON Example</b>
+  </summary>
+  
 An example request send from the VSOC to the RAS:
 
 ```
@@ -122,44 +102,21 @@ An example request send from the VSOC to the RAS:
     "nonce": "f9bf78b9a18ce6d46a0cd2b0b86df9da"  
 } 
 ```
-
-## Remote attestation result
-
-`POST / ras/attestationResult`
-
-The VSOC is introducing an HTTP REST endpoint where the RAS can send a `POST` request containing attestation results.
-This function is called `ras_attestation_result()` in the VSOC.
-
-<details>
-    <summary>
-        <span style="font-size: large; ">Examples</span>
-    </summary>
-Request with expected Response: OK - 200
-<pre>
-    <code>
-{  
-    "verifier": "ID18",  
-    "VSOC": "ID08",  
-    "target_tool": "ID19",  
-    "state": 0,  
-    "nonce": "f9bf78b9a18ce6d46a0cd2b0b86df9da",  
-    "created": "2023-06-05 12:00:00 UTC"
-}
-</code>
-</pre>
 </details>
 
-# AIS (Artificial Immune System)
+## AIS (Artificial Immune System)
 
-## Changing the configuration
+### Changing the configuration
 
 The VSOC can request to change the configuration of the AIS. For this, the function `ais_change_config(ais_id, config)`
 is used. The `ais_id` is the unique identified of the AIS and the `config` parameter contain the new configuration.
 
-**Important**: The function is triggered automatically by the VSOC internals without using the HTTP REST interface. So
-no `POST` or `GET` method is used.
+<details>
+  <summary>
+    <b>JSON Example</b>
+  </summary>
 
-### JSON schema
+An example of the request from the VSOC to the AIS:
 
 ```
     "version": "1.0", 
@@ -178,201 +135,11 @@ no `POST` or `GET` method is used.
     }, 
     "args": "cfg"
 ```
-
-## Deviation unknown
-
-`POST / ais/deviationUnknown`
-
-The VSOC also receives information from the AIS. For this, the function `ais_deviation_unknown()` to get information
-from the AIS for an unknown deviation. The request is a `POST` request from the AIS to the VSOC.
-
-<details>
-    <summary>
-        <span style="font-size: large; ">Examples</span>
-    </summary>
-Request with expected Response: OK - 200
-<pre>
-    <code>
-{ 
-  "type": "indicator", 
-  "spec_version": "2.1", 
-  "id": "indicator--e5c3e257-031f-4df1-88a3-19bbd25acacc", 
-  "created": "2024-03-12T12:39:25.652229Z", 
-  "modified": "2024-03-12T12:39:25.652229Z", 
-  "name": "Anomaly detection", 
-  "description": "An immunological algorithm detected a deviation in real-time dataset.", 
-  "indicator_types": [ "anomalous-activity" ], 
-  "pattern": "[network-traffic:src_ref.value = '172.20.48.79' AND network-traffic:dst_ref.value = '192.168.1.100' AND network-traffic:src_port = '12345' AND network-traffic:dst_port = '80' AND network-traffic:protocol_type = 'TCP' AND network-traffic:service = 'HTTP' AND network-traffic:flag = 'SYN']", 
-  "pattern_type": "stix", 
-  "pattern_version": "2.1", 
-  "valid_from": "2024-03-12T12:39:25.652229Z", 
-  "valid_until": "2024-03-19T12:39:25Z", 
-  "labels": [ "deviation" ], 
-  "extensions": { 
-    "extension-definition--a3854a11-7367-49cb-ad3f-1a3f05bfd58a": { 
-      "extension_type": "toplevel-property-extension"
-    }
-  }, 
-  "source_vehicle": "12", 
-  "source_ais": "24", 
-  "source_rsu": "55", 
-  "src_ip": "172.20.48.79", 
-  "dst_ip": "192.168.1.100", 
-  "src_port": "12345", 
-  "dst_port": "80", 
-  "protocol_type": "TCP", 
-  "service": "HTTP", 
-  "flag": "SYN", 
-  "connection_duration": "120", 
-  "bytes_sent": "1000", 
-  "bytes_received": "500"
-}
-</code>
-</pre>
 </details>
 
-## Deviation known
+# `GET` Endpoints
 
-`POST / ais/deviationKnown`
-
-The VSOC also receives information from the AIS. For this, the function `ais_deviation_known()` to get information from
-the AIS for an known deviation. The request is a `POST` request from the AIS to the VSOC.
-
-<details>
-    <summary>
-        <span style="font-size: large; ">Examples</span>
-    </summary>
-Request with expected Response: OK - 200
-<pre>
-    <code>
-TBD
-</code>
-</pre>
-</details>
-
-# AB (Audit Box)
-
-## Heartbeat
-
-`POST / ab/heartbeat`
-
-The AB will send a periodic heartbeat to the VSOC.
-
-<details>
-    <summary>
-        <span style="font-size: large; ">Examples</span>
-    </summary>
-Request with expected Response: OK - 200
-<pre>
-    <code>
-{
-  "AB_id": 1,
-  "timeStamp": "2023-11-21T06:14:00Z",
-  "DTCs": "1234",
-  "lastResetTimeStamp": "2023-11-21T06:14:00Z",
-  "lastResetCause": 1
-}  
-</code>
-</pre>
-</details>
-
-## Vulnerability Report
-
-`POST / ab/vulnReport`
-
-The AB sends a Vulnerability Report about a requested or KO vehicle.
-
-<details>
-    <summary>
-        <span style="font-size: large; ">Examples</span>
-    </summary>
-Request with expected Response: OK - 200
-<pre>
-    <code>
-{
-  "AB_id": 1,
-  "timeStamp": "2023-11-21T06:14:00Z",
-  "VIN": "1234",
-  "scanType": 2,
-  "result": {
-    "hello": "there",
-    "2l": "33"
-  } 
-} 
-</code>
-</pre>
-</details>
-
-## Jamming Alarm
-
-`POST / ab/jamAlarm`
-
-The AB sends a Jammang Alarm to the VSOC when it detects a Jamming situation.
-
-<details>
-    <summary>
-        <span style="font-size: large; ">Examples</span>
-    </summary>
-Request with expected Response: OK - 200
-<pre>
-    <code>
-{
-  "type": "bundle",
-  "id": "bundle--97b40f76-c1b8-4407-b050-ff177f3d67ed",
-  "objects": [
-    {
-      "type": "identity",
-      "spec_version": "2.1",
-      "id": "identity--8c6af861-7b20-41ef-9b59-6344fd872a8f",
-      "created": "2016-08-08T15:50:10.983Z",
-      "modified": "2016-08-08T15:50:10.983Z",
-      "name": "Audit Box SELFY Solution",
-      "description": "28"
-    },
-    {
-      "type": "attack-pattern",
-      "spec_version": "2.1",
-      "id": "attack-pattern--19da6e1c-71ab-4c2f-886d-d620d09d3b5a",
-      "created": "2016-08-08T15:50:10.983Z",
-      "modified": "2017-01-30T21:15:04.127Z",
-      "name": "Jamming",
-      "external_references": [
-        {
-          "source_name": "capec",
-          "external_id": "CAPEC-601"
-        }
-      ]
-    },
-    {
-      "type": "intrusion-set",
-      "spec_version": "2.1",
-      "id": "intrusion-set--ed69450a-f067-4b51-9ba2-c4616b9a6713",
-      "created": "2016-08-08T15:50:10.983Z",
-      "modified": "2016-08-08T15:50:10.983Z",
-      "name": "Jamming",
-      "description": "Jamming situation detected near the Audit Box",
-      "first_seen": "2016-01-08T12:50:40.123Z",
-      "last_seen": "2016-01-08T12:50:40.123Z"
-    },
-    {
-      "type": "relationship",
-      "spec_version": "2.1",
-      "id": "relationship--06964095-5750-41fe-a9af-6c6a9d995489",
-      "created": "2020-02-29T17:41:44.940Z",
-      "modified": "2020-02-29T17:41:44.940Z",
-      "relationship_type": "uses",
-      "source_ref": "intrusion-set--ed69450a-f067-4b51-9ba2-c4616b9a6713",
-      "target_ref": "attack-pattern--19da6e1c-71ab-4c2f-886d-d620d09d3b5a"
-    }
-  ]
-}
-    </code>
-</pre>
-</details>
-
-# VSOC receiving endpoint
-
-The endpoint `/vsoc` implements different endpoints to receive data.
+The endpoint `/vsoc` implements different endpoints to receive data from the VSOC.
 
 ## Trust score
 
@@ -403,7 +170,12 @@ REST `GET` request and is implemented in the VSOC by the `vsoc_get_trustscore()`
 
 </details>
 
-# RSU (deprecated)
+<details>
+  <summary>
+    <h1>Deprecated</h1>
+  </summary>
+
+  ## RSU (deprecated)
 
 The roadside unit (RSU) collects data from V2X systems, collects them, and performs analysis. The component sends and
 receives data.
@@ -1499,4 +1271,5 @@ http
 ...
 ```
 
+</details>
 </details>
