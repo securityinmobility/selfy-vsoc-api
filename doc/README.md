@@ -46,6 +46,10 @@ In case everything goes as expected a copy of the received data is sent back in 
 no JSON was received status code 415 will appear and if the JSON is formatted incorrectly, an error message is
 transmitted in the data-property with status code 400.
 
+# `POST` Test Payload
+
+The directory `selfy-vsoc-api/doc/test-payload` contains a JSON file for each `POST` endpoint, returning Status Code 200.
+
 # Internally triggered Methods
 
 These methods are triggered by the VSOC-internals without using the HTTP REST interface, therefor no `POST` or `GET` method is involved.
