@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "relationship_dictionary.json",
+  "title": "relationship_dictionary",
+  "type": "object",
+  "properties": {
+    "type": {
+      "description": "property extension from the request (coming from the STIX format)",
+      "type": "string"
+    },
+    "spec_version": {
+      "description": "version of the stix format",
+      "const": "relationship"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^relationship--.*$"
+    },
+    "created": {
+      "description": "timestamp of the creation in ISO-8601 (UTC)",
+      "type": "string",
+      "format": "date-time"
+    },
+    "modified": {
+      "description": "timestamp of the modification in ISO-8601 (UTC)",
+      "type": "string",
+      "format": "date-time"
+    },
+    "relationship_type": {
+      "description": "relationship type of the deviation",
+      "type": "string"
+    },
+    "source_ref": {
+      "description": "reference to the source indicator",
+      "type": "string",
+      "pattern": "^indicator--.*$"
+    },
+    "target_ref": {
+      "description": "reference to the target indicator",
+      "type": "string",
+      "pattern": "^indicator--.*$"
+    }
+  },
+  "required": [ "type", "spec_version", "id", "created", "modified", "relationship_type", "source_ref", "target_ref" ],
+  "additionalProperties": false
+}

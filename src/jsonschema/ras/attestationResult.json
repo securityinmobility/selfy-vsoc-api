@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "http://127.0.0.1:8000/ras/attestationResult",
+  "title": "attestationResult",
+  "description": "attestationResult endpoint for the RAS infrastructure",
+  "anyOf": [
+    {
+      "title": "Vehicle is OK",
+      "type": "object",
+      "properties": {
+        "verifier": {
+          "description": "ID of the verifier (usually ID18)",
+          "type": "string"
+        },
+        "VSOC": {
+          "description": "ID of the VSOC (usually ID08)",
+          "type": "string"
+        },
+        "target_tool": {
+          "description": "ID of the tool for the RAS result",
+          "type": "string"
+        },
+        "state": {
+          "description": "status of the attestation result",
+          "type": "integer",
+          "minimum": 0
+        },
+        "nonce": {
+          "description": "random nonce of the request",
+          "type": "string"
+        },
+        "created": {
+          "description": "timestamp of the message in ISO-8601 (UTC)",
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [ "verifier", "VSOC", "target_tool", "state", "nonce", "created" ],
+      "additionalProperties": false
+    }
+  ]
+}

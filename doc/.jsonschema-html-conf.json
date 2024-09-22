@@ -1,0 +1,12 @@
+{
+    "template_name": "js",
+    "descripiton_is_markdown": true,
+    "expand_buttons": true,
+    "collapse_long_descriptions": true,
+    "collapse_long_examples": true,
+    "link_to_reused_ref": true,
+    "default_from_description": true,
+    "show_toc": true,
+    "with_footer": true,
+    "footer_show_time": true
+}

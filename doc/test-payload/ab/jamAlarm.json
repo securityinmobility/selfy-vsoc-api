@@ -1,0 +1,47 @@
+{
+  "type": "bundle",
+  "id": "bundle--e5c3e257-031f-4df1-88a3-19bbd25acacc",
+  "objects": [
+    {
+      "type": "identity",
+      "spec_version": "2.1",
+      "id": "identity--e5c3e257-031f-4df1-88a3-19bbd25acacc",
+      "created": "2024-03-12T12:39:25.652229Z",
+      "modified": "2024-03-12T12:39:25.652229Z", 
+      "name": "Audit Box SELFY Solution",
+      "description": "xyz"
+    },
+    {
+      "type": "attack-pattern",
+      "spec_version": "2.1",
+      "id": "attack-pattern--e5c3e257-031f-4df1-88a3-19bbd25acacc",
+      "created": "2024-03-12T12:39:25.652229Z",
+      "modified": "2024-03-12T12:39:25.652229Z", 
+      "name": "Jamming",
+      "external_references": [{
+        "source_name": "xyz",
+        "external_id": "xyz"
+      }]
+    },
+    {
+      "type": "intrusion-set",
+      "spec_version": "2.1",
+      "id": "intrusion-set--e5c3e257-031f-4df1-88a3-19bbd25acacc",
+      "created": "2024-03-12T12:39:25.652229Z",
+      "modified": "2024-03-12T12:39:25.652229Z", 
+      "name": "Jamming",
+      "description": "Jamming situation detected near the Audit Box",
+      "first_seen": "2024-03-12T12:39:25.652229Z"
+    },
+    {
+      "type": "relationship",
+      "spec_version": "2.1", 
+      "id": "relationship--e5c3e257-031f-4df1-88a3-19bbd25acacc", 
+      "created": "2024-03-12T12:39:25.652229Z", 
+      "modified": "2024-03-12T12:39:25.652229Z",
+      "relationship_type": "3",
+      "source_ref": "indicator--e5c3e257-031f-4df1-88a3-19bbd25acacc",
+      "target_ref": "indicator--e5c3e257-031f-4df1-88a3-19bbd25acacc"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{ 
+  "type": "indicator", 
+  "spec_version": "2.1", 
+  "id": "indicator--e5c3e257-031f-4df1-88a3-19bbd25acacc", 
+  "created": "2024-03-12T12:39:25.652229Z", 
+  "modified": "2024-03-12T12:39:25.652229Z", 
+  "name": "Anomaly detection", 
+  "description": "An immunological algorithm detected a deviation in real-time dataset.", 
+  "indicator_types": [ "anomalous-activity" ], 
+  "pattern": "[network-traffic:src_ref.value = '172.20.48.79' AND network-traffic:dst_ref.value = '192.168.1.100' AND network-traffic:src_port = '12345' AND network-traffic:dst_port = '80' AND network-traffic:protocol_type = 'TCP' AND network-traffic:service = 'HTTP' AND network-traffic:flag = 'SYN']", 
+  "pattern_type": "stix", 
+  "pattern_version": "2.1", 
+  "valid_from": "2024-03-12T12:39:25.652229Z", 
+  "valid_until": "2024-03-19T12:39:25Z", 
+  "labels": [ "deviation" ], 
+  "extensions": { 
+    "extension-definition--a3854a11-7367-49cb-ad3f-1a3f05bfd58a": { 
+      "extension_type": "toplevel-property-extension"
+    }
+  }, 
+  "source_vehicle": "12", 
+  "source_ais": "24", 
+  "source_rsu": "55", 
+  "src_ip": "172.20.48.79", 
+  "dst_ip": "192.168.1.100", 
+  "src_port": "12345", 
+  "dst_port": "80", 
+  "protocol_type": "TCP", 
+  "service": "HTTP", 
+  "flag": "SYN", 
+  "connection_duration": "120", 
+  "bytes_sent": "1000", 
+  "bytes_received": "500"
+}

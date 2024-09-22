@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "http://127.0.0.1:8000/ais/deviationUnknown",
+  "title": "deviationUnknown",
+  "description": "The VSOC also receives information from the AIS. For this, the function ais_deviation_unknown() to get information from the AIS for an unknown deviation. The request is a POST request from the AIS to the VSOC.",
+  "ref": "./indicator_dictionary.json"
+}
