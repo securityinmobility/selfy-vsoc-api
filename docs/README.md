@@ -5,10 +5,64 @@
 This is the documentation of the VSOC API.
 
 # Structure
-
+Currently the binaryscanning documentation as well as the endpoint documentation with its respected test-payloads can be found in the docs folder
+```shell
+docs                        # generated using the tree command
+|-- README.md
+|-- binaryscanning
+|   |-- index.html
+|   `-- openapi.yaml
+|-- endpoints
+|   |-- ab
+|   |   |-- heartbeat.html
+|   |   |-- heartbeat.md
+|   |   |-- jamAlarm.html
+|   |   |-- jamAlarm.md
+|   |   |-- vulnReport.html
+|   |   `-- vulnReport.md
+|   |-- ais
+|   |   |-- deviationKnown.html
+|   |   |-- deviationKnown.md
+|   |   |-- deviationUnknown.html
+|   |   |-- deviationUnknown.md
+|   |   |-- ref-deviationKnown.html
+|   |   |-- ref-deviationKnown.md
+|   |   |-- ref-deviationUnknown.html
+|   |   |-- ref-deviationUnknown.md
+|   |   |-- ref-indicator_dictionary.html
+|   |   |-- ref-indicator_dictionary.md
+|   |   |-- ref-relationship_dictionary.html
+|   |   `-- ref-relationship_dictionary.md
+|   |-- ras
+|   |   |-- attestationResult.html
+|   |   `-- attestationResult.md
+|   |-- rsu
+|   |   |-- misbehaviour.html
+|   |   `-- misbehaviour.md
+|   |-- schema_doc.css
+|   |-- schema_doc.min.js
+|   `-- sota
+|       |-- updateInfo.html
+|       `-- updateInfo.md
+|-- gen-doc-endpoints.sh
+`-- test-payload
+    |-- ab
+    |   |-- heartbeat.json
+    |   |-- jamAlarm.json
+    |   `-- vulnReport.json
+    |-- ais
+    |   |-- deviationKnown.json
+    |   `-- deviationUnknown.json
+    |-- ras
+    |   `-- attestationResult.json
+    |-- rsu
+    |   `-- misbehaviour.json
+    `-- sota
+        `-- updateInfo.json
+```
 This document contains general informations about api endpoints and precise information about `GET` requests towards the VSOC
 as well as the documentation of methods, which are automatically triggered by the VSOC internals. Precise endpoint definitions
-for `POST` requests towards the VSOC can be found in the `selfy-vsoc-api/doc/endpoint/` directory. I recommend the `html` version over the `md` version
+for `POST` requests towards the VSOC can be found in the `docs/endpoint/` directory. I recommend the `html` version over the `md` version
 for readablity, but it cant be displayed within github.
 
 *Note:* Methods handling `POST` requests differ only in the jsonscheme against which they are tested. The documentation is also
@@ -18,7 +72,7 @@ generated from these schemes (find: `selfy-vsoc-api/src/jsonschema`)
 
 # Generate Endpoint-Docs
 
-Move to `selfy-vsoc-api/doc`, then run the following commands to generate the endoint documentation for `POST` requests twards the VSOC.
+Move to `selfy-vsoc-api/docs`, then run the following commands to generate the endoint documentation for `POST` requests twards the VSOC.
 
 ```shell
 deactivate
@@ -48,7 +102,7 @@ transmitted in the data-property with status code 400.
 
 # `POST` Test Payload
 
-The directory `selfy-vsoc-api/doc/test-payload` contains a JSON file for each `POST` endpoint, returning Status Code 200.
+The directory `docs/test-payload` contains a JSON file for each `POST` endpoint, returning Status Code 200.
 
 # Internally triggered Methods
 
