@@ -102,7 +102,28 @@ transmitted in the data-property with status code 400.
 
 # `POST` Test Payload
 
-The directory `docs/test-payload` contains a JSON file for each `POST` endpoint, returning Status Code 200.
+The directory `docs/test-payload` contains a JSON file for each `POST` endpoint, which should return Status Code 200 (Does currently not work for the endpoints `ais/deviationKnown` and `ab/jamAlarm`).
+Use the script `run-test-payload.sh` in order to test all endpoints with a test-payload and receive the Status Code. E.g.:
+```shell
+./run-test-payload.sh
+
+Testing endpoint: http://localhost:8000/ab/heartbeat
+Status: 200
+Testing endpoint: http://localhost:8000/ab/jamAlarm
+Status: 400
+Testing endpoint: http://localhost:8000/ab/vulnReport
+Status: 200
+Testing endpoint: http://localhost:8000/rsu/misbehaviour
+Status: 200
+Testing endpoint: http://localhost:8000/ras/attestationResult
+Status: 200
+Testing endpoint: http://localhost:8000/ais/deviationKnown
+Status: 400
+Testing endpoint: http://localhost:8000/ais/deviationUnknown
+Status: 200
+Testing endpoint: http://localhost:8000/sota/updateInfo
+Status: 200
+```
 
 # Internally triggered Methods
 
