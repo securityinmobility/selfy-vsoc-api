@@ -178,7 +178,8 @@ An example request send from the VSOC to the RAS:
     "target_tool": "ID19",  
     "verifier": "ID18",  
     "VSOC": "ID08",  
-    "nonce": "f9bf78b9a18ce6d46a0cd2b0b86df9da"  
+    "nonce": "f9bf78b9a18ce6d46a0cd2b0b86df9da",
+    "VIN": "WAUU123456789"
 } 
 ```
 </details>
