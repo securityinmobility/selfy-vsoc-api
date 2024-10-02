@@ -7,6 +7,7 @@
   - [1.4. [Required] Property attestationResult > anyOf > Vehicle is OK > state](#anyOf_i0_state)
   - [1.5. [Required] Property attestationResult > anyOf > Vehicle is OK > nonce](#anyOf_i0_nonce)
   - [1.6. [Required] Property attestationResult > anyOf > Vehicle is OK > created](#anyOf_i0_created)
+  - [1.7. [Optional] Property attestationResult > anyOf > Vehicle is OK > VIN](#anyOf_i0_VIN)
 
 **Title:** attestationResult
 
@@ -143,9 +144,26 @@
 </blockquote>
 </details>
 
+<details>
+<summary>
+<strong> <a name="anyOf_i0_VIN"></a>1.7. [Optional] Property attestationResult > anyOf > Vehicle is OK > VIN</strong>  
+
+</summary>
+<blockquote>
+
+|              |          |
+| ------------ | -------- |
+| **Type**     | `string` |
+| **Required** | No       |
+
+**Description:** vehicle identification number of the vehicle
+
+</blockquote>
+</details>
+
 </blockquote>
 
 </blockquote>
 
 ----------------------------------------------------------------------------------------------------------------------------
-Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2024-09-13 at 16:00:42 +0200
+Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2024-10-01 at 15:17:02 +0200

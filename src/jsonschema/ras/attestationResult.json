@@ -33,6 +33,10 @@
           "description": "timestamp of the message in ISO-8601 (UTC)",
           "type": "string",
           "format": "date-time"
+        },
+        "VIN": {
+            "description": "vehicle identification number of the vehicle",
+            "type": "string"
         }
       },
       "required": [ "verifier", "VSOC", "target_tool", "state", "nonce", "created" ],
