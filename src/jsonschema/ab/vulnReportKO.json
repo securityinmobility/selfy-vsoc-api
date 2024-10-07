@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "http://127.0.0.1:8000/ab/heartbeat",
-  "title": "jamAlarm",
-  "description": "A jamming alarm",
+  "$id": "http://127.0.0.1:8000/ab/vulnReportKO",
+  "title": "vulnReportKO",
+  "description": "A vulnerability report that is not ok",
   "type": "object",
   "properties": {
     "type": {
@@ -47,6 +47,10 @@
               },
               "description": {
                 "type": "string"
+              },
+              "identity_class": {
+                "description": "vehicle identification number (VIN)",
+                "type": "string"
               }
             },
             "required": [
@@ -56,7 +60,8 @@
               "created",
               "modified",
               "name",
-              "description"
+              "description",
+              "identity_class"
             ],
             "additionalProperties": false
           },
@@ -64,8 +69,8 @@
             "type": "object",
             "properties": {
               "type": {
-                "description": "property extension from the request (coming from the STIX format)",
-                "const": "attack-pattern"
+                "description": "course of action from the request (coming from the STIX format)",
+                "const": "course-of-action"
               },
               "spec_version": {
                 "description": "version of the stix format",
@@ -86,7 +91,94 @@
                 "format": "date-time"
               },
               "name": {
-                "const": "Jamming"
+                "const": "80"
+              },
+              "description": {
+                "description": "describing the couse of action",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "spec_version",
+              "id",
+              "created",
+              "modified",
+              "name",
+              "description"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "description": "software from the request (coming from the STIX format)",
+                "const": "software"
+              },
+              "spec_version": {
+                "description": "version of the stix format",
+                "type": "string"
+              },
+              "id": {
+                "type": "string",
+                "pattern": "^software--.*$"
+              },
+              "name": {
+                "const": "Software"
+              },
+              "vendor": {
+                "description": "vendor of the software",
+                "type": "string"
+              },
+              "version": {
+                "description": "software version",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "spec_version",
+              "id",
+              "name",
+              "vendor",
+              "version"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "description": "vulnerability from the request (coming from the STIX format)",
+                    "const": "vulnerability"
+                },
+              "spec_version": {
+                "description": "version of the stix format",
+                "type": "string"
+              },
+              "id": {
+                "type": "string",
+                "pattern": "^vulnerability--.*$"
+              },
+              "created": {
+                "description": "timestamp of the creation in ISO-8601 (UTC)",
+                "type": "string",
+                "format": "date-time"
+              },
+              "modified": {
+                "description": "timestamp of the modification in ISO-8601 (UTC)",
+                "type": "string",
+                "format": "date-time"
+              },
+              "name": {
+                  "description": "cve name",
+                  "type": "string",
+                  "pattern": "^CVE-.*$"
+              },
+              "description": {
+                  "description": "description of the CVE",
+                  "type": "string"
               },
               "external_references": {
                 "type": "array",
@@ -111,64 +203,9 @@
               "created",
               "modified",
               "name",
-              "external_references"
+              "description"
             ],
             "additionalProperties": false
-          },
-          {
-            "type": "object",
-            "properties": {
-              "type": {
-                "description": "property extension from the request (coming from the STIX format)",
-                "const": "intrusion-set"
-              },
-              "spec_version": {
-                "description": "version of the stix format",
-                "type": "string"
-              },
-              "id": {
-                "type": "string",
-                "pattern": "^intrusion-set--.*$"
-              },
-              "created": {
-                "description": "timestamp of the creation in ISO-8601 (UTC)",
-                "type": "string",
-                "format": "date-time"
-              },
-              "modified": {
-                "description": "timestamp of the modification in ISO-8601 (UTC)",
-                "type": "string",
-                "format": "date-time"
-              },
-              "name": {
-                "const": "Jamming"
-              },
-              "description": {
-                "const": "Jamming situation detected near the Audit Box"
-              },
-              "first_seen": {
-                "description": "timestamp in ISO-8601 (UTC)",
-                "type": "string",
-                "format": "date-time"
-              }
-            },
-            "required": [
-              "type",
-              "spec_version",
-              "id",
-              "created",
-              "modified",
-              "name",
-              "description",
-              "first_seen"
-            ],
-            "additionalProperties": {
-              "last_seen": {
-                "description": "timestamp in ISO-8601 (UTC)",
-                "type": "string",
-                "format": "date-time"
-              }
-            }
           },
           {
             "type": "object",

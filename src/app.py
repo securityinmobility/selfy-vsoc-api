@@ -4,7 +4,7 @@ import json
 from jsonschema import validate, ValidationError, RefResolver, Draft7Validator
 import os
 import requests
-import time
+from datetime import datetime
 import uuid
 import json
 import http.client
@@ -49,11 +49,10 @@ def sota_request_update(vin, action):
     """
     Requests and update to the SOTA infrastructure.
 
-    :param vin: vehicle identification number
-    :param action: 1 update, 0 nothing, 2 tbd
+    :param vin: vehicle identification number (string)
+    :param action: 1 update, 0 nothing, 2 tbd (integer)
     """
-    # {"toolId": 8, "timeStamp": "2023-11-21T06:14:00Z", "VIN": "2a910ebe-b39a-4813-9992-373738ab4599", "action": 1}
-    req_obj = {"toolId": 8, "timeStamp": str(time.time()), "VIN": str(vin), "action": action}
+    req_obj = {"toolId": 8, "timeStamp": datetime.now().replace(microsecond=0).isoformat()+"Z", "VIN": str(vin), "action": action}
 
     response = requests.get(sota_endpoint, json=req_obj)
     return Response(
@@ -88,7 +87,7 @@ def ras_attestation_request(target):
     """
 
     nonce = uuid.uuid4().hex
-    req_obj = {"target_tool": target, "timeStamp": str(time.time()), "verifier": "ID18", "VSOC": "ID08", "nonce": nonce}
+    req_obj = {"target_tool": target, "timeStamp": datetime.now().replace(microsecond=0).isoformat()+"Z", "verifier": "ID18", "VSOC": "ID08", "nonce": nonce}
     response = requests.get(ras_endpoint, json=req_obj)
     return Response(
         response.text,
@@ -180,16 +179,18 @@ def ais_deviation_known():
 
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
-def ab_trigger_audit(vin, scan_type):
+def ab_trigger_audit(ab_id, priority, vin, scan_type):
     """
     Trigger an audit to audit a vehicle with a specific VIN.
 
-    :param vin: vehicle identification number
-    :param scan_type: type of scan; 1 is fast scan, 2 is deep scan
+    :param ab_id: ID of the audit box (integer)
+    :param priority: priorty value of the can (integer)
+    :param vin: vehicle identification number (string)
+    :param scan_type: type of scan; 1 is fast scan, 2 is deep scan (integer)
     """
-    req_obj = {"AB_id": 28, "timeStamp": str(time.time()), "VIN": str(vin), "scanType": scan_type, "priority": 1}
+    req_obj = {"AB_id": ab_id, "timeStamp": datetime.now().replace(microsecond=0).isoformat()+"Z", "VIN": str(vin), "scanType": scan_type, "priority": priority}
 
-    response = requests.get(sota_endpoint, json=req_obj)
+    response = requests.get(ab_endpoint, json=req_obj)
     return Response(
         response.text,
         status=response.status_code,
@@ -209,6 +210,17 @@ def ab_vulnReport():
 
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
+@app.route('/ab/vulnReportKO', methods=['POST'])
+def ab_vulnReportKO():
+    schema_path = './jsonschema/ab/vulnReportKO.json'
+    opentelemetrie_prefix = 'ab.vulnReportKO'
+
+    if check_for_json(request):
+        return check_for_json(request)
+
+    request_json = request.get_json()
+
+    return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
 @app.route('/ab/jamAlarm', methods=['POST'])
 def ab_jamAlarm():
@@ -233,9 +245,35 @@ def ab_heartbeat():
 
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
-app.route('/vsoc/getTrustScore', methods=['GET'])
+
+def ab_set_config(ab_id, config_status, new_ab_id, enable, selective_mode, reset, stoprq, mintime, jamfreq, hbfreq, audittechs):
+    """
+    Set the configuration of an audit box.
+
+    :param ab_id: ID of the Audit Box
+    :param config_status: (0 or 1) 1 means the VSOC wants to know current configuration status
+    :param new_ab_id: if this field is filled, then the VSOC assigns a new AB_id to the Audit Box
+    :param enable: (0 or 1) 1 is Enable, 0 is Disable
+    :param selective_mode: (0 or 1): 1 means that Audit Box only audits (exclusively) the IDs selected by the VSOC. 0 means that the Audit Box will audit with priority the IDs selected by the VSOC but also will audit the rest of IDs (without priority)
+    :param reset: 1 forces a reset on the Audit Box. 0 makes nothing
+    :param mintime: parameter with the minimum time it has to happen to re-scan a vehicle (By default 10 minutes)
+    :param stoprq: 1 or 0 . If the value is 1 the VSOC can reset all previous scan triggers
+    :param jamfreq: is the parameter defined for this function The jamming signal is sent immediately after a jamming detection and it is sent every JAMSIGFREQ minutes to the VSOC (by default every 5 minutes) until the jamming is over. Minimum 0 and Maximum 255 minutes. (unsigned char) 
+    :param hbfreq: by default 1 minute. (Minimum is 1 and Maximum 255 minutes) (unsigned char) 
+    :param audittechs: this field says to the Audit Box which technologies have to be audited
+    """
+    req_obj = {"AB_id": ab_id, "timeStamp": datetime.now().replace(microsecond=0).isoformat()+"Z", "config_status": config_status, "new_ab_id": new_ab_id, "enable": enable, "selective_mode": selective_mode, "reset": reset, "STOPALLREQUESTS": stoprq, "MINTIMETORESCAN": mintime, "JAMSIGFREQ": jamfreq, "HEARTBEATFREQ": hbfreq, "AUDITTECHS": audittechs,}
+
+    response = requests.get(ab_endpoint, json=req_obj)
+    return Response(
+        response.text,
+        status=response.status_code,
+        content_type=response.headers['content-type'],
+    )
 
 
+
+@app.route('/vsoc/getTrustScore', methods=['GET'])
 def vsoc_get_trustscore():
     """
     Getting the trust-score for a specific entity and distributing it.
