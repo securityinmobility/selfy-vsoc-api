@@ -108,8 +108,148 @@ def ras_attestation_result():
 
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
+# AIS start process
+# curl -X POST "http://127.0.0.1:4202/api/start_process/" -H "Content-Type: application/json" -d
+def ais_start_process(nproc, asset_id):
+    """
+    Start the AIS process with a specific process name.
 
-def ais_change_config(ais_id, config):
+    :param nproc: name of the process to start.
+    :param asset_id: url of the actuator endpoint.
+    """
+
+    req_obj = {
+            "id": "04be1c1b-0d81-400b-9085-015a7746e401",
+            "action": "start",
+            "target": {
+                "process": {
+                    "name": str(nproc)
+                    }
+                },
+            "actuator": {
+                "endpoint": {
+                    "asset_id": str(asset_id)
+                    }
+                }
+            }
+    response = requests.get(ais_endpoint, json=req_obj)
+    return Response(
+        response.text,
+        status=response.status_code,
+        content_type=response.headers['content-type'],
+    )
+
+
+# AIS stop process
+# curl -X POST "http://127.0.0.1:4202/api/stop_process/" -H "Content-Type: application/json" -d
+def ais_stop_process(nproc, asset_id):
+    """
+    Stop the AIS process with a specific process name.
+
+    :param nproc: name of the process to start.
+    :param asset_id: url of the actuator endpoint.
+    """
+
+    req_obj = {
+            "id": "04be1c1b-0d81-400b-9085-015a7746e401",
+            "action": "stop",
+            "target": {
+                "process": {
+                    "name": str(nproc)
+                    }
+                },
+            "actuator": {
+                "endpoint": {
+                    "asset_id": str(asset_id)
+                    }
+                }
+            }
+    response = requests.get(ais_endpoint, json=req_obj)
+    return Response(
+        response.text,
+        status=response.status_code,
+        content_type=response.headers['content-type'],
+    )
+
+# AIS train
+# curl -X POST "http://127.0.0.1:4202/api/train_process/" -H "Content-Type: application/json" -d
+def ais_train_process(nproc, asset_id):
+    """
+    Stop the AIS process with a specific process name.
+
+    :param nproc: name of the process to start.
+    :param asset_id: url of the actuator endpoint.
+    """
+
+    req_obj = {
+            "id": "04be1c1b-0d81-400b-9085-015a7746e401",
+            "action": "train",
+            "target": {
+                "process": {
+                    "name": str(nproc)
+                    }
+                },
+            "actuator": {
+                "endpoint": {
+                    "asset_id": str(asset_id)
+                    }
+                }
+            }
+    response = requests.get(ais_endpoint, json=req_obj)
+    return Response(
+        response.text,
+        status=response.status_code,
+        content_type=response.headers['content-type'],
+    )
+
+# AIS finetune
+# curl -X POST "http://127.0.0.1:4202/api/finetune_process/" -H "Content-Type: application/json" -d
+def ais_finetune(nproc, asset_id, args):
+    """
+    Stop the AIS process with a specific process name.
+
+    :param nproc: name of the process to start.
+    :param asset_id: url of the actuator endpoint.
+    :param args: argument to set finetuning options.
+    """
+
+    if args == "":
+        args = {    
+                "max_detectors_from": "1024",
+                "max_detectors_to": "2048",
+                "max_attempts_from": "10",
+                "max_attempts_to": "10",
+                "threshold_1_from": "0.01",
+                "threshold_1_to": "0.10",
+                "threshold_2_from": "1",
+                "threshold_2_to": "9"
+                }
+
+    req_obj = {
+            "id": "04be1c1b-0d81-400b-9085-015a7746e401",
+            "action": "finetune",
+            "target": {
+                "process": {
+                    "name": str(nproc)
+                    }
+                },
+            "actuator": {
+                "endpoint": {
+                    "asset_id": str(asset_id)
+                    }
+                },
+            "args": str(args)
+            }
+    response = requests.get(ais_endpoint, json=req_obj)
+    return Response(
+        response.text,
+        status=response.status_code,
+        content_type=response.headers['content-type'],
+    )
+
+# AIS change config
+# curl -X POST "http://127.0.0.1:4202/api/set_process/" -H "Content-Type: application/json" -d
+def ais_change_config(nproc, ais_id, config):
     """
     Change the configuration of an AIS tool.
 
@@ -117,29 +257,30 @@ def ais_change_config(ais_id, config):
     :param config: Configuration parameters for the AIS.
     """
 
-    if not config:
-        cfg_json = {}
-    else:
-        for i in range(config):
-            cfg_json = {"configuration_param" + str(i): x for x in config}
+    if args == "":
+        args =  {
+                "max_detectors": "2048",
+                "max_attempts": "10",
+                "threshold_1": "0.01",
+                "threshold_2": "5" 
+                }
 
     req_obj = {
-        "version": "1.0",
-        "action": "set",
-        "target": {
-            "type": "ais",
-            "specifiers": {
-                "ais_id": str(ais_id)
+            "id": "04be1c1b-0d81-400b-9085-015a7746e401",
+            "action": "set",
+            "target": {
+                "process": {
+                    "name": str(nproc)
+                    }
+                },
+            "actuator": {
+                "endpoint": {
+                    "asset_id": str(ais_id)
+                    }
+                },
+            "args": str(args)  
             }
-        },
-        "actuator": {
-            "type": "vsoc",
-            "specifiers": {
-                "vsoc_id": "VSOC"
-            }
-        },
-        "args": cfg_json
-    }
+
     response = requests.get(ais_endpoint, json=req_obj)
     return Response(
         response.text,
