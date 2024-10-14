@@ -158,11 +158,11 @@
           "description": "ID of the source RSU",
           "type": "string"
         },
-        "src_ip": {
+        "src_ref": {
           "description": "IP address of the source",
           "type": "string"
         },
-        "dst_ip": {
+        "dst_ref": {
           "description": "IP address of the destination",
           "type": "string"
         },
@@ -183,14 +183,10 @@
         "flag": {
           "type": "string"
         },
-        "connection_duration": {
-          "type": "string"
-        },
-        "bytes_sent": {
-          "type": "string"
-        },
-        "bytes_received": {
-          "type": "string"
+        "timestamp": {
+            "description": "timestamp of the from the AIS endpoint ISO-8601 (UTC)",
+            "type": "string",
+            "format": "date-time"
         }
       },
       "required": [
@@ -219,9 +215,7 @@
         "protocol_type",
         "service",
         "flag",
-        "connection_duration",
-        "bytes_sent",
-        "bytes_received"
+        "timestamp"
       ],
       "additionalProperties": false
     }
