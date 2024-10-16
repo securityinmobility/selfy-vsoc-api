@@ -10,7 +10,7 @@ Together, the ELK Stack is used for monitoring, troubleshooting, and gaining ins
 
 ## Where do I find data?
 
-1. You can find your logs under ["Analytics > Discover"](./figures/elk1.png).
-2. Select the [APM index](./figures/elk2.png).
-3. Now you can [see the logs](./figures/elk3.png) of the set timeframe (see top right corner).
-4. Open it to see [all fields](./figures/elk4.png) including the transmitted data (e.g., `http_body`, `selfy_id`, or `timestamp`).
+1. You can find your logs under !["Analytics > Discover"](./figures/elk1.png).
+2. Select the ![APM index](./figures/elk2.png).
+3. Now you can ![see the logs](./figures/elk3.png) of the set timeframe (see top right corner).
+4. Open it to see ![all fields](./figures/elk4.png) including the transmitted data (e.g., `http_body`, `selfy_id`, or `timestamp`).
