@@ -41,8 +41,7 @@ rsu_endpoint = "http://127.0.0.1:4204"
 # Default
 @app.route('/')
 def index():
-    return jsonify({'SELFY VSOC': 'by THI',
-                    'version': 'v0.2'})
+    return jsonify({'SELFY VSOC': 'by THI', 'version': 'v0.4'})
 
 
 def sota_request_update(vin, action):
@@ -534,8 +533,9 @@ def response_to_json(request_json, schema_path, opentelemetrie_prefix):
 
     if is_valid:
         with tracer.start_as_current_span(opentelemetrie_prefix) as current_span:
+            current_span.set_attribute(opentelemetrie_prefix + '.' + 'http.body',  str(request_json))
             for required_item, value in iterate_required_items(schema_path, request_json):
-                current_span.set_attribute(opentelemetrie_prefix + '.' + required_item.lower(), value)
+                current_span.set_attribute(opentelemetrie_prefix + '.' + required_item.lower(), str(value))
 
         response['statusCode'] = 200
         response['statusMessage'] = http.client.responses[response['statusCode']]
