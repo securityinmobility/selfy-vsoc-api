@@ -41,7 +41,7 @@ sot_endpoint = "http://127.0.0.1:4204"
 # Default
 @app.route('/')
 def index():
-    return jsonify({'SELFY VSOC': 'by THI', 'version': 'v0.4'})
+    return jsonify({'SELFY VSOC': 'by THI', 'version': 'v0.5'})
 
 
 def sota_request_update(vin, action):
