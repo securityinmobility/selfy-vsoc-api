@@ -34,14 +34,14 @@ sota_endpoint = "http://uptane-bridge.sota.selfy.ota.ce/vsoctrigger"
 ras_endpoint = "http://127.0.0.1:4201"
 ais_endpoint = "http://127.0.0.1:4202"
 ab_endpoint = "http://127.0.0.1:4203"
-rsu_endpoint = "http://127.0.0.1:4204"
+sot_endpoint = "http://127.0.0.1:4204"
 
 
 
 # Default
 @app.route('/')
 def index():
-    return jsonify({'SELFY VSOC': 'by THI', 'version': 'v0.4'})
+    return jsonify({'SELFY VSOC': 'by THI', 'version': 'v0.5'})
 
 
 def sota_request_update(vin, action):
@@ -434,6 +434,19 @@ def rsu_misbehaviour():
     request_json = request.get_json()
 
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
+
+# SOT vehicleInfoArray
+@app.route('/sot/vehicleInfoArray', methods=['POST'])
+def sot_vehicleinfoarray():
+    schema_path = './jsonschema/sot/vehicleInfoArray.json'
+    opentelemetrie_prefix = 'sot.vehicleInfoArray'
+    if check_for_json(request):
+        return check_for_json(request)
+
+    request_json = request.get_json()
+
+    return response_to_json(request_json, schema_path, opentelemetrie_prefix)
+    
 
 #
 #

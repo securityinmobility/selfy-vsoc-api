@@ -13,7 +13,8 @@ This repository holds all source-code and documentation from the SELFY VSOC.
 
 | Version | Description | Status |
 | ------- | ----------- | ------ |
-| v0.0.4 | various fixes, extensions, and documentation for the ELK Stack | stable |
+| v0.0.5 | implemenation of the SOT endpoint | stable |
+| v0.0.4 | various fixes, extensions, and documentation  | stable |
 | v0.0.3 | supports all interfaces and implements a SIEM (ELK) | stable |
 | v0.0.2 | supports all interfaces that are required by the SELFY use-cases. The generated logs are shown in the terminal output. There is currently no SIEM solution connected to the VSOC | deprecated |
 | v0.0.1 | basic functionality for some interfaces | deprecated |
