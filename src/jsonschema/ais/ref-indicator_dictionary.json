@@ -95,11 +95,11 @@
       "description": "ID of the source RSU",
       "type": "string"
     },
-    "src_ip": {
+    "src_ref": {
       "description": "IP address of the source",
       "type": "string"
     },
-    "dst_ip": {
+    "dst_ref": {
       "description": "IP address of the destination",
       "type": "string"
     },
@@ -130,6 +130,6 @@
       "type": "string"
     }
 },
-  "required": [ "type", "spec_version", "id", "created", "modified", "name", "description", "indicator_types", "pattern", "pattern_type", "pattern_version", "valid_from", "valid_until", "labels", "extensions", "source_vehicle", "source_ais", "source_rsu", "src_ip", "dst_ip", "src_port", "dst_port", "protocol_type", "service", "flag", "connection_duration", "bytes_sent", "bytes_received" ],
+  "required": [ "type", "spec_version", "id", "created", "modified", "name", "description", "indicator_types", "pattern", "pattern_type", "pattern_version", "valid_from", "valid_until", "labels", "extensions", "source_vehicle", "source_ais", "source_rsu", "src_ref", "dst_ref", "src_port", "dst_port", "protocol_type", "service", "flag", "connection_duration", "bytes_sent", "bytes_received" ],
   "additionalProperties": false
 }
