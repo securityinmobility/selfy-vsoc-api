@@ -33,16 +33,14 @@
   - [2.16. [Required] Property deviationKnown > indicator > source_vehicle](#indicator_source_vehicle)
   - [2.17. [Required] Property deviationKnown > indicator > source_ais](#indicator_source_ais)
   - [2.18. [Required] Property deviationKnown > indicator > source_rsu](#indicator_source_rsu)
-  - [2.19. [Required] Property deviationKnown > indicator > src_ip](#indicator_src_ip)
-  - [2.20. [Required] Property deviationKnown > indicator > dst_ip](#indicator_dst_ip)
+  - [2.19. [Required] Property deviationKnown > indicator > src_ref](#indicator_src_ref)
+  - [2.20. [Required] Property deviationKnown > indicator > dst_ref](#indicator_dst_ref)
   - [2.21. [Required] Property deviationKnown > indicator > src_port](#indicator_src_port)
   - [2.22. [Required] Property deviationKnown > indicator > dst_port](#indicator_dst_port)
   - [2.23. [Required] Property deviationKnown > indicator > protocol_type](#indicator_protocol_type)
   - [2.24. [Required] Property deviationKnown > indicator > service](#indicator_service)
   - [2.25. [Required] Property deviationKnown > indicator > flag](#indicator_flag)
-  - [2.26. [Required] Property deviationKnown > indicator > connection_duration](#indicator_connection_duration)
-  - [2.27. [Required] Property deviationKnown > indicator > bytes_sent](#indicator_bytes_sent)
-  - [2.28. [Required] Property deviationKnown > indicator > bytes_received](#indicator_bytes_received)
+  - [2.26. [Required] Property deviationKnown > indicator > timestamp](#indicator_timestamp)
 
 **Title:** deviationKnown
 
@@ -635,7 +633,7 @@ must respect the following conditions
 
 <details>
 <summary>
-<strong> <a name="indicator_src_ip"></a>2.19. [Required] Property deviationKnown > indicator > src_ip</strong>  
+<strong> <a name="indicator_src_ref"></a>2.19. [Required] Property deviationKnown > indicator > src_ref</strong>  
 
 </summary>
 <blockquote>
@@ -652,7 +650,7 @@ must respect the following conditions
 
 <details>
 <summary>
-<strong> <a name="indicator_dst_ip"></a>2.20. [Required] Property deviationKnown > indicator > dst_ip</strong>  
+<strong> <a name="indicator_dst_ref"></a>2.20. [Required] Property deviationKnown > indicator > dst_ref</strong>  
 
 </summary>
 <blockquote>
@@ -748,45 +746,18 @@ must respect the following conditions
 
 <details>
 <summary>
-<strong> <a name="indicator_connection_duration"></a>2.26. [Required] Property deviationKnown > indicator > connection_duration</strong>  
+<strong> <a name="indicator_timestamp"></a>2.26. [Required] Property deviationKnown > indicator > timestamp</strong>  
 
 </summary>
 <blockquote>
 
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | Yes      |
+|              |             |
+| ------------ | ----------- |
+| **Type**     | `string`    |
+| **Required** | Yes         |
+| **Format**   | `date-time` |
 
-</blockquote>
-</details>
-
-<details>
-<summary>
-<strong> <a name="indicator_bytes_sent"></a>2.27. [Required] Property deviationKnown > indicator > bytes_sent</strong>  
-
-</summary>
-<blockquote>
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | Yes      |
-
-</blockquote>
-</details>
-
-<details>
-<summary>
-<strong> <a name="indicator_bytes_received"></a>2.28. [Required] Property deviationKnown > indicator > bytes_received</strong>  
-
-</summary>
-<blockquote>
-
-|              |          |
-| ------------ | -------- |
-| **Type**     | `string` |
-| **Required** | Yes      |
+**Description:** timestamp of the from the AIS endpoint ISO-8601 (UTC)
 
 </blockquote>
 </details>
@@ -795,4 +766,4 @@ must respect the following conditions
 </details>
 
 ----------------------------------------------------------------------------------------------------------------------------
-Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2024-10-07 at 09:30:19 +0200
+Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2024-10-22 at 10:15:27 +0200

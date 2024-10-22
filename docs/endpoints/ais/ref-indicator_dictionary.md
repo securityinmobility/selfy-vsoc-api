@@ -22,8 +22,8 @@
 - [16. [Required] Property indicator_dictionary > source_vehicle](#source_vehicle)
 - [17. [Required] Property indicator_dictionary > source_ais](#source_ais)
 - [18. [Required] Property indicator_dictionary > source_rsu](#source_rsu)
-- [19. [Required] Property indicator_dictionary > src_ip](#src_ip)
-- [20. [Required] Property indicator_dictionary > dst_ip](#dst_ip)
+- [19. [Required] Property indicator_dictionary > src_ref](#src_ref)
+- [20. [Required] Property indicator_dictionary > dst_ref](#dst_ref)
 - [21. [Required] Property indicator_dictionary > src_port](#src_port)
 - [22. [Required] Property indicator_dictionary > dst_port](#dst_port)
 - [23. [Required] Property indicator_dictionary > protocol_type](#protocol_type)
@@ -424,7 +424,7 @@ must respect the following conditions
 
 <details>
 <summary>
-<strong> <a name="src_ip"></a>19. [Required] Property indicator_dictionary > src_ip</strong>  
+<strong> <a name="src_ref"></a>19. [Required] Property indicator_dictionary > src_ref</strong>  
 
 </summary>
 <blockquote>
@@ -441,7 +441,7 @@ must respect the following conditions
 
 <details>
 <summary>
-<strong> <a name="dst_ip"></a>20. [Required] Property indicator_dictionary > dst_ip</strong>  
+<strong> <a name="dst_ref"></a>20. [Required] Property indicator_dictionary > dst_ref</strong>  
 
 </summary>
 <blockquote>
@@ -581,4 +581,4 @@ must respect the following conditions
 </details>
 
 ----------------------------------------------------------------------------------------------------------------------------
-Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2024-10-07 at 09:30:19 +0200
+Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2024-10-22 at 10:15:27 +0200
