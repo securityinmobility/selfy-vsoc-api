@@ -24,8 +24,7 @@
               },
               "obtained_timestamp": {
                 "description": "UNIX timestamp at which a message was obtained for said ID",
-                "type": "number",
-                "multipleOf": 0.001
+                "format": "date-time"
               }
             },
             "required": [

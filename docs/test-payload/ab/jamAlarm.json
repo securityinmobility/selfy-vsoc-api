@@ -1,47 +1,50 @@
 {
   "type": "bundle",
-  "id": "bundle--e5c3e257-031f-4df1-88a3-19bbd25acacc",
+  "id": "bundle--123e4567-e89b-12d3-a456-426614174000",
   "objects": [
     {
       "type": "identity",
       "spec_version": "2.1",
-      "id": "identity--e5c3e257-031f-4df1-88a3-19bbd25acacc",
-      "created": "2024-03-12T12:39:25.652229Z",
-      "modified": "2024-03-12T12:39:25.652229Z", 
+      "id": "identity--987e6543-b21c-45d7-b123-123456789abc",
+      "created": "2024-10-18T10:00:00Z",
+      "modified": "2024-10-18T11:00:00Z",
       "name": "Audit Box SELFY Solution",
-      "description": "xyz"
+      "description": "This is the Audit Box identity object."
     },
     {
       "type": "attack-pattern",
       "spec_version": "2.1",
-      "id": "attack-pattern--e5c3e257-031f-4df1-88a3-19bbd25acacc",
-      "created": "2024-03-12T12:39:25.652229Z",
-      "modified": "2024-03-12T12:39:25.652229Z", 
+      "id": "attack-pattern--123e4567-e89b-12d3-a456-426614174001",
+      "created": "2024-10-18T10:05:00Z",
+      "modified": "2024-10-18T11:05:00Z",
       "name": "Jamming",
-      "external_references": [{
-        "source_name": "xyz",
-        "external_id": "xyz"
-      }]
+      "external_references": [
+        {
+          "source_name": "CVE",
+          "external_id": "CVE-2023-12345"
+        }
+      ]
     },
     {
       "type": "intrusion-set",
       "spec_version": "2.1",
-      "id": "intrusion-set--e5c3e257-031f-4df1-88a3-19bbd25acacc",
-      "created": "2024-03-12T12:39:25.652229Z",
-      "modified": "2024-03-12T12:39:25.652229Z", 
+      "id": "intrusion-set--123e4567-e89b-12d3-a456-426614174002",
+      "created": "2024-10-18T10:10:00Z",
+      "modified": "2024-10-18T11:10:00Z",
       "name": "Jamming",
       "description": "Jamming situation detected near the Audit Box",
-      "first_seen": "2024-03-12T12:39:25.652229Z"
+      "first_seen": "2024-10-18T09:55:00Z",
+      "last_seen": "2024-10-18T11:00:00Z"
     },
     {
       "type": "relationship",
-      "spec_version": "2.1", 
-      "id": "relationship--e5c3e257-031f-4df1-88a3-19bbd25acacc", 
-      "created": "2024-03-12T12:39:25.652229Z", 
-      "modified": "2024-03-12T12:39:25.652229Z",
-      "relationship_type": "3",
-      "source_ref": "indicator--e5c3e257-031f-4df1-88a3-19bbd25acacc",
-      "target_ref": "indicator--e5c3e257-031f-4df1-88a3-19bbd25acacc"
+      "spec_version": "2.1",
+      "id": "relationship--123e4567-e89b-12d3-a456-426614174003",
+      "created": "2024-10-18T10:15:00Z",
+      "modified": "2024-10-18T11:15:00Z",
+      "relationship_type": "detects",
+      "source_ref": "indicator--123e4567-e89b-12d3-a456-426614174004",
+      "target_ref": "indicator--123e4567-e89b-12d3-a456-426614174005"
     }
   ]
 }
