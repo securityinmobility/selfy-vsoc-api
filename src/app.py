@@ -86,7 +86,7 @@ def ras_attestation_request(target):
     """
 
     nonce = uuid.uuid4().hex
-    req_obj = {"target_tool": target, "timeStamp": datetime.now().replace(microsecond=0).isoformat()+"Z", "verifier": "ID18", "VSOC": "ID08", "nonce": nonce}
+    req_obj = {"target_tool": target, "timeStamp": datetime.now().replace(microsecond=0).isoformat()+"Z", "VIN": "SAMPLEVIN", "verifier": "ID18", "VSOC": "ID08", "nonce": nonce}
     response = requests.get(ras_endpoint, json=req_obj)
     return Response(
         response.text,
@@ -309,8 +309,8 @@ def ais_deviation_known():
     """
         Getting information from the AIS for an unknown deviation.
         """
-    schema_path: str = 'jsonschema/ais/deviationUnknown.json'
-    opentelemetrie_prefix = 'ais.deviationUnknown'
+    schema_path: str = 'jsonschema/ais/deviationKnown.json'
+    opentelemetrie_prefix = 'ais.deviationKnown'
 
     if check_for_json(request):
         return check_for_json(request)

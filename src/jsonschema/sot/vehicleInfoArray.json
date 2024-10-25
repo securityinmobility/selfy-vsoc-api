@@ -51,6 +51,5 @@
         "required": ["valid", "vehicle_status", "platoon_status", "safety_mode"],
         "additionalProperties": false
     },
-    "minItems": 100,
     "maxItems": 100
 }
