@@ -173,7 +173,7 @@ class SOTUser(HttpUser):
                         "relative_speed": -1,
                         "id_of_preceeding_vehicle": 1003
                         },
-                    "safety_mode": -1
+                    "safety_mode": 2
                     }
                 ]
         self.client.post("/sot/vehicleInfoArray", json=request)
