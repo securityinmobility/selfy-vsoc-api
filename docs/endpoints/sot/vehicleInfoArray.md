@@ -23,7 +23,7 @@
 
 |                      | Array restrictions |
 | -------------------- | ------------------ |
-| **Min items**        | 100                |
+| **Min items**        | N/A                |
 | **Max items**        | 100                |
 | **Items unicity**    | False              |
 | **Additional items** | False              |
@@ -216,12 +216,12 @@ Must be one of:
 | **Required** | Yes                 |
 
 Must be one of:
-* -1
 * 0
 * 1
+* 2
 
 </blockquote>
 </details>
 
 ----------------------------------------------------------------------------------------------------------------------------
-Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2024-10-22 at 10:37:55 +0200
+Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2024-10-29 at 16:00:00 +0100

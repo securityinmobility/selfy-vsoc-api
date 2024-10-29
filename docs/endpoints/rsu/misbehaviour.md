@@ -105,16 +105,14 @@
 </summary>
 <blockquote>
 
-|              |          |
-| ------------ | -------- |
-| **Type**     | `number` |
-| **Required** | Yes      |
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `object`                                                                  |
+| **Required**              | Yes                                                                       |
+| **Format**                | `date-time`                                                               |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 
 **Description:** UNIX timestamp at which a message was obtained for said ID
-
-| Restrictions    |       |
-| --------------- | ----- |
-| **Multiple of** | 0.001 |
 
 </blockquote>
 </details>
@@ -126,4 +124,4 @@
 </details>
 
 ----------------------------------------------------------------------------------------------------------------------------
-Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2024-10-22 at 10:37:55 +0200
+Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2024-10-29 at 16:00:00 +0100
