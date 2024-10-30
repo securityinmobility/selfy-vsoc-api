@@ -2,12 +2,13 @@ from flask import Flask, jsonify, request, Response, abort, make_response
 import http.client
 import json
 from jsonschema import validate, ValidationError, RefResolver, Draft7Validator
-import os
 import requests
 from datetime import datetime
 import uuid
 import json
 import http.client
+
+import trust_score
 
 # from opentelemetry.instrumentation.flask import FlaskInstrumentor
 from opentelemetry import trace  # , metrics
@@ -35,8 +36,6 @@ ras_endpoint = "http://127.0.0.1:4201"
 ais_endpoint = "http://127.0.0.1:4202"
 ab_endpoint = "http://127.0.0.1:4203"
 sot_endpoint = "http://127.0.0.1:4204"
-
-
 
 # Default
 @app.route('/')
@@ -75,6 +74,25 @@ def sota_receive_info():
 
     request_json = request.get_json()
 
+    status = request_json["message"]["status"] 
+    vin = request_json["message"]["vin"]
+    
+    # Use-Case 34/35/36
+    if status == 0:
+        # post RAS, AIS, AB 
+
+        # target: vin
+        ras_attestation_request(str(vin))
+
+        # process: ais_1, asset_id: endpoint.example.com
+        ais_start_process("ais_1", "endpoint.example.com")
+
+        # ab_id:28, priority:1, vin, scan_type: fast scan
+        ab_trigger_audit(28, 1, str(vin), 1)
+    else:
+        # update TS
+        trust_score.set_ts()
+
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
 
@@ -87,12 +105,18 @@ def ras_attestation_request(target):
 
     nonce = uuid.uuid4().hex
     req_obj = {"target_tool": target, "timeStamp": datetime.now().replace(microsecond=0).isoformat()+"Z", "VIN": "SAMPLEVIN", "verifier": "ID18", "VSOC": "ID08", "nonce": nonce}
-    response = requests.get(ras_endpoint, json=req_obj)
-    return Response(
-        response.text,
-        status=response.status_code,
-        content_type=response.headers['content-type'],
-    )
+
+    try:
+        response = requests.get(ras_endpoint, json=req_obj)
+        return Response(
+                response.text,
+                status=response.status_code,
+                content_type=response.headers['content-type'],
+                )
+    except:
+        print("[SELFY VSOC] Could not connect to ", ras_endpoint)
+        return ""
+
 
 
 @app.route('/ras/attestationResult', methods=['POST'])
@@ -107,8 +131,8 @@ def ras_attestation_result():
 
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
+
 # AIS start process
-# curl -X POST "http://127.0.0.1:4202/api/start_process/" -H "Content-Type: application/json" -d
 def ais_start_process(nproc, asset_id):
     """
     Start the AIS process with a specific process name.
@@ -131,12 +155,17 @@ def ais_start_process(nproc, asset_id):
                     }
                 }
             }
-    response = requests.get(ais_endpoint, json=req_obj)
-    return Response(
-        response.text,
-        status=response.status_code,
-        content_type=response.headers['content-type'],
-    )
+
+    try:
+        response = requests.get(ais_endpoint, json=req_obj)
+        return Response(
+                response.text,
+                status=response.status_code,
+                content_type=response.headers['content-type'],
+                )
+    except:
+        print("[SELFY VSOC] Could not connect to ", ais_endpoint)
+        return ""
 
 
 # AIS stop process
@@ -163,12 +192,16 @@ def ais_stop_process(nproc, asset_id):
                     }
                 }
             }
-    response = requests.get(ais_endpoint, json=req_obj)
-    return Response(
-        response.text,
-        status=response.status_code,
-        content_type=response.headers['content-type'],
-    )
+    try:
+        response = requests.get(ais_endpoint, json=req_obj)
+        return Response(
+            response.text,
+            status=response.status_code,
+            content_type=response.headers['content-type'],
+            )
+    except:
+        print("[SELFY VSOC] Could not connect to ", ais_endpoint)
+        return ""
 
 # AIS train
 # curl -X POST "http://127.0.0.1:4202/api/train_process/" -H "Content-Type: application/json" -d
@@ -194,12 +227,16 @@ def ais_train_process(nproc, asset_id):
                     }
                 }
             }
-    response = requests.get(ais_endpoint, json=req_obj)
-    return Response(
-        response.text,
-        status=response.status_code,
-        content_type=response.headers['content-type'],
-    )
+    try:
+        response = requests.get(ais_endpoint, json=req_obj)
+        return Response(
+            response.text,
+            status=response.status_code,
+            content_type=response.headers['content-type'],
+            )
+    except:
+        print("[SELFY VSOC] Could not connect to ", ais_endpoint)
+        return ""
 
 # AIS finetune
 # curl -X POST "http://127.0.0.1:4202/api/finetune_process/" -H "Content-Type: application/json" -d
@@ -239,12 +276,16 @@ def ais_finetune(nproc, asset_id, args):
                 },
             "args": str(args)
             }
-    response = requests.get(ais_endpoint, json=req_obj)
-    return Response(
-        response.text,
-        status=response.status_code,
-        content_type=response.headers['content-type'],
-    )
+    try:
+        response = requests.get(ais_endpoint, json=req_obj)
+        return Response(
+            response.text,
+            status=response.status_code,
+            content_type=response.headers['content-type'],
+            )
+    except:
+        print("[SELFY VSOC] Could not connect to ", ais_endpoint)
+        return ""
 
 # AIS change config
 # curl -X POST "http://127.0.0.1:4202/api/set_process/" -H "Content-Type: application/json" -d
@@ -256,13 +297,15 @@ def ais_change_config(nproc, ais_id, config):
     :param config: Configuration parameters for the AIS.
     """
 
-    if args == "":
+    if config == "":
         args =  {
                 "max_detectors": "2048",
                 "max_attempts": "10",
                 "threshold_1": "0.01",
                 "threshold_2": "5" 
                 }
+    else:
+        args = config
 
     req_obj = {
             "id": "04be1c1b-0d81-400b-9085-015a7746e401",
@@ -279,13 +322,16 @@ def ais_change_config(nproc, ais_id, config):
                 },
             "args": str(args)  
             }
-
-    response = requests.get(ais_endpoint, json=req_obj)
-    return Response(
-        response.text,
-        status=response.status_code,
-        content_type=response.headers['content-type'],
-    )
+    try:
+        response = requests.get(ais_endpoint, json=req_obj)
+        return Response(
+            response.text,
+            status=response.status_code,
+            content_type=response.headers['content-type'],
+            )
+    except:
+        print("[SELFY VSOC] Could not connect to ", ais_endpoint)
+        return ""
 
 
 @app.route('/ais/deviationUnknown', methods=['POST'])
@@ -316,8 +362,24 @@ def ais_deviation_known():
         return check_for_json(request)
 
     request_json = request.get_json()
+    vin = request_json["indicator"]["source_vehicle"]
+    print(vin)
+
+    # Use-Case 34/35/36
+    # target: vin
+    ras_attestation_request(str(vin))
+
+    # process: ais_1, asset_id: endpoint.example.com
+    ais_start_process("ais_1", "endpoint.example.com")
+
+    # ab_id:28, priority:1, vin, scan_type: fast scan
+    ab_trigger_audit(28, 1, str(vin), 1)
+
+    # update trust-score
+    trust_score.set_ts()
 
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
+
 
 def ab_trigger_audit(ab_id, priority, vin, scan_type):
     """
@@ -330,12 +392,17 @@ def ab_trigger_audit(ab_id, priority, vin, scan_type):
     """
     req_obj = {"AB_id": ab_id, "timeStamp": datetime.now().replace(microsecond=0).isoformat()+"Z", "VIN": str(vin), "scanType": scan_type, "priority": priority}
 
-    response = requests.get(ab_endpoint, json=req_obj)
-    return Response(
-        response.text,
-        status=response.status_code,
-        content_type=response.headers['content-type'],
-    )
+
+    try:
+        response = requests.get(ab_endpoint, json=req_obj)
+        return Response(
+            response.text,
+            status=response.status_code,
+            content_type=response.headers['content-type'],
+            )
+    except:
+        print("[SELFY VSOC] Could not connect to ", ab_endpoint)
+        return ""
 
 
 @app.route('/ab/vulnReport', methods=['POST'])
@@ -404,13 +471,17 @@ def ab_set_config(ab_id, config_status, new_ab_id, enable, selective_mode, reset
     """
     req_obj = {"AB_id": ab_id, "timeStamp": datetime.now().replace(microsecond=0).isoformat()+"Z", "config_status": config_status, "new_ab_id": new_ab_id, "enable": enable, "selective_mode": selective_mode, "reset": reset, "STOPALLREQUESTS": stoprq, "MINTIMETORESCAN": mintime, "JAMSIGFREQ": jamfreq, "HEARTBEATFREQ": hbfreq, "AUDITTECHS": audittechs,}
 
-    response = requests.get(ab_endpoint, json=req_obj)
-    return Response(
-        response.text,
-        status=response.status_code,
-        content_type=response.headers['content-type'],
-    )
 
+    try:
+        response = requests.get(ab_endpoint, json=req_obj)
+        return Response(
+            response.text,
+            status=response.status_code,
+            content_type=response.headers['content-type'],
+            )
+    except:
+        print("[SELFY VSOC] Could not connect to ", ab_endpoint)
+        return ""
 
 
 @app.route('/vsoc/getTrustScore', methods=['GET'])
