@@ -36,6 +36,7 @@ ras_endpoint = "http://127.0.0.1:4201"
 ais_endpoint = "http://127.0.0.1:4202"
 ab_endpoint = "http://127.0.0.1:4203"
 sot_endpoint = "http://127.0.0.1:4204"
+vv_endpoint = "http://127.0.0.1:4205"
 
 # Default
 @app.route('/')
@@ -515,6 +516,12 @@ def sot_vehicleinfoarray():
         return check_for_json(request)
 
     request_json = request.get_json()
+
+    try:
+        response = requests.post(url=vv_endpoint, data=request_json)
+        print("[SELFY VSOC] Response of " + vv_endpoint + " is ", response)
+    except:
+        print("[SELFY VSOC] Could not connect to ", vv_endpoint)
 
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
     
