@@ -26,7 +26,7 @@
     },
     "result": {
       "description": "result data",
-      "type": "object"
+      "type": "boolean"
     }
   },
   "required": [ "AB_id", "timeStamp", "VIN", "scanType", "result" ],

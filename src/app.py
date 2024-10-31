@@ -454,6 +454,17 @@ def ab_heartbeat():
 
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
+@app.route('/ab/configStatus', methods=['POST'])
+def ab_configStatus():
+    schema_path = './jsonschema/ab/configStatus.json'
+    opentelemetrie_prefix = 'ab.configStatus'
+    if check_for_json(request):
+        return check_for_json(request)
+
+    request_json = request.get_json()
+
+    return response_to_json(request_json, schema_path, opentelemetrie_prefix)
+
 
 def ab_set_config(ab_id, config_status, new_ab_id, enable, selective_mode, reset, stoprq, mintime, jamfreq, hbfreq, audittechs):
     """

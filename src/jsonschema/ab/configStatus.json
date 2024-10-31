@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "http://127.0.0.1:8000/ab/ConfigStatus",
+  "title": "configstatus",
+  "description": "Whenever VSOC requests, the AB answers with current config status",
+  "type": "object",
+  "properties": {
+    "AB_id": {
+      "description": "ID of the AB",
+      "type": "integer",
+      "minimum": 0
+    },
+    "timeStamp": {
+      "description": "timestamp of the heartbeat in ISO-8601 (UTC)",
+      "type": "string",
+      "format": "date-time"
+    },
+    "Enable": {
+      "description": "Enable status",
+      "type": "integer",
+      "minimum": 0
+    },
+    "Selectivemode": {
+      "description": "Mode of the Audit Box",
+      "type": "integer",
+      "minimum": 0
+    },
+    "MINTIMETORESCAN": {
+      "description": "MINTIMETORESCAN parameter",
+      "type": "integer",
+      "minimum": 0
+    },
+    "JAMSIGFREQ": {
+      "description": "JAMSIGFREQ parameter",
+      "type": "integer",
+      "minimum": 0
+    },
+    "HEARTBEATFREQ": {
+      "description": "HEARTBEATFREQ parameter",
+      "type": "integer",
+      "minimum": 0
+    },
+    "AUDITTECHS": {
+      "description": "Parameter of which technologies to audit",
+      "type": "string"
+    } 
+  },
+  "required": [ "AB_id", "timeStamp", "Enable", "Selectivemode", "MINTIMETORESCAN","JAMSIGFREQ","HEARTBEATFREQ","AUDITTECHS"],
+  "additionalProperties": false
+}

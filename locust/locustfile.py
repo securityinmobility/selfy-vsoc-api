@@ -346,3 +346,17 @@ class ABUser(HttpUser):
                     ]
                 }
         self.client.post("/ab/vulnReportKO", json=request)
+
+    @task 
+    def configStatus(self):
+        request = {
+                "AB_id": 12345,
+                "timeStamp": "2024-10-31T10:30:00Z",
+                "Enable": 1,
+                "Selectivemode": 2,
+                "MINTIMETORESCAN": 15,
+                "JAMSIGFREQ": 30,
+                "HEARTBEATFREQ": 60,
+                "AUDITTECHS": "CAN, LIN, FlexRay"
+                }
+        self.client.post("/ab/configStatus", json=request)
