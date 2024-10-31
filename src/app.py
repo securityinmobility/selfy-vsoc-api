@@ -517,7 +517,7 @@ def rsu_misbehaviour():
 
     request_json = request.get_json()
 
-    # use-case 43
+    # use-case 43 and 30
     try:
         response = requests.post(url=ivt_endpoint, data=request_json)
         print("[SELFY VSOC] Response of " + ivt_endpoint + " is ", response)
