@@ -263,31 +263,11 @@ class ABUser(HttpUser):
     @task 
     def vulnReport(self):
         request = {
-                "AB_id": 123456,
-                "timeStamp": "2024-10-25T14:30:00Z",
+                "AB_id": 12345,
+                "timeStamp": "2024-10-31T12:00:00Z",
                 "VIN": "1HGCM82633A123456",
                 "scanType": 1,
-                "result": {
-                    "vulnerabilities": [
-                        {
-                            "id": "CVE-2024-12345",
-                            "description": "Buffer overflow vulnerability in component X.",
-                            "severity": "high",
-                            "discovered": "2024-10-20T10:00:00Z"
-                            },
-                        {
-                            "id": "CVE-2024-12346",
-                            "description": "SQL injection vulnerability in component Y.",
-                            "severity": "medium",
-                            "discovered": "2024-10-22T15:00:00Z"
-                            }
-                        ],
-                    "summary": {
-                        "total_vulnerabilities": 2,
-                        "high_severity": 1,
-                        "medium_severity": 1
-                        }
-                    }
+                "result": true
                 }
         self.client.post("/ab/vulnReport", json=request)
 
