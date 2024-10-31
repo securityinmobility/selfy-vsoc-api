@@ -267,7 +267,7 @@ class ABUser(HttpUser):
                 "timeStamp": "2024-10-31T12:00:00Z",
                 "VIN": "1HGCM82633A123456",
                 "scanType": 1,
-                "result": true
+                "result": True
                 }
         self.client.post("/ab/vulnReport", json=request)
 
