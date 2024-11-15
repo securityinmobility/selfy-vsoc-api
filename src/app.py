@@ -78,13 +78,14 @@ def sota_receive_info():
 
     status = request_json["message"]["status"] 
     vin = request_json["message"]["vin"]
+    target = "08"
     
     # Use-Case 34/35/36
     if status == 0:
         # post RAS, AIS, AB 
 
         # target: vin
-        ras_attestation_request(str(vin))
+        ras_attestation_request(target, str(vin))
 
         # process: ais_1, asset_id: endpoint.example.com
         ais_start_process("ais_1", "endpoint.example.com")
@@ -98,7 +99,7 @@ def sota_receive_info():
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
 
-def ras_attestation_request(target):
+def ras_attestation_request(target, vin):
     """
     Send a request to the RAS to perform an attestation.
 
@@ -106,7 +107,7 @@ def ras_attestation_request(target):
     """
 
     nonce = uuid.uuid4().hex
-    req_obj = {"target_tool": target, "timeStamp": datetime.now().replace(microsecond=0).isoformat()+"Z", "VIN": "SAMPLEVIN", "verifier": "ID18", "VSOC": "ID08", "nonce": nonce}
+    req_obj = {"target_tool": target, "timeStamp": datetime.now().replace(microsecond=0).isoformat()+"Z", "VIN": str(vin), "verifier": "ID18", "VSOC": "ID08", "nonce": nonce}
 
     try:
         response = requests.get(ras_endpoint, json=req_obj)
