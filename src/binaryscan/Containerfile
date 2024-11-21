@@ -1,0 +1,5 @@
+FROM python:3.11-slim
+COPY requirements.txt disassemble.py model.py /app
+WORKDIR /app
+RUN pip install .
+CMD ["python disassemble.py"]
