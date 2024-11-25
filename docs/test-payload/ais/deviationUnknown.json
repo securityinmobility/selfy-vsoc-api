@@ -27,8 +27,6 @@
   "dst_port": "80", 
   "protocol_type": "TCP", 
   "service": "HTTP", 
-  "flag": "SYN", 
-  "connection_duration": "120", 
-  "bytes_sent": "1000", 
-  "bytes_received": "500"
+  "flag": "SYN",
+  "timestamp": "2024-03-12T12:39:25.652229Z"
 }
