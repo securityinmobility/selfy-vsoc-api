@@ -24,15 +24,15 @@
           "external_id": "CVE-2023-12345"
         }
       ]
-  },
-  {
-    "type": "intrusion-set",
+    },
+    {
+      "type": "intrusion-set",
       "spec_version": "2.1",
       "id": "intrusion-set--123e4567-e89b-12d3-a456-426614174002",
       "created": "2024-10-18T10:10:00Z",
       "modified": "2024-10-18T11:10:00Z",
-    "name": "Jamming",
-    "description": "Jamming situation detected near the Audit Box",
+      "name": "Jamming",
+      "description": "Jamming situation detected near the Audit Box",
       "first_seen": "2024-10-18T09:55:00Z",
       "last_seen": "2024-10-18T11:00:00Z"
     },
@@ -45,6 +45,6 @@
       "relationship_type": "detects",
       "source_ref": "intrusion-set--123e4567-e89b-12d3-a456-426614174002",
       "target_ref": "attack-pattern--123e4567-e89b-12d3-a456-426614174001"
-  }
+    }
   ]
 }
