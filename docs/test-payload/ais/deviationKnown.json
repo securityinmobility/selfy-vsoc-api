@@ -1,5 +1,5 @@
 {
-  "realationships": [{
+  "relationships": [{
     "type": "relationship", 
     "spec_version": "2.1", 
     "id": "relationship--e5c3e257-031f-4df1-88a3-19bbd25acacc", 
@@ -9,7 +9,7 @@
     "source_ref": "indicator--e5c3e257-031f-4df1-88a3-19bbd25acacc",
     "target_ref": "indicator--e5c3e257-031f-4df1-88a3-19bbd25acacc"
   }],
-  "indicator": { 
+  "indicator": {
     "type": "indicator", 
     "spec_version": "2.1", 
     "id": "indicator--e5c3e257-031f-4df1-88a3-19bbd25acacc", 
@@ -38,9 +38,7 @@
     "dst_port": "80", 
     "protocol_type": "TCP", 
     "service": "HTTP", 
-    "flag": "SYN", 
-    "connection_duration": "120", 
-    "bytes_sent": "1000", 
-    "bytes_received": "500"
+    "flag": "SYN",
+    "timestamp": "2024-03-12T12:39:25.652229Z"
   }
 }
