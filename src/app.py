@@ -356,7 +356,7 @@ def ais_deviation_unknown():
 @app.route('/ais/deviationKnown', methods=['POST'])
 def ais_deviation_known():
     """
-        Getting information from the AIS for an unknown deviation.
+        Getting information from the AIS for an known deviation.
         """
     schema_path: str = 'jsonschema/ais/deviationKnown.json'
     opentelemetrie_prefix = 'ais.deviationKnown'
@@ -366,11 +366,12 @@ def ais_deviation_known():
 
     request_json = request.get_json()
     vin = request_json["indicator"]["source_vehicle"]
+    target = "00"
     print(vin)
 
     # Use-Case 34/35/36
     # target: vin
-    ras_attestation_request(str(vin))
+    ras_attestation_request(target, str(vin))
 
     # process: ais_1, asset_id: endpoint.example.com
     ais_start_process("ais_1", "endpoint.example.com")
