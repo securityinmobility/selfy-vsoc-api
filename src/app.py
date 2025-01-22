@@ -528,11 +528,11 @@ def rsu_misbehaviour():
 
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
-# SOT vehicleInfoArray
-@app.route('/sot/vehicleInfoArray', methods=['POST'])
-def sot_vehicleinfoarray():
-    schema_path = './jsonschema/sot/vehicleInfoArray.json'
-    opentelemetrie_prefix = 'sot.vehicleInfoArray'
+# SOT vehicleLog
+@app.route('/sot/vehicleLog', methods=['POST'])
+def sot_vehiclelog():
+    schema_path = './jsonschema/sot/vehicle.json'
+    opentelemetrie_prefix = 'sot.vehicleLog'
     if check_for_json(request):
         return check_for_json(request)
 
@@ -555,6 +555,26 @@ def sot_vehicleinfoarray():
 #
 #
 #
+
+# SOT vehicleInfoArray
+@app.route('/sot/vehicleInfoArray', methods=['POST'])
+def sot_vehicleinfoarray():
+    schema_path = './jsonschema/sot/vehicleInfoArray.json'
+    opentelemetrie_prefix = 'sot.vehicleInfoArray'
+    if check_for_json(request):
+        return check_for_json(request)
+
+    request_json = request.get_json()
+
+    # use-case 25
+    try:
+        response = requests.post(url=vv_endpoint, json=request_json)
+        print("[SELFY VSOC] Response of " + vv_endpoint + " is ", response)
+    except:
+        print("[SELFY VSOC] Could not connect to ", vv_endpoint)
+
+    return response_to_json(request_json, schema_path, opentelemetrie_prefix)
+    
 
 # POST endpoint: RSU/statusMessage
 @app.route('/RSU/statusMessage', methods=['POST'])

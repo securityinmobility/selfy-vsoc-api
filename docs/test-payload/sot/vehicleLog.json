@@ -1,0 +1,36 @@
+{
+    "VIN": "WUAWFAFLXB7K5C4A9",
+    "seqNumber": 0,
+    "messages": [
+        {
+            "nature": "emision",
+            "label": "followRequest",
+            "vehicleInfo": {
+                "throttle": 0.0,
+                "platoonDistance": 0.0,
+                "safetyStatus": 0,
+                "preceedingVIN": "TRUWF28NX4TD37VAH"
+            }
+        },
+        {
+            "nature": "reception",
+            "label": "happyFollowing",
+            "vehicleInfo": {
+                "throttle": 0.0,
+                "platoonDistance": 0.0,
+                "safetyStatus": 0,
+                "preceedingVIN": "TRUWF28NX4TD37VAH"
+            }
+        },
+        {
+            "nature": "emision",
+            "label": "followRequest",
+            "vehicleInfo": {
+                "throttle": 0.0,
+                "platoonDistance": 0.0,
+                "safetyStatus": 0,
+                "preceedingVIN": "TRUWF28NX4TD37VAH"
+            }
+        }
+    ]
+}
