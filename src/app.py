@@ -36,8 +36,8 @@ ras_endpoint = "http://127.0.0.1:4201"
 ais_endpoint = "http://127.0.0.1:4202"
 ab_endpoint = "http://127.0.0.1:4203"
 sot_endpoint = "http://127.0.0.1:4204"
-vv_endpoint = "http://127.0.0.1:4205"
-ivt_endpoint = "http://127.0.0.1:4206"
+vv_endpoint = "http://172.17.0.1:4205"
+ivt_endpoint = "http://172.17.0.1:4206"
 
 # Default
 @app.route('/')
@@ -540,7 +540,7 @@ def sot_vehicleinfoarray():
 
     # use-case 25
     try:
-        response = requests.post(url=vv_endpoint, data=request_json)
+        response = requests.post(url=vv_endpoint, json=request_json)
         print("[SELFY VSOC] Response of " + vv_endpoint + " is ", response)
     except:
         print("[SELFY VSOC] Could not connect to ", vv_endpoint)
