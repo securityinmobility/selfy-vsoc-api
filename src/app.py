@@ -531,7 +531,7 @@ def rsu_misbehaviour():
 # SOT vehicleLog
 @app.route('/sot/vehicleLog', methods=['POST'])
 def sot_vehiclelog():
-    schema_path = './jsonschema/sot/vehicle.json'
+    schema_path = './jsonschema/sot/vehicleLog.json'
     opentelemetrie_prefix = 'sot.vehicleLog'
     if check_for_json(request):
         return check_for_json(request)
