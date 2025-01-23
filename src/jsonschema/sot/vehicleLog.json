@@ -55,6 +55,6 @@
             }
         }
     },
-    "required": ["VIN", "seqNumber", "messages"]
+    "required": ["VIN", "seqNumber", "loggedItems"]
 
 }
