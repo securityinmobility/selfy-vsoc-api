@@ -44,7 +44,7 @@
                                 "description": "Safety Status of the vehicle",
                                 "type": "integer"
                             },
-                            "preceedingVIN": {
+                            "precedingVIN": {
                                 "description": "Vehicle identification number of the preceeding vehicle within the platoon",
                                 "type": "string"
                             }
