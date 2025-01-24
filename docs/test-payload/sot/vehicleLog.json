@@ -9,7 +9,7 @@
                 "throttle": 0.0,
                 "platoonDistance": 0.0,
                 "safetyStatus": 0,
-                "preceedingVIN": "TRUWF28NX4TD37VAH"
+                "precedingVIN": "TRUWF28NX4TD37VAH"
             }
         },
         {
@@ -19,7 +19,7 @@
                 "throttle": 0.0,
                 "platoonDistance": 0.0,
                 "safetyStatus": 0,
-                "preceedingVIN": "TRUWF28NX4TD37VAH"
+                "precedingVIN": "TRUWF28NX4TD37VAH"
             }
         },
         {
@@ -29,7 +29,7 @@
                 "throttle": 0.0,
                 "platoonDistance": 0.0,
                 "safetyStatus": 0,
-                "preceedingVIN": "TRUWF28NX4TD37VAH"
+                "precedingVIN": "TRUWF28NX4TD37VAH"
             }
         }
     ]
