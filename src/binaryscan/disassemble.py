@@ -2,15 +2,16 @@
 # GNU Lesser General Public License v3.0 or later
 # @author Dominik Bayerl <dominik.bayerl@carissma.eu>
 
-
 import sys
 import click
 import json
+import re
 from capstone import *
 from elftools.elf.elffile import ELFFile
 from chromadb import PersistentClient
+from chromadb.config import Settings
 from tabulate import tabulate
-from model import ONNX_Runtime, rebase
+
 
 ARCH_OPTIONS = {
     "x86": (CS_ARCH_X86, CS_MODE_32),
@@ -21,6 +22,41 @@ ARCH_OPTIONS = {
     "mips": (CS_ARCH_MIPS, CS_MODE_MIPS32),
 }
 
+
+def rebase(asm_dict):
+    # 're' caches compiled expressions 
+    loc_pattern = re.compile(r' (loc|locret)_(\w+)')
+    self_pattern = re.compile(r'\$\+(\w+)')
+
+    index = 1
+    rebase_assembly = {}
+
+    addrs = list(sorted(list(asm_dict.keys())))
+
+    for addr in addrs:
+        inst = asm_dict[addr]
+        if inst.startswith('j'):
+            loc = loc_pattern.findall(inst)
+            for prefix, target_addr in loc:
+                try:
+                    target_instr_idx = addrs.index(int(target_addr, 16)) + 1
+                except Exception:
+                    continue
+                asm_dict[addr] = asm_dict[addr].replace(
+                    f' {prefix}_{target_addr}', f' INSTR{target_instr_idx}')
+            self_m = self_pattern.findall(inst)
+            for offset in self_m:
+                target_instr_addr = addr + int(offset, 16)
+                try:
+                    target_instr_idx = addrs.index(target_instr_addr)
+                    asm_dict[addr] = asm_dict[addr].replace(
+                        f'$+{offset}', f'INSTR{target_instr_idx}')
+                except:
+                    continue
+        rebase_assembly[str(index)] = asm_dict[addr]
+        index += 1
+
+    return rebase_assembly
 
 def get_functions(binary):
     """
@@ -180,9 +216,9 @@ def disassemble(binary, arch, function, out):
 )
 @click.option(
     "--model",
-    type=click.Path(exists=True, dir_okay=True, readable=True),
+    type=str,
     required=True,
-    help="Path to the model file.",
+    help="Model specification",
 )
 @click.option(
     "--min",
@@ -208,11 +244,22 @@ def check(binary, threshold, database, model, min_value, top_k):
     )
 
     click.echo("Loading model...")
-    load_args = {"trust_remote_code": True}  # remove for remote sources
-    model = ONNX_Runtime(model, model_kwargs=load_args, tokenizer_kwargs=load_args)
+    match (model):
+        case m if model.startswith("http"):
+            from backend.api import API
+
+            url, fragment = model.split("#")
+            model = API(api_base=url, model_name=fragment, batch_size=128)
+        case m if model.startswith("/"):
+            from backend.onnx import ONNX_Runtime
+
+            load_args = {"trust_remote_code": True}  # remove for remote sources
+            model = ONNX_Runtime(model, model_kwargs=load_args, tokenizer_kwargs=load_args)
+        case _:
+            raise ValueError("Invalid model path.")
 
     click.echo("Opening database...")
-    client = PersistentClient(database)
+    client = PersistentClient(database, settings=Settings(anonymized_telemetry=False))
     col = client.get_collection("functions", embedding_function=model)
 
     click.echo("Disassembling binary...")
