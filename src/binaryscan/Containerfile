@@ -1,0 +1,10 @@
+FROM python:3.11-slim
+WORKDIR /app
+
+# Cache pip requirements
+ADD requirements.txt /app
+RUN pip install -r requirements.txt
+
+COPY . /app
+
+ENTRYPOINT ["python", "/app/disassemble.py"]
