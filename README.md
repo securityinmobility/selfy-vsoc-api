@@ -13,6 +13,8 @@ This repository holds all source-code and documentation from the SELFY VSOC.
 
 | Version | Description | Status |
 | ------- | ----------- | ------ |
+| v0.0.9| SELFY use-case | stable |
+| v0.0.8 | minor fixes and documentation | stable |
 | v0.0.7 | SELFY use-cases | stable |
 | v0.0.6 | implemenation of the RSU endpoint and Locust tests for all endpoints | stable |
 | v0.0.5 | implemenation of the SOT endpoint | stable |

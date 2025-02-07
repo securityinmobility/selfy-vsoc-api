@@ -36,8 +36,7 @@ ras_endpoint = "http://127.0.0.1:4201"
 ais_endpoint = "http://127.0.0.1:4202"
 ab_endpoint = "http://127.0.0.1:4203"
 sot_endpoint = "http://127.0.0.1:4204"
-vv_endpoint = "http://172.17.0.1:4205"
-ivt_endpoint = "http://172.17.0.1:4206"
+ivt_endpoint = "http://172.17.0.1:4205"
 
 # Default
 @app.route('/')
@@ -540,10 +539,10 @@ def sot_vehiclelog():
 
     # use-case 25
     try:
-        response = requests.post(url=vv_endpoint, json=request_json)
-        print("[SELFY VSOC] Response of " + vv_endpoint + " is ", response)
+        response = requests.post(url=ivt_endpoint, json=request_json)
+        print("[SELFY VSOC] Response of " + ivt_endpoint + " is ", response)
     except:
-        print("[SELFY VSOC] Could not connect to ", vv_endpoint)
+        print("[SELFY VSOC] Could not connect to ", ivt_endpoint)
 
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
     
@@ -568,10 +567,10 @@ def sot_vehicleinfoarray():
 
     # use-case 25
     try:
-        response = requests.post(url=vv_endpoint, json=request_json)
-        print("[SELFY VSOC] Response of " + vv_endpoint + " is ", response)
+        response = requests.post(url=ivt_endpoint, json=request_json)
+        print("[SELFY VSOC] Response of " + ivt_endpoint + " is ", response)
     except:
-        print("[SELFY VSOC] Could not connect to ", vv_endpoint)
+        print("[SELFY VSOC] Could not connect to ", ivt_endpoint)
 
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
     
