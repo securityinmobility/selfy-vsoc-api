@@ -1,0 +1,60 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "vehicleLog",
+    "description": "A part of the vehicle logs for the IVT analysis",
+    "type": "object",
+    "properties": {
+        "VIN": {
+            "description": "Vehicle identification number of the vehicle sending the log",
+            "type": "string"
+        },
+        "seqNumber": {
+            "description": "The number identifing the log fragment",
+            "type": "integer"
+        },
+        "loggedItems": {
+            "description": "Array of logged items",
+            "type": "array",
+            "items": {
+                "description": "Basic logged item",
+                "type": "object",
+                "properties": {
+                    "nature": {
+                        "description": "Nature of the communication action",
+                        "type": "string",
+                        "enum": ["emission", "reception"]
+                    },
+                    "label": {
+                        "description": "Message of the communication action",
+                        "type": "string"
+                    },
+                    "vehicleInfo": {
+                        "description": "Information of the vehicle when the communication action was logged",
+                        "type": "object",
+                        "properties": {
+                            "throttle": {
+                                "description": "Throttle value",
+                                "type": "number"
+                            },
+                            "platoonDistance": {
+                                "description": "Longitudinal distance to the preceeding vehicle",
+                                "type": "number"
+                            },
+                            "safetyStatus": {
+                                "description": "Safety Status of the vehicle",
+                                "type": "integer"
+                            },
+                            "precedingVIN": {
+                                "description": "Vehicle identification number of the preceeding vehicle within the platoon",
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "required": ["nature", "label"]
+            }
+        }
+    },
+    "required": ["VIN", "seqNumber", "loggedItems"]
+
+}

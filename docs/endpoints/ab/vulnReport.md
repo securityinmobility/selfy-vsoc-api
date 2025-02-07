@@ -8,11 +8,11 @@
 
 **Title:** vulnReport
 
-|                           |                                                         |
-| ------------------------- | ------------------------------------------------------- |
-| **Type**                  | `object`                                                |
-| **Required**              | No                                                      |
-| **Additional properties** | [[Not allowed]](# "Additional Properties not allowed.") |
+|                           |             |
+| ------------------------- | ----------- |
+| **Type**                  | `object`    |
+| **Required**              | No          |
+| **Additional properties** | Not allowed |
 
 **Description:** A vulnerability report
 
@@ -100,11 +100,10 @@
 </summary>
 <blockquote>
 
-|                           |                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Type**                  | `object`                                                                  |
-| **Required**              | Yes                                                                       |
-| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
+|              |           |
+| ------------ | --------- |
+| **Type**     | `boolean` |
+| **Required** | Yes       |
 
 **Description:** result data
 
@@ -112,4 +111,4 @@
 </details>
 
 ----------------------------------------------------------------------------------------------------------------------------
-Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2024-10-29 at 16:00:00 +0100
+Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2025-01-22 at 17:06:31 +0100
