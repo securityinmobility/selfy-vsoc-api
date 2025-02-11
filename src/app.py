@@ -131,7 +131,15 @@ def ras_attestation_result():
 
     request_json = request.get_json()
 
+    state = request_json["message"]["state"]
+    vin = request_json["message"]["vin"]
+    action = "1"
+
+    if (state == 0):
+        sota_request_update(vin, str(action))
+    
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
+
 
 
 # AIS start process
