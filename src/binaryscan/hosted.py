@@ -178,9 +178,8 @@ def upload_file():
         }
     )
 
-@app.route('/<path:hash>', methods=['GET'])
+@app.route('/<hash>', methods=['GET'])
 def send_report(hash):
-    # Using request args for path will expose you to directory traversal attacks
     return send_from_directory(UPLOAD_FOLDER, hash)
 
 if __name__ == "__main__":
