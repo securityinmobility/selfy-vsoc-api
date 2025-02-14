@@ -32,6 +32,9 @@ In the most simple scenario:
 `$ python disassemble.py check --model clap-onnx/ --database chroma/ <binary-file>`
 The script returns `0 (EXIT_SUCCESS)` if **no** vulnerable functions where identified.
 
+## SaaS 
+Scanning as a Service (SaaS) is implemented through `hosted.py`.
+
 ## Demo
 For the demo, we provide two binary files. They are compiled from the same source code,
 but are statically linked to different versions of the OpenSSL library:
