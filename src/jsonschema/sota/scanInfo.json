@@ -1,0 +1,81 @@
+
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "http://127.0.0.1:8000/sota/scanInfo",
+    "title": "scanInfo",
+    "description": "scanInfo endpoint for the SOTA Binary Tool scanning",
+    "type": "object",
+    "properties": {
+        "VIN": {
+        "type": "string",
+        "description": "Vehicle Identification Number"
+        },
+        "action": {
+        "type": "integer",
+        "description": "Action performed"
+        },
+        "status": {
+        "type": "integer",
+        "description": "Status code"
+        },
+        "metaData": {
+        "type": "object",
+        "properties": {
+            "VIN": {
+            "type": "string",
+            "description": "Vehicle Identification Number within metadata"
+            },
+            "description": {
+            "type": "string",
+            "description": "Description related to the metadata"
+            },
+            "ecus": {
+            "type": "array",
+            "description": "List of ECU (Electronic Control Unit) details",
+            "items": {
+                "type": "object",
+                "properties": {
+                "VIN": {
+                    "type": "string",
+                    "description": "Vehicle Identification Number associated with ECU"
+                },
+                "ecuType": {
+                    "type": "integer",
+                    "description": "ECU type identifier"
+                },
+                "serialNumber": {
+                    "type": "string",
+                    "description": "ECU serial number"
+                },
+                "swImageId": {
+                    "type": "string",
+                    "description": "Software image ID associated with ECU"
+                },
+                "swStatus": {
+                    "type": "integer",
+                    "description": "Software status of ECU"
+                },
+                "swVersion": {
+                    "type": "string",
+                    "description": "Software version of ECU"
+                }
+                },
+                "required": ["VIN", "ecuType", "serialNumber", "swImageId", "swStatus", "swVersion"]
+            }
+            }
+        },
+        "required": ["VIN", "ecus"]
+        },
+        "timestamp": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Timestamp of the data"
+        },
+        "toolId": {
+        "type": "integer",
+        "description": "Tool ID that generated this data"
+        }
+    },
+    "required": ["VIN", "action", "status", "metaData", "timestamp", "toolId"]
+}
+        
