@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, Response, abort, make_response
+from flask import Flask, jsonify, request, Response, abort, make_response, after_this_request
 import http.client
 import json
 from jsonschema import validate, ValidationError, RefResolver, Draft7Validator
@@ -94,6 +94,36 @@ def sota_receive_info():
     else:
         # update TS
         trust_score.set_ts()
+
+    return response_to_json(request_json, schema_path, opentelemetrie_prefix)
+
+@app.route('/sota/scanInfo', methods=['POST'])
+def sota_scan_info():
+    """
+    Getting information from the SOTA infrastructure regarding the status of the binary scanning tool.
+    """
+
+    schema_path = './jsonschema/sota/scanInfo.json'
+    opentelemetrie_prefix = 'sota.scanInfo'
+
+    if check_for_json(request):
+        return check_for_json(request)
+
+    request_json = request.get_json()
+
+    status = request_json["message"]["status"] 
+    vin = request_json["message"]["VIN"] 
+    action = "1"
+
+    # Use-Case 34/35/36
+    if status == 1:
+        # post RAS, AIS, AB 
+
+        @after_this_request
+        def trigger_sota(response):
+            # This will trigger the POST to SOTA after the response is sent
+            sota_request_update(vin, str(action))
+            return response
 
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
@@ -437,7 +467,13 @@ def ab_vulnReportKO():
         return check_for_json(request)
 
     request_json = request.get_json()
+    state = request_json["message"]["state"]
+    vin = request_json["message"]["vin"]
+    action = "1"
 
+    if (state == 0):
+        sota_request_update(vin, str(action))
+    
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
 @app.route('/ab/jamAlarm', methods=['POST'])
