@@ -82,12 +82,8 @@ def sota_receive_info():
     # Use-Case 34/35/36
     if status == 0:
         # post RAS, AIS, AB 
-
         # target: vin
         ras_attestation_request(target, str(vin))
-
-        # process: ais_1, asset_id: endpoint.example.com
-        ais_start_process("ais_1", "endpoint.example.com")
 
         # ab_id:28, priority:1, vin, scan_type: fast scan
         ab_trigger_audit(28, 1, str(vin), 1)
@@ -111,8 +107,8 @@ def sota_scan_info():
 
     request_json = request.get_json()
 
-    status = request_json["message"]["status"] 
-    vin = request_json["message"]["VIN"] 
+    status = request_json["status"] 
+    vin = request_json["VIN"] 
     action = "1"
 
     # Use-Case 34/35/36
@@ -150,7 +146,6 @@ def ras_attestation_request(target, vin):
         return ""
 
 
-
 @app.route('/ras/attestationResult', methods=['POST'])
 def ras_attestation_result():
     schema_path = './jsonschema/ras/attestationResult.json'
@@ -161,15 +156,15 @@ def ras_attestation_result():
 
     request_json = request.get_json()
 
-    state = request_json["message"]["state"]
+    state = request_json["state"]
     vin = request_json["message"]["vin"]
-    action = "1"
-
+    
+    #use-case 34/35/36
     if (state == 0):
+        action = "1"
         sota_request_update(vin, str(action))
     
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
-
 
 
 # AIS start process
@@ -386,6 +381,18 @@ def ais_deviation_unknown():
         return check_for_json(request)
 
     request_json = request.get_json()
+    vin = request_json["source_vehicle"]
+    target = "00"
+
+    # Use-Case 34/35/36
+    # target: vin
+    ras_attestation_request(target, str(vin))
+
+    # ab_id:28, priority:1, vin, scan_type: fast scan
+    ab_trigger_audit(28, 1, str(vin), 1)
+
+    # update trust-score
+    trust_score.set_ts()
 
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
@@ -402,16 +409,12 @@ def ais_deviation_known():
         return check_for_json(request)
 
     request_json = request.get_json()
-    vin = request_json["indicator"]["source_vehicle"]
+    vin = request_json["source_vehicle"]
     target = "00"
-    print(vin)
 
     # Use-Case 34/35/36
     # target: vin
     ras_attestation_request(target, str(vin))
-
-    # process: ais_1, asset_id: endpoint.example.com
-    ais_start_process("ais_1", "endpoint.example.com")
 
     # ab_id:28, priority:1, vin, scan_type: fast scan
     ab_trigger_audit(28, 1, str(vin), 1)
