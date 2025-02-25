@@ -80,8 +80,8 @@ def sota_receive_info():
     target = "08"
     
     # Use-Case 34/35/36
-    if status == 0:
-        # post RAS, AIS, AB 
+    if status == 1:
+        # post RAS, AB 
         # target: vin
         ras_attestation_request(target, str(vin))
 
@@ -90,7 +90,7 @@ def sota_receive_info():
     else:
         # update TS
         trust_score.set_ts()
-
+    
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
 @app.route('/sota/scanInfo', methods=['POST'])
@@ -107,20 +107,16 @@ def sota_scan_info():
 
     request_json = request.get_json()
 
-    status = request_json["status"] 
     vin = request_json["VIN"] 
     action = "1"
 
     # Use-Case 34/35/36
-    if status == 1:
-        # post RAS, AIS, AB 
-
-        @after_this_request
-        def trigger_sota(response):
-            # This will trigger the POST to SOTA after the response is sent
-            sota_request_update(vin, str(action))
-            return response
-
+    @after_this_request
+    def trigger_sota(response):
+        # This will trigger the POST to SOTA after the response is sent
+        sota_request_update(vin, str(action))
+        return response
+    
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
 
@@ -157,7 +153,7 @@ def ras_attestation_result():
     request_json = request.get_json()
 
     state = request_json["state"]
-    vin = request_json["message"]["vin"]
+    vin = 10
     
     #use-case 34/35/36
     if (state == 0):
@@ -470,12 +466,10 @@ def ab_vulnReportKO():
         return check_for_json(request)
 
     request_json = request.get_json()
-    state = request_json["message"]["state"]
-    vin = request_json["message"]["vin"]
+    vin = 10
     action = "1"
 
-    if (state == 0):
-        sota_request_update(vin, str(action))
+    sota_request_update(vin, str(action))
     
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 

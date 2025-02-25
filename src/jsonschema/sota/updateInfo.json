@@ -5,7 +5,7 @@
   "description": "updateInfo endpoint for the SOTA infrastructure, returning the current status of a requested update",
   "type": "object",
   "properties": {
-    "selfy_id": {
+    "selfy-id": {
       "description": "ID of the SOTA endpoint",
       "type": "integer",
       "minimum": 0
@@ -47,6 +47,6 @@
       "additionalProperties": false
     }
   },
-  "required": [ "selfy_id", "timeStamp", "message" ],
+  "required": [ "selfy-id", "timeStamp", "message" ],
   "additionalProperties": false
 }
