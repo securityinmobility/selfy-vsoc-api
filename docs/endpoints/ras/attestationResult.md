@@ -11,11 +11,11 @@
 
 **Title:** attestationResult
 
-|                           |                  |
-| ------------------------- | ---------------- |
-| **Type**                  | `combining`      |
-| **Required**              | No               |
-| **Additional properties** | Any type allowed |
+|                           |                                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Type**                  | `combining`                                                               |
+| **Required**              | No                                                                        |
+| **Additional properties** | [[Any type: allowed]](# "Additional Properties of any type are allowed.") |
 
 **Description:** attestationResult endpoint for the RAS infrastructure
 
@@ -31,11 +31,11 @@
 
 **Title:** Vehicle is OK
 
-|                           |             |
-| ------------------------- | ----------- |
-| **Type**                  | `object`    |
-| **Required**              | No          |
-| **Additional properties** | Not allowed |
+|                           |                                                         |
+| ------------------------- | ------------------------------------------------------- |
+| **Type**                  | `object`                                                |
+| **Required**              | No                                                      |
+| **Additional properties** | [[Not allowed]](# "Additional Properties not allowed.") |
 
 <details>
 <summary>
@@ -166,4 +166,4 @@
 </blockquote>
 
 ----------------------------------------------------------------------------------------------------------------------------
-Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2025-01-22 at 17:06:31 +0100
+Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2025-02-26 at 10:23:58 +0100

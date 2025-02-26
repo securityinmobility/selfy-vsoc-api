@@ -1,6 +1,6 @@
 # updateInfo
 
-- [1. [Required] Property updateInfo > selfy_id](#selfy_id)
+- [1. [Required] Property updateInfo > selfy-id](#selfy-id)
 - [2. [Required] Property updateInfo > timeStamp](#timeStamp)
 - [3. [Required] Property updateInfo > message](#message)
   - [3.1. [Required] Property updateInfo > message > action](#message_action)
@@ -11,17 +11,17 @@
 
 **Title:** updateInfo
 
-|                           |             |
-| ------------------------- | ----------- |
-| **Type**                  | `object`    |
-| **Required**              | No          |
-| **Additional properties** | Not allowed |
+|                           |                                                         |
+| ------------------------- | ------------------------------------------------------- |
+| **Type**                  | `object`                                                |
+| **Required**              | No                                                      |
+| **Additional properties** | [[Not allowed]](# "Additional Properties not allowed.") |
 
 **Description:** updateInfo endpoint for the SOTA infrastructure, returning the current status of a requested update
 
 <details>
 <summary>
-<strong> <a name="selfy_id"></a>1. [Required] Property updateInfo > selfy_id</strong>  
+<strong> <a name="selfy-id"></a>1. [Required] Property updateInfo > selfy-id</strong>  
 
 </summary>
 <blockquote>
@@ -65,11 +65,11 @@
 </summary>
 <blockquote>
 
-|                           |             |
-| ------------------------- | ----------- |
-| **Type**                  | `object`    |
-| **Required**              | Yes         |
-| **Additional properties** | Not allowed |
+|                           |                                                         |
+| ------------------------- | ------------------------------------------------------- |
+| **Type**                  | `object`                                                |
+| **Required**              | Yes                                                     |
+| **Additional properties** | [[Not allowed]](# "Additional Properties not allowed.") |
 
 **Description:** containg message information
 
@@ -171,4 +171,4 @@
 </details>
 
 ----------------------------------------------------------------------------------------------------------------------------
-Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2025-01-22 at 17:06:31 +0100
+Generated using [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans) on 2025-02-26 at 10:23:58 +0100
