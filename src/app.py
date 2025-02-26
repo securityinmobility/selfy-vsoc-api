@@ -107,15 +107,17 @@ def sota_scan_info():
 
     request_json = request.get_json()
 
+    status = request_json["status"]
     vin = request_json["VIN"] 
     action = "1"
 
-    # Use-Case 34/35/36
-    @after_this_request
-    def trigger_sota(response):
-        # This will trigger the POST to SOTA after the response is sent
-        sota_request_update(vin, str(action))
-        return response
+    if status == 2 or status == 3:
+        # Use-Case 34/35/36
+        @after_this_request
+        def trigger_sota(response):
+            # This will trigger the POST to SOTA after the response is sent
+            sota_request_update(vin, str(action))
+            return response
     
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
