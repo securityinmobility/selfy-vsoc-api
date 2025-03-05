@@ -8,6 +8,34 @@ The **ELK Stack** is a powerful open-source platform for managing and analyzing 
 
 Together, the ELK Stack is used for monitoring, troubleshooting, and gaining insights from log data, often deployed for system monitoring, security, and operational analytics. It has applications across IT, security, business intelligence, and other areas where real-time analysis of log data is critical. 
 
+## How to add a dashboard to Kibana
+
+### 1. Select a dashboard 
+
+There are plenty of pre-made dashboards already available in VSOC that can be easily imported to Kibana. To get started, first choose one of the `.ndjson` files in [dashboards folder](/elk/dashboards).
+
+### 2. Open the manager options
+
+On Kibana, open the menu on the left and click on **Management** 
+
+![](./figures/dashboards_1.png)
+
+### 3. Open the **Saved Objects** menu
+
+![](./figures/dashboards_2.png)
+
+### 4. Click on **Import**
+
+![](./figures/dashboards_3.png)
+
+### 5. Drag the selected dashboard template into the upload area
+
+![](./figures/dashboards_4.png)
+
+After clicking **Import**, the uploaded dashboard will be created. It can be accessed in the **"Analytics > Dashboards"** path. 
+
+If not already created, the `APM` dataview will be also created to show the data pertinent to the VSOC present in the APM server. 
+
 ## Where do I find data?
 
 ### 1. You can find your logs under "Analytics > Discover"
