@@ -34,7 +34,11 @@ On Kibana, open the menu on the left and click on **Management**
 
 After clicking **Import**, the uploaded dashboard will be created. It can be accessed in the **"Analytics > Dashboards"** path. 
 
-If not already created, the `APM` dataview will be also created to show the data pertinent to the VSOC present in the APM server. 
+If not already created, the `APM` dataview will be also created to show the data pertinent to the VSOC present in the APM server.
+
+As an example, after receiving some requests, the dashboard **VSOC General** should look something like this:
+
+![](./figures/dashboards_5.png)
 
 ## Where do I find data?
 
