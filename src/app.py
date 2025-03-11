@@ -53,7 +53,8 @@ def sota_request_update(vin, action):
     """
     req_obj = {"toolId": 8, "timeStamp": datetime.now().replace(microsecond=0).isoformat()+"Z", "VIN": str(vin), "action": action}
 
-    response = requests.get(sota_endpoint, json=req_obj)
+    #response = requests.get(sota_endpoint, json=req_obj)
+    response = requests.post(sota_endpoint, json=req_obj)
     return Response(
         response.text,
         status=response.status_code,
@@ -155,7 +156,8 @@ def ras_attestation_result():
     request_json = request.get_json()
 
     state = request_json["state"]
-    vin = 10
+    vin = "WAUEA88DXTA287834"
+    #change the VIN to the specified by Victor?
     
     #use-case 34/35/36
     if (state == 0):
@@ -432,11 +434,12 @@ def ab_trigger_audit(ab_id, priority, vin, scan_type):
     :param vin: vehicle identification number (string)
     :param scan_type: type of scan; 1 is fast scan, 2 is deep scan (integer)
     """
-    req_obj = {"AB_id": ab_id, "timeStamp": datetime.now().replace(microsecond=0).isoformat()+"Z", "VIN": str(vin), "scanType": scan_type, "priority": priority}
 
+    req_obj = {"AB_id": ab_id, "TimeStamp": datetime.now().replace(microsecond=0).isoformat()+"Z", "VIN": str(vin), "ScanType": scan_type, "Priority": priority}
 
     try:
-        response = requests.get(ab_endpoint, json=req_obj)
+        #AB uses https:// instead of http://, so use verify=False
+        response = requests.post(ab_endpoint, json=req_obj, verify=False)
         return Response(
             response.text,
             status=response.status_code,
@@ -468,7 +471,7 @@ def ab_vulnReportKO():
         return check_for_json(request)
 
     request_json = request.get_json()
-    vin = 10
+    vin = "WAUEA88DXTA287834"
     action = "1"
 
     sota_request_update(vin, str(action))
@@ -764,4 +767,5 @@ def iterate_required_items(schema_path, validated_json):
 # Add more methods here as needed
 
 if __name__ == '__main__':
-    app.run()
+    #app.run()
+    app.run(host='0.0.0.0', port=5002)
