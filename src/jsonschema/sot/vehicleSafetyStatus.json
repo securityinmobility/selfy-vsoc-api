@@ -1,0 +1,37 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "vehicleSafetyStatus",
+    "description": "Vehicle status message",
+    "type": "object",
+    "properties": {
+        "VIN": {
+            "description": "Vehicle identification number of the vehicle sending the log",
+            "type": "string"
+        },
+        "operationMode": {
+            "description": "The current safety mode in use",
+            "type": "integer"
+        },
+        "velocity": {
+            "description": "The vehicle's longitudinal velocity (km/h)",
+            "type": "number"
+        },
+        "gnssStatus": {
+            "description": "Status of the GNSS localization",
+            "type": "integer"
+        },
+        "latitude": {
+            "description": "The vehicle's GNSS geolocation - latitude",
+            "type": "integer"
+        },
+        "longitude": {
+            "description": "The vehicle's GNSS geolocation - longitude",
+            "type": "integer"
+        },
+        "riskLevel": {
+            "description": "The detected risk mode by the Self Assessment Module (ID04)",
+            "type": "integer"
+        }
+    },
+    "required": ["VIN", "operationMode", "velocity", "gnssStatus", "latitude", "longitude", "riskLevel"]
+}
