@@ -545,7 +545,19 @@ def sot_vehiclelog():
         print("[SELFY VSOC] Could not connect to ", ivt_endpoint)
 
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
-    
+
+# SOT vehicleSafetyStatus
+@app.route('/sot/vehicleSafetyStatus', methods=['POST'])
+def sot_vehicleSafetyStatus():
+    schema_path = './jsonschema/sot/vehicleSafetyStatus.json'
+    opentelemetrie_prefix = 'sot.vehicleSafetyStatus'
+
+    if check_for_json(request):
+        return check_for_json(request)
+
+    request_json = request.get_json()
+
+    return response_to_json(request_json, schema_path, opentelemetrie_prefix)    
 
 #
 #
