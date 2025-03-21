@@ -679,7 +679,7 @@ def response_to_json(request_json, schema_path, opentelemetrie_prefix):
         with tracer.start_as_current_span(opentelemetrie_prefix) as current_span:
             current_span.set_attribute(opentelemetrie_prefix + '.' + 'http.body',  str(request_json))
             for required_item, value in iterate_required_items(schema_path, request_json):
-                current_span.set_attribute(opentelemetrie_prefix + '.' + required_item.lower(), str(value))
+                current_span.set_attribute(opentelemetrie_prefix + '.' + required_item.lower(), value)
 
         response['statusCode'] = 200
         response['statusMessage'] = http.client.responses[response['statusCode']]
