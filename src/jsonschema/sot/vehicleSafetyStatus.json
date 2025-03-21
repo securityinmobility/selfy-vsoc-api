@@ -22,15 +22,15 @@
         },
         "latitude": {
             "description": "The vehicle's GNSS geolocation - latitude",
-            "type": "integer"
+            "type": "number"
         },
         "longitude": {
             "description": "The vehicle's GNSS geolocation - longitude",
-            "type": "integer"
+            "type": "number"
         },
         "riskLevel": {
             "description": "The detected risk mode by the Self Assessment Module (ID04)",
-            "type": "integer"
+            "type": "number"
         }
     },
     "required": ["VIN", "operationMode", "velocity", "gnssStatus", "latitude", "longitude", "riskLevel"]
