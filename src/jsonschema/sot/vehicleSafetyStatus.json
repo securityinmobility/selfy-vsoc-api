@@ -9,24 +9,32 @@
             "type": "string"
         },
         "operationMode": {
-            "description": "The current safety mode in use",
-            "type": "integer"
+            "description": "The current safety mode in use. Allowed values: 0 = normal operation, 1 = max speed 10 km/h, 2 = emergency braking",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2
         },
         "velocity": {
             "description": "The vehicle's longitudinal velocity (km/h)",
             "type": "number"
         },
         "gnssStatus": {
-            "description": "Status of the GNSS localization",
-            "type": "integer"
+            "description": "Status of the GNSS localization. Allowed values: 0 = normal operation and 1 = GNSS failure.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1
         },
         "latitude": {
-            "description": "The vehicle's GNSS geolocation - latitude",
-            "type": "number"
+            "description": "The vehicle's GNSS latitude: -90 to 90 degrees",
+            "type": "number",
+            "minimum": -90.0,
+            "maximum": 90.0
         },
         "longitude": {
-            "description": "The vehicle's GNSS geolocation - longitude",
-            "type": "number"
+            "description": "The vehicle's GNSS longitude: -180 to 180 degrees",
+            "type": "number",
+            "minimum": -180.0,
+            "maximum": 180.0
         },
         "riskLevel": {
             "description": "The detected risk mode by the Self Assessment Module (ID04)",
