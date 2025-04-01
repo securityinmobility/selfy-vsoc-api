@@ -16,7 +16,7 @@ from opentelemetry import trace  # , metrics
 # instrumentor = FlaskInstrumentor()
 tracer = trace.get_tracer("vsoc-api.tracer")
 
-app = Flask(__name__)  # Dictionary to store the data
+app = Flask(__name__, static_url_path='/static')  # Dictionary to store the data
 
 # instrumentor.intrument_app(app)
 
