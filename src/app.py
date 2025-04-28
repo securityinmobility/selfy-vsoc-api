@@ -759,10 +759,27 @@ def validate_json_with_schema(schema_path, json_dict):
 def iterate_required_items(schema_path, validated_json):
     with open(schema_path, 'r') as f:
         schema = json.load(f)
-        required_items = schema.get("required", [])
+        required_items = nested_dict_lookup(schema, "required")
         for required_item in required_items:
-            yield required_item, validated_json.get(required_item)
+            for validated_item in nested_dict_lookup(validated_json, required_item): 
+                yield required_item, validated_item
 
+# Function to find occurences of a key within a nested dict
+def nested_dict_lookup(element, target_key):
+    if isinstance(element, list):
+        for subelement in element:
+            for result in nested_dict_lookup(subelement, target_key):
+                yield result
+    elif isinstance(element, dict):
+        if target_key in element:
+            if isinstance(element[target_key], list):
+                for list_value in element[target_key]:
+                    yield list_value
+            else:
+                yield element.get(target_key, [])
+        for value in element.values():
+            for result in nested_dict_lookup(value, target_key):
+                yield result
 
 # Add more methods here as needed
 
