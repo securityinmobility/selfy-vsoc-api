@@ -1,9 +1,30 @@
+from locust import HttpUser, task, between, constant_throughput
 from datetime import datetime
-from locust import HttpUser, task, constant_throughput
+import random
 from secrets import token_hex
 
 HttpUser.host = "http://127.0.0.1:8000"
 HttpUser.wait_time = constant_throughput(10)
+wait_time = between(2, 2)
+
+class VehicleSafetyStatUser(HttpUser):
+    @task
+    def post_vehicle_safety_status(self):
+        velocity = random.randint(10, 50)
+        risk = random.uniform(0, 1)
+
+        self.client.post(
+            "/sot/vehicleSafetyStatus",
+            json={
+                "VIN": "WUAWFAFLXB7K5C4A9",
+                "operationMode": 0,
+                "velocity": velocity,
+                "gnssStatus": 0,
+                "latitude": 41.404853005972576,
+                "longitude": 2.202048715342343,
+                "riskLevel": risk
+            }
+        )
 
 class AISUser(HttpUser):
     @task 
