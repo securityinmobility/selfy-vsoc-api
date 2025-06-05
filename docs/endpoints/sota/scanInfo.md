@@ -1,12 +1,12 @@
-# vulnReport
+# scanInfo
 
-- [1. [Required] Property vulnReport > AB_id](#AB_id)
-- [2. [Required] Property vulnReport > timeStamp](#timeStamp)
-- [3. [Required] Property vulnReport > VIN](#VIN)
-- [4. [Required] Property vulnReport > scanType](#scanType)
-- [5. [Required] Property vulnReport > result](#result)
+- [1. [Required] Property scanInfo > toolId](#toolId)
+- [2. [Required] Property scanInfo > timeStamp](#timeStamp)
+- [3. [Required] Property scanInfo > VIN](#VIN)
+- [4. [Required] Property scanInfo > action](#action)
+- [5. [Required] Property scanInfo > status](#status)
 
-**Title:** vulnReport
+**Title:** scanInfo
 
 |                           |                                                         |
 | ------------------------- | ------------------------------------------------------- |
@@ -14,11 +14,11 @@
 | **Required**              | No                                                      |
 | **Additional properties** | [[Not allowed]](# "Additional Properties not allowed.") |
 
-**Description:** A vulnerability report
+**Description:** scanInfo endpoint for the SOTA Binary Tool scanning result
 
 <details>
 <summary>
-<strong> <a name="AB_id"></a>1. [Required] Property vulnReport > AB_id</strong>  
+<strong> <a name="toolId"></a>1. [Required] Property scanInfo > toolId</strong>  
 
 </summary>
 <blockquote>
@@ -28,18 +28,14 @@
 | **Type**     | `integer` |
 | **Required** | Yes       |
 
-**Description:** ID of the AB
-
-| Restrictions |        |
-| ------------ | ------ |
-| **Minimum**  | &ge; 0 |
+**Description:** The tool ID of SOTA
 
 </blockquote>
 </details>
 
 <details>
 <summary>
-<strong> <a name="timeStamp"></a>2. [Required] Property vulnReport > timeStamp</strong>  
+<strong> <a name="timeStamp"></a>2. [Required] Property scanInfo > timeStamp</strong>  
 
 </summary>
 <blockquote>
@@ -50,14 +46,14 @@
 | **Required** | Yes         |
 | **Format**   | `date-time` |
 
-**Description:** timestamp of the message in ISO-8601 (UTC)
+**Description:** Timestamp of the scan information
 
 </blockquote>
 </details>
 
 <details>
 <summary>
-<strong> <a name="VIN"></a>3. [Required] Property vulnReport > VIN</strong>  
+<strong> <a name="VIN"></a>3. [Required] Property scanInfo > VIN</strong>  
 
 </summary>
 <blockquote>
@@ -74,38 +70,54 @@
 
 <details>
 <summary>
-<strong> <a name="scanType"></a>4. [Required] Property vulnReport > scanType</strong>  
+<strong> <a name="action"></a>4. [Required] Property scanInfo > action</strong>  
 
 </summary>
 <blockquote>
 
-|              |           |
-| ------------ | --------- |
-| **Type**     | `integer` |
-| **Required** | Yes       |
+|              |                     |
+| ------------ | ------------------- |
+| **Type**     | `enum (of integer)` |
+| **Required** | Yes                 |
 
-**Description:** The type of the requested scan
+**Description:** Action performed. It only accepts value 1 for update.
 
-| Restrictions |        |
-| ------------ | ------ |
-| **Minimum**  | &ge; 0 |
+Must be one of:
+* 1
 
 </blockquote>
 </details>
 
 <details>
 <summary>
-<strong> <a name="result"></a>5. [Required] Property vulnReport > result</strong>  
+<strong> <a name="status"></a>5. [Required] Property scanInfo > status</strong>  
 
 </summary>
 <blockquote>
 
-|              |           |
-| ------------ | --------- |
-| **Type**     | `boolean` |
-| **Required** | Yes       |
+|              |                     |
+| ------------ | ------------------- |
+| **Type**     | `enum (of integer)` |
+| **Required** | Yes                 |
 
-**Description:** result data
+**Description:** The status of the binary scanning tool
+
+Must be one of:
+* 1
+* 2
+* 3
+
+**Examples:** 
+
+```json
+1
+```
+```json
+2
+```
+```json
+3
+```
 
 </blockquote>
 </details>

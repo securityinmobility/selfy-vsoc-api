@@ -76,6 +76,7 @@ You can generate the token needed for APM with this command:
 sed -i -e "s/APM_SECRET_TOKEN=.*/APM_SECRET_TOKEN=$(python -c "import secrets; print(secrets.token_urlsafe(32))")/g" .env
 ```
 This will automatically replace the placeholder token inside the `.env` file with a generated one.
+Replace with `python3` if you got any error.
 ### How to start the VSOC stack incl. ELK
 After configuration you should be able to run `docker-compose`:
 ```sh
@@ -88,7 +89,7 @@ Once the command has finished running, you can check whether the VSOC API is wor
 curl http://localhost:8000
 
 # in case of success this will return
-# {"SELFY VSOC":"by THI","version":"v0.2"}
+# {"SELFY VSOC":"by THI","version":"v0.0.9"}
 ```
 You can also now open [Kibana](https://localhost:5601) inside a browser. Opening Kibana for the first time will warn you because of the self-signed TLS root certificate; this can be ignored.
 

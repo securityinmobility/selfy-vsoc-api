@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, Response, abort, make_response
+from flask import Flask, jsonify, request, Response, abort, make_response, after_this_request
 import http.client
 import json
 from jsonschema import validate, ValidationError, RefResolver, Draft7Validator
@@ -7,6 +7,7 @@ from datetime import datetime
 import uuid
 import json
 import http.client
+import time
 
 import trust_score
 
@@ -31,10 +32,10 @@ data = {
 }
 
 # GLOBALS
-sota_endpoint = "http://uptane-bridge.sota.selfy.ota.ce/vsoctrigger"
-ras_endpoint = "http://127.0.0.1:4201"
+sota_endpoint = "http://172.16.42.11:7700/update"
+ras_endpoint = "http://172.16.42.10:8080/request"
 ais_endpoint = "http://127.0.0.1:4202"
-ab_endpoint = "http://127.0.0.1:4203"
+ab_endpoint = "https://172.16.42.13:8080/triggeraudit"
 sot_endpoint = "http://127.0.0.1:4204"
 ivt_endpoint = "http://172.17.0.1:4205"
 
@@ -53,7 +54,7 @@ def sota_request_update(vin, action):
     """
     req_obj = {"toolId": 8, "timeStamp": datetime.now().replace(microsecond=0).isoformat()+"Z", "VIN": str(vin), "action": action}
 
-    response = requests.get(sota_endpoint, json=req_obj)
+    response = requests.post(sota_endpoint, json=req_obj)
     return Response(
         response.text,
         status=response.status_code,
@@ -77,24 +78,50 @@ def sota_receive_info():
 
     status = request_json["message"]["status"] 
     vin = request_json["message"]["vin"]
-    target = "08"
+    vin_ras = "WAUEA88DXTA287834"
+    target = "ID19"
     
     # Use-Case 34/35/36
-    if status == 0:
-        # post RAS, AIS, AB 
-
+    if status == 1:
+        # post RAS, AB 
         # target: vin
-        ras_attestation_request(target, str(vin))
-
-        # process: ais_1, asset_id: endpoint.example.com
-        ais_start_process("ais_1", "endpoint.example.com")
+        ras_attestation_request(target, str(vin_ras))
 
         # ab_id:28, priority:1, vin, scan_type: fast scan
-        ab_trigger_audit(28, 1, str(vin), 1)
+        ab_trigger_audit(28, 1, str(vin_ras), 1)
     else:
         # update TS
         trust_score.set_ts()
+    
+    return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
+@app.route('/sota/scanInfo', methods=['POST'])
+def sota_scan_info():
+    """
+    Getting information from the SOTA infrastructure regarding the status of the binary scanning tool.
+    """
+
+    schema_path = './jsonschema/sota/scanInfo.json'
+    opentelemetrie_prefix = 'sota.scanInfo'
+
+    if check_for_json(request):
+        return check_for_json(request)
+
+    request_json = request.get_json()
+
+    status = request_json["status"]
+    vin = request_json["VIN"] 
+    action = "1"
+
+    if status == 2 or status == 3:
+        # Use-Case 34/35/36
+        @after_this_request
+        def trigger_sota(response):
+            # This will trigger the POST to SOTA after the response is sent
+            time.sleep(48)
+            sota_request_update(vin, str(action))
+            return response
+    
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
 
@@ -120,7 +147,6 @@ def ras_attestation_request(target, vin):
         return ""
 
 
-
 @app.route('/ras/attestationResult', methods=['POST'])
 def ras_attestation_result():
     schema_path = './jsonschema/ras/attestationResult.json'
@@ -131,6 +157,14 @@ def ras_attestation_result():
 
     request_json = request.get_json()
 
+    state = request_json["state"]
+    vin = "123-456-789"
+    
+    #use-case 34/35/36
+    if (state == 0):
+        action = 1
+        sota_request_update(vin, action)
+    
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
 
@@ -348,6 +382,21 @@ def ais_deviation_unknown():
         return check_for_json(request)
 
     request_json = request.get_json()
+    vin = request_json["source_vehicle"]
+    target = "ID19"
+
+    # ab_id:28, priority:1, vin, scan_type: fast scan
+    ab_trigger_audit(28, 1, str(vin), 1)
+    time.sleep(38)
+    
+    # Use-Case 34/35/36
+    # target: vin
+    ras_attestation_request(target, str(vin))
+
+
+
+    # update trust-score
+    trust_score.set_ts()
 
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
@@ -364,16 +413,12 @@ def ais_deviation_known():
         return check_for_json(request)
 
     request_json = request.get_json()
-    vin = request_json["indicator"]["source_vehicle"]
-    target = "00"
-    print(vin)
+    vin = request_json["source_vehicle"]
+    target = "ID19"
 
     # Use-Case 34/35/36
     # target: vin
     ras_attestation_request(target, str(vin))
-
-    # process: ais_1, asset_id: endpoint.example.com
-    ais_start_process("ais_1", "endpoint.example.com")
 
     # ab_id:28, priority:1, vin, scan_type: fast scan
     ab_trigger_audit(28, 1, str(vin), 1)
@@ -393,11 +438,12 @@ def ab_trigger_audit(ab_id, priority, vin, scan_type):
     :param vin: vehicle identification number (string)
     :param scan_type: type of scan; 1 is fast scan, 2 is deep scan (integer)
     """
-    req_obj = {"AB_id": ab_id, "timeStamp": datetime.now().replace(microsecond=0).isoformat()+"Z", "VIN": str(vin), "scanType": scan_type, "priority": priority}
+    req_obj = {"AB_id": ab_id, "TimeStamp": datetime.now().replace(microsecond=0).isoformat()+"Z", "VIN": str("WAUEA88DXTA287834"), "ScanType": scan_type, "Priority": priority}
 
 
     try:
-        response = requests.get(ab_endpoint, json=req_obj)
+        #response = requests.get(ab_endpoint, json=req_obj)
+        response = requests.post(ab_endpoint, json=req_obj, verify=False)
         return Response(
             response.text,
             status=response.status_code,
@@ -429,7 +475,11 @@ def ab_vulnReportKO():
         return check_for_json(request)
 
     request_json = request.get_json()
+    vin = "123-456-789"
+    action = 1
 
+    sota_request_update(vin, action)
+    
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
 
 @app.route('/ab/jamAlarm', methods=['POST'])
@@ -713,12 +763,30 @@ def validate_json_with_schema(schema_path, json_dict):
 def iterate_required_items(schema_path, validated_json):
     with open(schema_path, 'r') as f:
         schema = json.load(f)
-        required_items = schema.get("required", [])
+        required_items = nested_dict_lookup(schema, "required")
         for required_item in required_items:
-            yield required_item, validated_json.get(required_item)
-
+            for validated_item in nested_dict_lookup(validated_json, required_item):
+                yield required_item, validated_item
+ 
+# Function to find occurences of a key within a nested dict
+def nested_dict_lookup(element, target_key):
+    if isinstance(element, list):
+        for subelement in element:
+            for result in nested_dict_lookup(subelement, target_key):
+                yield result
+    elif isinstance(element, dict):
+        if target_key in element:
+            if isinstance(element[target_key], list):
+                for list_value in element[target_key]:
+                    yield list_value
+            else:
+                yield element.get(target_key, [])
+        for value in element.values():
+            for result in nested_dict_lookup(value, target_key):
+                yield result
 
 # Add more methods here as needed
 
 if __name__ == '__main__':
-    app.run()
+    #app.run()
+    app.run(host='0.0.0.0', port=5002)

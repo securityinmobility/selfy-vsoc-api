@@ -1,0 +1,36 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "http://127.0.0.1:8000/sota/scanInfo",
+    "title": "scanInfo",
+    "description": "scanInfo endpoint for the SOTA Binary Tool scanning result",
+    "type": "object",
+    "properties": {
+      "toolId": {
+        "type": "integer",
+        "description": "The tool ID of SOTA"
+      },
+      "timeStamp": {
+        "type": "string",
+        "description": "Timestamp of the scan information",
+        "format": "date-time"
+      },
+      "VIN": {
+        "type": "string",
+        "description": "Vehicle Identification Number"
+      },
+      "action": {
+        "type": "integer",
+        "description": "Action performed. It only accepts value 1 for update.",
+        "enum": [1]
+      },
+      "status": {
+        "type": "integer",
+        "description": "The status of the binary scanning tool",
+        "enum": [1, 2, 3],
+        "examples": [1, 2, 3]
+      }
+    },
+    "required": ["toolId", "timeStamp", "VIN", "action", "status"],
+    "additionalProperties": false
+  }
+  
