@@ -1,4 +1,4 @@
-version: '3.0'
+#version: '3.0'
 services:
   
   # VSOC-API incl. OpenTelemetry instrumentation
@@ -57,6 +57,12 @@ services:
           "  - name: apm-server\n"\
           "    dns:\n"\
           "      - apm-server\n"\
+          "      - localhost\n"\
+          "    ip:\n"\
+          "      - 127.0.0.1\n"\
+          "  - name: elasticdump\n"\
+          "    dns:\n"\
+          "      - elasticdump\n"\
           "      - localhost\n"\
           "    ip:\n"\
           "      - 127.0.0.1\n"\
@@ -187,10 +193,26 @@ services:
       retries: 120
       test: curl -I --cacert config/certs/ca/ca.crt --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null https://localhost:8200/
 
+  elasticdump:
+    image: elasticdump/elasticsearch-dump
+    container_name: elasticdump
+    volumes:
+      - kibanalogs:/usr/share/log_data
+      - certs:/usr/share/elasticdump/config/certs
+    ports:
+      - 9201:9201
+    environment:
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+    entrypoint: sh -c "elasticdump --input=https://elastic:${ELASTIC_PASSWORD}@elasticsearch:9200/.ds-traces-apm-default-* --output=/usr/share/log_data/$(date +\"%Y%m%d%H%M%S\").json --type=data --ca=/usr/share/elasticdump/config/certs/ca/ca.crt --tlsAuth"
+    profiles: 
+      - record
+
 volumes:
   certs:
     driver: local
   esdata:
     driver: local
   kibanadata:
+    driver: local
+  kibanalogs:
     driver: local
