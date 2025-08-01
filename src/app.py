@@ -17,7 +17,7 @@ from opentelemetry import trace  # , metrics
 # instrumentor = FlaskInstrumentor()
 tracer = trace.get_tracer("vsoc-api.tracer")
 
-app = Flask(__name__)  # Dictionary to store the data
+app = Flask(__name__, static_url_path='/static')  # Dictionary to store the data
 
 # instrumentor.intrument_app(app)
 
@@ -595,7 +595,19 @@ def sot_vehiclelog():
         print("[SELFY VSOC] Could not connect to ", ivt_endpoint)
 
     return response_to_json(request_json, schema_path, opentelemetrie_prefix)
-    
+
+# SOT vehicleSafetyStatus
+@app.route('/sot/vehicleSafetyStatus', methods=['POST'])
+def sot_vehicleSafetyStatus():
+    schema_path = './jsonschema/sot/vehicleSafetyStatus.json'
+    opentelemetrie_prefix = 'sot.vehicleSafetyStatus'
+
+    if check_for_json(request):
+        return check_for_json(request)
+
+    request_json = request.get_json()
+
+    return response_to_json(request_json, schema_path, opentelemetrie_prefix)    
 
 #
 #
@@ -717,7 +729,7 @@ def response_to_json(request_json, schema_path, opentelemetrie_prefix):
         with tracer.start_as_current_span(opentelemetrie_prefix) as current_span:
             current_span.set_attribute(opentelemetrie_prefix + '.' + 'http.body',  str(request_json))
             for required_item, value in iterate_required_items(schema_path, request_json):
-                current_span.set_attribute(opentelemetrie_prefix + '.' + required_item.lower(), str(value))
+                current_span.set_attribute(opentelemetrie_prefix + '.' + required_item.lower(), value)
 
         response['statusCode'] = 200
         response['statusMessage'] = http.client.responses[response['statusCode']]
